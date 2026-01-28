@@ -1,0 +1,48 @@
+# Spring Boot主配置文件
+spring:
+  main:
+    allow-circular-references: true  # 允许循环引用（临时）
+  application:
+    name: kuibuqianli-backend
+  profiles:
+    active: dev  # 默认使用开发环境配置
+
+  # 关键：禁用Nacos服务发现
+  cloud:
+    nacos:
+      discovery:
+        enabled: false  # 关闭服务发现，避免连接Nacos服务器失败
+
+# 服务端口
+server:
+  port: 8080
+  servlet:
+    context-path: /api
+
+# MyBatis Plus 配置（必须放在主配置文件）
+mybatis-plus:
+  # Mapper XML 文件位置
+  mapper-locations: classpath*:mapper/**/*.xml
+  # 实体类所在的包
+  type-aliases-package: com.kuibuqianli.dao.entity
+  # 全局配置
+  global-config:
+    db-config:
+      id-type: auto  # 主键自增
+      logic-delete-field: deleted  # 逻辑删除字段名
+      logic-delete-value: 1        # 逻辑已删除值
+      logic-not-delete-value: 0    # 逻辑未删除值
+  # MyBatis 原生配置
+  configuration:
+    map-underscore-to-camel-case: true  # 自动转驼峰命名
+    cache-enabled: false                 # 关闭缓存
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # SQL日志输出
+
+# 日志配置
+logging:
+  level:
+    com.kuibuqianli: debug
+    org.springframework.web: info
+    com.baomidou.mybatisplus: debug
+  file:
+    name: logs/kuibuqianli.log

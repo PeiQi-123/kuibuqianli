@@ -1,0 +1,1 @@
+@rem Windows数据库初始化脚本

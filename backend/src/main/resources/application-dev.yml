@@ -1,0 +1,53 @@
+# 开发环境配置
+spring:
+  # 数据源配置
+  datasource:
+    url: jdbc:mysql://localhost:3306/kuibuqianli?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root
+    password: lyz1314kl
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 30000
+      maximum-pool-size: 20
+      minimum-idle: 5
+
+  # JPA配置
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # Redis配置（后续启用）
+  # redis:
+  #   host: localhost
+  #   port: 6379
+  #   password:
+  #   timeout: 3000ms
+
+# JWT配置 - 添加缺失的配置
+jwt:
+  secret: a3VpYnVxaWFubGktand0LXNlY3JldC1rZXktZm9yLXByb2R1Y3Rpb24tMjAyNC1jaGFuZ2UtbWUtcGxlYXNlLTEyMzQ1Njc4OTAtYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=
+  expiration: 86400000  # 24小时
+
+# Swagger配置
+swagger:
+  enabled: true
+  title: 跬步千里 API文档
+  description: 微运动健康管理系统后端API
+  version: 1.0.0
+  base-package: com.kuibuqianli.controller
+
+# 上传文件配置
+file:
+  upload-dir: ./uploads
+  max-size: 10MB
+
+# AI服务配置
+ai:
+  semantic-api-url: http://localhost:8000/semantic
+  video-api-url: http://localhost:8001/video
+  api-key: your_ai_api_key
