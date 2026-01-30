@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'storage_service.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8080/api'; // 基础API地址
+  static const String baseUrl = 'http://192.168.31.200:8080/api'; // 基础API地址
 
   // 登录专用的post方法 - 不包含任何token
   Future<Map<String, dynamic>?> postForLogin(String endpoint, Map<String, dynamic> data) async {
