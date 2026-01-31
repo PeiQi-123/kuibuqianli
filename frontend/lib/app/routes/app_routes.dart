@@ -5,6 +5,7 @@ import '../../screens/register_screen.dart';
 import '../../screens/home_screen.dart';
 import '../../screens/app_screen.dart';
 import 'package:go_router/go_router.dart';
+
 final GoRouter router = GoRouter(
   initialLocation: '/',
   routes: [
@@ -26,4 +27,3 @@ final GoRouter router = GoRouter(
     ),
   ],
 );
-
