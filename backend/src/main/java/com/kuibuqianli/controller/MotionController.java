@@ -2,6 +2,7 @@ package com.kuibuqianli.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuibuqianli.common.Result;
+import com.kuibuqianli.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,7 +10,10 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Map;
 
 @Tag(name = "微运动管理")
@@ -22,8 +26,9 @@ public class MotionController {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final VideoService videoService;
 
-    public MotionController() {
+    public MotionController(VideoService videoService) {
         this.restTemplate = new RestTemplate();
         
         // 配置 UTF-8 编码
@@ -34,6 +39,7 @@ public class MotionController {
         });
         
         this.objectMapper = new ObjectMapper();
+        this.videoService = videoService;
     }
 
     @Operation(summary = "生成微运动方案")
@@ -60,6 +66,29 @@ public class MotionController {
                 // 手动解析 UTF-8 编码的 JSON
                 Map<String, Object> data = objectMapper.readValue(body, Map.class);
                 System.out.println("=== AI Response (parsed): " + data);
+
+                // 尝试根据步骤自动拼接视频，并填充 video_url 字段
+                try {
+                    Object stepsObj = data.get("steps");
+                    if (stepsObj instanceof List) {
+                        @SuppressWarnings("unchecked")
+                        List<String> steps = (List<String>) stepsObj;
+                        String motionId = data.getOrDefault("motion_id", "motion").toString();
+                        String outputPath = videoService.concatenateVideosBySteps(steps, motionId);
+                        if (outputPath != null) {
+                            String filename = Paths.get(outputPath).getFileName().toString();
+                            String encoded = URLEncoder.encode(filename, StandardCharsets.UTF_8);
+                            // 注意: 应用实际访问时会在前面加上服务器地址
+                            String videoUrl = "/api/video/play?filename=" + encoded;
+                            data.put("video_url", videoUrl);
+                            System.out.println("=== Generated video for motion " + motionId + ": " + videoUrl);
+                        }
+                    }
+                } catch (Exception e) {
+                    // 拼接失败不影响主流程，只打印日志
+                    e.printStackTrace();
+                }
+
                 return Result.success(data);
             }
             return Result.error("AI 服务响应为空");

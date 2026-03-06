@@ -1,11 +1,30 @@
 // lib/services/api_service.dart
 // API服务类
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'storage_service.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8080/api'; // 基础API地址
+  // 根据运行环境自动选择后端地址
+  static String get baseUrl {
+    if (kIsWeb) {
+      // 浏览器调试
+      return 'http://localhost:8080/api';
+    }
+
+    switch (defaultTargetPlatform) {
+      case TargetPlatform.android:
+        // Android 模拟器访问宿主机
+        return 'http://10.0.2.2:8080/api';
+      case TargetPlatform.iOS:
+        // iOS 模拟器一般直接用 localhost
+        return 'http://localhost:8080/api';
+      default:
+        // Windows / macOS / Linux 桌面
+        return 'http://localhost:8080/api';
+    }
+  }
 
   // 登录专用的post方法 - 不包含任何token
   Future<Map<String, dynamic>?> postForLogin(String endpoint, Map<String, dynamic> data) async {
@@ -27,10 +46,11 @@ class ApiService {
       );
 
       print('=== DEBUG: Response status: ${response.statusCode}');
-      print('=== DEBUG: Response body: ${response.body}');
+      print('=== DEBUG: Response body (raw): ${response.body}');
 
       if (response.statusCode == 200) {
-        final decodedResponse = jsonDecode(response.body);
+        // 强制按 UTF-8 解码，避免因服务端未声明 charset 导致的乱码
+        final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
         print('=== DEBUG: Decoded response: $decodedResponse');
         return decodedResponse;
       } else {
@@ -70,10 +90,10 @@ class ApiService {
       );
 
       print('=== DEBUG: Response status: ${response.statusCode}');
-      print('=== DEBUG: Response body: ${response.body}');
+      print('=== DEBUG: Response body (raw): ${response.body}');
 
       if (response.statusCode == 200) {
-        final decodedResponse = jsonDecode(response.body);
+        final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
         print('=== DEBUG: Decoded response: $decodedResponse');
         return decodedResponse;
       } else {
@@ -116,10 +136,10 @@ class ApiService {
       );
 
       print('=== DEBUG: Response status: ${response.statusCode}');
-      print('=== DEBUG: Response body: ${response.body}');
+      print('=== DEBUG: Response body (raw): ${response.body}');
 
       if (response.statusCode == 200) {
-        final decodedResponse = jsonDecode(response.body);
+        final decodedResponse = jsonDecode(utf8.decode(response.bodyBytes));
         print('=== DEBUG: Decoded response: $decodedResponse');
         return decodedResponse;
       } else {

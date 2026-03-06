@@ -1,5 +1,8 @@
 // 视频指导页面
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player/video_player.dart';
 import '../services/api_service.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -20,10 +23,44 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   int _currentStep = 0;
   bool _isPlaying = false;
 
+  VideoPlayerController? _controller;
+  bool _isControllerInitialized = false;
+
+  bool get _isMobileDevice {
+    if (kIsWeb) return false;
+    return defaultTargetPlatform == TargetPlatform.android ||
+        defaultTargetPlatform == TargetPlatform.iOS;
+  }
+
   @override
   void initState() {
     super.initState();
     _loadVideos();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _openVideo() async {
+    if (_selectedVideo == null) return;
+
+    // 后端播放接口 URL
+    final encodedName = Uri.encodeComponent(_selectedVideo!);
+    final url = Uri.parse(
+      '${ApiService.baseUrl}/video/play?filename=$encodedName',
+    );
+
+    if (!await canLaunchUrl(url)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('无法打开视频链接')),
+      );
+      return;
+    }
+
+    await launchUrl(url, mode: LaunchMode.platformDefault);
   }
 
   Future<void> _loadVideos() async {
@@ -39,6 +76,114 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       debugPrint('加载视频列表失败: $e');
     }
     setState(() => _isLoading = false);
+  }
+
+  Future<void> _initVideoController() async {
+    if (!_isMobileDevice || _selectedVideo == null) return;
+
+    // 先释放旧的
+    _controller?.dispose();
+    _controller = null;
+    _isControllerInitialized = false;
+
+    final encodedName = Uri.encodeComponent(_selectedVideo!);
+    final url = '${ApiService.baseUrl}/video/play?filename=$encodedName';
+
+    final controller = VideoPlayerController.networkUrl(Uri.parse(url));
+    try {
+      await controller.initialize();
+      controller.setLooping(true);
+      setState(() {
+        _controller = controller;
+        _isControllerInitialized = true;
+      });
+    } catch (e) {
+      debugPrint('视频初始化失败: $e');
+    }
+  }
+
+  Widget _buildVideoArea() {
+    if (_isMobileDevice && _controller != null && _isControllerInitialized) {
+      return GestureDetector(
+        onTap: _togglePlayPause,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            AspectRatio(
+              aspectRatio: _controller!.value.aspectRatio,
+              child: VideoPlayer(_controller!),
+            ),
+            if (!_isPlaying)
+              const Icon(
+                Icons.play_circle_fill,
+                size: 72,
+                color: Colors.white70,
+              ),
+          ],
+        ),
+      );
+    }
+
+    // 非移动端或未初始化时的占位 UI
+    if (_selectedVideo != null) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.play_circle_outline,
+            size: 80,
+            color: Colors.white,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _selectedVideo!,
+            style: const TextStyle(color: Colors.white70),
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(height: 8),
+          const Text(
+            '点击下方按钮在浏览器/播放器中打开',
+            style: TextStyle(color: Colors.white38, fontSize: 12),
+          ),
+        ],
+      );
+    }
+
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.video_library,
+            size: 80,
+            color: Colors.grey[600],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            '请选择要播放的视频',
+            style: TextStyle(
+              color: Colors.grey[500],
+              fontSize: 16,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _togglePlayPause() {
+    if (!_isMobileDevice || _controller == null || !_isControllerInitialized) {
+      return;
+    }
+    setState(() {
+      if (_controller!.value.isPlaying) {
+        _controller!.pause();
+        _isPlaying = false;
+      } else {
+        _controller!.play();
+        _isPlaying = true;
+      }
+    });
   }
 
   @override
@@ -63,49 +208,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   Container(
                     width: double.infinity,
                     height: 220,
-                    color: Colors.grey[900],
-                    child: _selectedVideo != null
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.play_circle_outline,
-                                size: 80,
-                                color: Colors.white,
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                _selectedVideo!,
-                                style: const TextStyle(color: Colors.white70),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 8),
-                              const Text(
-                                '（实际播放需要 FFmpeg 支持）',
-                                style: TextStyle(color: Colors.white38, fontSize: 12),
-                              ),
-                            ],
-                          )
-                        : Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.video_library,
-                                  size: 80,
-                                  color: Colors.grey[600],
-                                ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  '请选择要播放的视频',
-                                  style: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                    color: Colors.black,
+                    child: _buildVideoArea(),
                   ),
                   
                   // 视频选择
@@ -130,10 +234,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                               return ChoiceChip(
                                 label: Text(video, style: const TextStyle(fontSize: 12)),
                                 selected: isSelected,
-                                onSelected: (selected) {
+                                 onSelected: (selected) async {
                                   setState(() {
                                     _selectedVideo = selected ? video : null;
+                                    _isPlaying = false;
                                   });
+                                  if (_isMobileDevice && selected) {
+                                    await _initVideoController();
+                                  }
                                 },
                               );
                             }).toList(),
@@ -159,13 +267,22 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             color: Colors.blue,
                           ),
                           const SizedBox(width: 16),
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              setState(() => _isPlaying = !_isPlaying);
-                            },
-                            icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
-                            label: Text(_isPlaying ? '暂停' : '播放'),
-                          ),
+                           _isMobileDevice
+                               ? ElevatedButton.icon(
+                                   onPressed: _togglePlayPause,
+                                   icon: Icon(
+                                     _isPlaying
+                                         ? Icons.pause
+                                         : Icons.play_arrow,
+                                   ),
+                                   label:
+                                       Text(_isPlaying ? '暂停' : '播放'),
+                                 )
+                               : ElevatedButton.icon(
+                                   onPressed: _openVideo,
+                                   icon: const Icon(Icons.open_in_new),
+                                   label: const Text('在浏览器中打开'),
+                                 ),
                           const SizedBox(width: 16),
                           IconButton(
                             onPressed: steps.isNotEmpty ? () {
@@ -213,8 +330,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                           const SizedBox(height: 8),
-                          Card(
-                            color: _isPlaying ? Colors.blue[50] : Colors.grey[100],
+                           Card(
+                            color: _isPlaying
+                                ? Colors.blue[50]
+                                : Colors.grey[100],
                             child: Padding(
                               padding: const EdgeInsets.all(16),
                               child: Row(

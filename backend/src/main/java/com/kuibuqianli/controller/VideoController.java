@@ -53,6 +53,24 @@ public class VideoController {
         return Result.error("视频拼接失败");
     }
 
+    @Operation(summary = "按步骤拼接视频")
+    @PostMapping("/concatenate-by-steps")
+    public Result<String> concatenateBySteps(@RequestBody Map<String, Object> request) {
+        @SuppressWarnings("unchecked")
+        List<String> steps = (List<String>) request.get("steps");
+        String motionId = (String) request.getOrDefault("motionId", "motion");
+
+        if (steps == null || steps.isEmpty()) {
+            return Result.error("steps 不能为空");
+        }
+
+        String outputPath = videoService.concatenateVideosBySteps(steps, motionId);
+        if (outputPath != null) {
+            return Result.success(outputPath);
+        }
+        return Result.error("按步骤拼接视频失败");
+    }
+
     @Operation(summary = "播放视频")
     @GetMapping("/play")
     public ResponseEntity<Resource> playVideo(@RequestParam String filename) {
