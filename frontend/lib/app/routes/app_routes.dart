@@ -4,6 +4,9 @@ import '../../screens/login_screen.dart';
 import '../../screens/register_screen.dart';
 import '../../screens/home_screen.dart';
 import '../../screens/app_screen.dart';
+import '../../screens/motion_recommendation_screen.dart';
+import '../../screens/posture_detection_screen.dart';
+import '../../screens/video_player_screen.dart';
 import 'package:go_router/go_router.dart';
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -20,9 +23,24 @@ final GoRouter router = GoRouter(
       path: '/register',
       builder: (context, state) => const RegisterScreen(),
     ),
-    GoRoute(
+GoRoute(
       path: '/app_screen',
       builder: (context, state) => const AppScreen(),
+    ),
+    GoRoute(
+      path: '/motion_recommendation',
+      builder: (context, state) => const MotionRecommendationScreen(),
+    ),
+    GoRoute(
+      path: '/posture_detection',
+      builder: (context, state) => const PostureDetectionScreen(),
+    ),
+    GoRoute(
+      path: '/video_player',
+      builder: (context, state) {
+        final motionData = state.extra as Map<String, dynamic>?;
+        return VideoPlayerScreen(motionData: motionData);
+      },
     ),
   ],
 );

@@ -3,7 +3,19 @@
 """
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
+import logging
+import sys
+
+# 配置日志输出到 stdout
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    stream=sys.stdout
+)
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 router = APIRouter()
 
@@ -22,7 +34,7 @@ class MotionResponse(BaseModel):
     motion_name: str
     description: str
     duration: int
-    steps: list[str]
+    steps: List[str]
     video_url: Optional[str] = None
 
 
@@ -36,13 +48,14 @@ async def generate_motion(request: MotionRequest):
     - **intensity**: 运动强度
     - **user_preference**: 用户偏好设置
     """
+    logger.info(f"收到请求: activity_type={request.activity_type}, duration={request.duration}, intensity={request.intensity}")
     try:
         # TODO: 实现实际的 AI 模型调用逻辑
         # 这里返回示例数据
-        return MotionResponse(
+        result = MotionResponse(
             motion_id="motion_001",
             motion_name="办公室拉伸运动",
-            description="适合久坐人群的5分钟拉伸运动",
+            description=f"适合{request.activity_type}人群的{request.duration}分钟拉伸运动",
             duration=request.duration,
             steps=[
                 "1. 颈部左右转动，每个方向10次",
@@ -53,7 +66,10 @@ async def generate_motion(request: MotionRequest):
             ],
             video_url=None
         )
+        logger.info(f"返回结果: {result.dict()}")
+        return result
     except Exception as e:
+        logger.error(f"生成微运动失败: {str(e)}")
         raise HTTPException(status_code=500, detail=f"生成微运动失败: {str(e)}")
 
 
