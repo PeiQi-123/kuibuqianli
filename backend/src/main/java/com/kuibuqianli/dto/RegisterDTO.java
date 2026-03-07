@@ -17,7 +17,7 @@ public class RegisterDTO {
     private String username;
 
     @NotBlank(message = "密码不能为空")
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&]{6,}$", message = "密码至少包含一个字母和一个数字，长度至少6位")
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d@$!%*#?&_]{6,}$", message = "Password must contain at least one letter and one digit, length at least 6")
     private String password;
 
     @NotBlank(message = "邮箱不能为空")
