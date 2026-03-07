@@ -2860,3 +2860,25 @@ Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'phone' in 'field li
 
 2026-01-28T17:19:04.352+08:00  INFO 23356 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-01-28T17:19:04.366+08:00  INFO 23356 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-07T18:00:57.319+08:00  WARN 47588 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-07T18:00:57.714+08:00  WARN 47588 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-07T18:00:57.745+08:00  INFO 47588 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 47588 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-07T18:00:57.746+08:00 DEBUG 47588 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-07T18:00:57.748+08:00  INFO 47588 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-07T18:01:00.047+08:00  INFO 47588 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=ed3e037e-b275-309e-ac31-8a708f56c4bb
+2026-03-07T18:01:00.919+08:00  INFO 47588 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-07T18:01:00.937+08:00  INFO 47588 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-07T18:01:00.937+08:00  INFO 47588 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-07T18:01:01.133+08:00  INFO 47588 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-07T18:01:01.133+08:00  INFO 47588 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3240 ms
+2026-03-07T18:01:01.239+08:00 DEBUG 47588 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-07T18:01:03.145+08:00  INFO 47588 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@77b71c9, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6133e20b, org.springframework.security.web.context.SecurityContextHolderFilter@579846cc, org.springframework.security.web.header.HeaderWriterFilter@1570cad0, org.springframework.web.filter.CorsFilter@30ffb2a6, org.springframework.security.web.authentication.logout.LogoutFilter@38f502fc, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@71f0806b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@30517a57, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@612af486, org.springframework.security.web.session.SessionManagementFilter@6ea66c33, org.springframework.security.web.access.ExceptionTranslationFilter@3303e89e, org.springframework.security.web.access.intercept.AuthorizationFilter@77c23d90]
+2026-03-07T18:01:03.826+08:00  INFO 47588 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-07T18:01:03.852+08:00  INFO 47588 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 7.69 seconds (process running for 8.899)
+2026-03-07T20:35:28.985+08:00  INFO 47588 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-07T20:35:28.999+08:00  INFO 47588 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-07T20:35:29.063+08:00  INFO 47588 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 63 ms
+2026-03-07T20:35:29.287+08:00  WARN 47588 --- [http-nio-8080-exec-3] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/login' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-07T20:35:29.885+08:00  INFO 47588 --- [http-nio-8080-exec-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-07T20:35:30.386+08:00  INFO 47588 --- [http-nio-8080-exec-3] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@12dc37c5
+2026-03-07T20:35:30.392+08:00  INFO 47588 --- [http-nio-8080-exec-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
