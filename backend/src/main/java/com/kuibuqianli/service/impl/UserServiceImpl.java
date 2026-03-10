@@ -4,10 +4,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.kuibuqianli.common.constants.ErrorCode;
 import com.kuibuqianli.common.exception.BusinessException;
 import com.kuibuqianli.dao.entity.User;
+import com.kuibuqianli.dao.entity.UserPreference;
 import com.kuibuqianli.dao.mapper.UserMapper;
+import com.kuibuqianli.dao.mapper.UserPreferenceMapper;
 import com.kuibuqianli.dto.LoginDTO;
 import com.kuibuqianli.dto.RegisterDTO;
 import com.kuibuqianli.dto.UserDTO;
+import com.kuibuqianli.dto.UserPreferenceDTO;
+import com.kuibuqianli.dto.UserPreferencesUpdateDTO;
 import com.kuibuqianli.security.JwtTokenProvider;
 import com.kuibuqianli.service.UserService;
 import org.springframework.beans.BeanUtils;
@@ -30,6 +34,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private UserPreferenceMapper userPreferenceMapper;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -232,6 +239,98 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             throw e;
         } catch (Exception e) {
             System.err.println("Update user info error: " + e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public List<UserPreferenceDTO> getUserPreferences(Long userId) {
+        try {
+            // 从数据库获取用户偏好
+            List<UserPreference> preferences = userPreferenceMapper.findByUserId(userId);
+            
+            // 转换为DTO
+            return preferences.stream().map(pref -> {
+                UserPreferenceDTO dto = new UserPreferenceDTO();
+                dto.setPreferenceKey(pref.getPreferenceKey());
+                
+                try {
+                    // 解析JSON字符串为List
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    List<String> values = objectMapper.readValue(
+                        pref.getPreferenceValue(), 
+                        objectMapper.getTypeFactory().constructCollectionType(List.class, String.class)
+                    );
+                    dto.setPreferenceValue(values);
+                } catch (Exception e) {
+                    // 如果解析失败，返回空列表
+                    System.err.println("Failed to parse preference value JSON: " + e.getMessage());
+                    dto.setPreferenceValue(new java.util.ArrayList<>());
+                }
+                
+                return dto;
+            }).collect(java.util.stream.Collectors.toList());
+            
+        } catch (Exception e) {
+            System.err.println("Get user preferences error: " + e.getMessage());
+            return new java.util.ArrayList<>();
+        }
+    }
+
+    @Override
+    public boolean saveUserPreferences(Long userId, UserPreferencesUpdateDTO preferencesDTO) {
+        try {
+            System.out.println("=== DEBUG: Saving user preferences for userId: " + userId);
+            
+            if (preferencesDTO == null || preferencesDTO.getPreferences() == null) {
+                System.out.println("=== DEBUG: preferencesDTO or preferences is null");
+                return false;
+            }
+            
+            System.out.println("=== DEBUG: Number of preferences to save: " + preferencesDTO.getPreferences().size());
+            
+            // 先删除用户现有的偏好
+            System.out.println("=== DEBUG: Deleting existing preferences for userId: " + userId);
+            int deletedCount = userPreferenceMapper.deleteByUserId(userId);
+            System.out.println("=== DEBUG: Deleted " + deletedCount + " existing preferences");
+            
+            // 转换DTO为实体并保存
+            List<UserPreference> preferences = preferencesDTO.getPreferences().stream()
+                .map(dto -> {
+                    UserPreference pref = new UserPreference();
+                    pref.setUserId(userId);
+                    pref.setPreferenceKey(dto.getPreferenceKey());
+                    
+                    try {
+                        // 将List转换为JSON字符串
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        String jsonValue = objectMapper.writeValueAsString(dto.getPreferenceValue());
+                        pref.setPreferenceValue(jsonValue);
+                        System.out.println("=== DEBUG: Converted preference - key: " + dto.getPreferenceKey() + 
+                                         ", value: " + jsonValue);
+                    } catch (Exception e) {
+                        System.err.println("Failed to serialize preference value: " + e.getMessage());
+                        pref.setPreferenceValue("[]"); // 默认空数组
+                    }
+                    
+                    return pref;
+                })
+                .collect(java.util.stream.Collectors.toList());
+            
+            // 批量插入
+            if (!preferences.isEmpty()) {
+                System.out.println("=== DEBUG: Attempting to batch insert " + preferences.size() + " preferences");
+                int result = userPreferenceMapper.batchInsertOrUpdate(preferences);
+                System.out.println("=== DEBUG: Batch insert result: " + result + " rows affected");
+                return result > 0;
+            }
+            
+            System.out.println("=== DEBUG: No preferences to save");
+            return true; // 如果没有偏好要保存，也返回成功
+            
+        } catch (Exception e) {
+            System.err.println("Save user preferences error: " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }

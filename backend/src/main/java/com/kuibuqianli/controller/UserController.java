@@ -4,6 +4,8 @@ import com.kuibuqianli.common.Result;
 import com.kuibuqianli.dto.LoginDTO;
 import com.kuibuqianli.dto.RegisterDTO;
 import com.kuibuqianli.dto.UserDTO;
+import com.kuibuqianli.dto.UserPreferenceDTO;
+import com.kuibuqianli.dto.UserPreferencesUpdateDTO;
 import com.kuibuqianli.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 import com.kuibuqianli.dto.LoginResponseDTO;
 import com.kuibuqianli.common.exception.BusinessException;
+
+import java.util.List;
 
 /**
  * 用户控制器：处理注册、登录、用户信息
@@ -61,6 +65,25 @@ public class UserController {
             return Result.success("用户信息更新成功");
         } else {
             return Result.error("用户信息更新失败");
+        }
+    }
+
+    @Operation(summary = "获取用户偏好")
+    @GetMapping("/preferences")
+    public Result<List<UserPreferenceDTO>> getUserPreferences(@RequestParam Long userId) {
+        List<UserPreferenceDTO> preferences = userService.getUserPreferences(userId);
+        return Result.success(preferences);
+    }
+
+    @Operation(summary = "保存用户偏好")
+    @PostMapping("/preferences")
+    public Result<String> saveUserPreferences(@RequestParam Long userId, 
+                                             @RequestBody UserPreferencesUpdateDTO preferencesDTO) {
+        boolean success = userService.saveUserPreferences(userId, preferencesDTO);
+        if (success) {
+            return Result.success("用户偏好保存成功");
+        } else {
+            return Result.error("用户偏好保存失败");
         }
     }
 }

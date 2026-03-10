@@ -9,7 +9,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 /**
- * 用户偏好实体类
+ * User Preference Entity
+ * Corresponds to database table: user_preference
  */
 @Data
 @TableName("user_preference")
@@ -20,20 +21,11 @@ public class UserPreference {
     @TableField("user_id")
     private Long userId;
 
-    @TableField("activity_type")
-    private String activityType; // 活动类型：久坐、长时间使用电脑等
+    @TableField("preference_key")
+    private String preferenceKey;
 
-    @TableField("preference_style")
-    private String preferenceStyle; // 偏好风格：常规、有趣等
-
-    @TableField("exercise_duration")
-    private Integer exerciseDuration; // 运动时长（秒）
-
-    @TableField("difficulty_level")
-    private String difficultyLevel; // 难度等级
-
-    @TableField("rating")
-    private Double rating; // 用户评分
+    @TableField("preference_value")
+    private String preferenceValue; // JSON format string, e.g.: ["shoulder", "back"]
 
     @TableField("created_at")
     private LocalDateTime createdAt;
@@ -41,4 +33,3 @@ public class UserPreference {
     @TableField("updated_at")
     private LocalDateTime updatedAt;
 }
-// 用户偏好实体类

@@ -66,11 +66,8 @@ class AuthService {
 
       if (response != null) {
         if (response['code'] == 200) {
-          // 注册成功，如果有返回用户信息，保存用户ID
-          final data = response['data'];
-          if (data != null && data['user'] != null && data['user']['id'] != null) {
-            await StorageService.saveUserId(data['user']['id'].toString());
-          }
+          // 注册成功
+          // 注意：后端返回的data是字符串"注册成功"，不是包含user信息的对象
           return true; // 注册成功
         } else {
           print('Registration failed: ${response['message']}');

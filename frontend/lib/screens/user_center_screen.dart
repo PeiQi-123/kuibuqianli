@@ -105,6 +105,29 @@ class _UserCenterScreenState extends State<UserCenterScreen> with SingleTickerPr
                   _buildVerticalTab('用户信息', 0),
                   _buildVerticalTab('运动偏好', 1),
                   _buildVerticalTab('历史记录', 2),
+                  const Spacer(),
+                  // 退出登录按钮
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 40.0),
+                    child: Center(
+                      child: ElevatedButton.icon(
+                        onPressed: _showLogoutConfirmation,
+                        icon: const Icon(Icons.logout),
+                        label: const Text('退出登录'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 16,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -182,6 +205,64 @@ class _UserCenterScreenState extends State<UserCenterScreen> with SingleTickerPr
         return Icons.history;
       default:
         return Icons.info;
+    }
+  }
+
+  // 显示退出登录确认对话框
+  Future<void> _showLogoutConfirmation() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('确认退出登录'),
+        content: const Text('您确定要退出登录吗？退出后将返回登录界面。'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('取消'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+            ),
+            child: const Text('确认退出'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true) {
+      await _performLogout();
+    }
+  }
+
+  // 执行退出登录操作
+  Future<void> _performLogout() async {
+    try {
+      await _authService.logout();
+      
+      // 清除当前用户状态
+      if (mounted) {
+        setState(() {
+          _currentUser = null;
+        });
+      }
+      
+      // 导航回登录界面
+      if (mounted) {
+        context.go('/login');
+      }
+    } catch (e) {
+      // 如果退出登录失败，显示错误信息
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('退出登录失败: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

@@ -5,6 +5,11 @@ import com.kuibuqianli.dto.LoginDTO;
 import com.kuibuqianli.dto.RegisterDTO;
 import com.kuibuqianli.dto.UserDTO;
 import com.kuibuqianli.dto.LoginResponseDTO;
+import com.kuibuqianli.dto.UserPreferenceDTO;
+import com.kuibuqianli.dto.UserPreferencesUpdateDTO;
+
+import java.util.List;
+
 /**
  * 用户服务接口
  */
@@ -38,5 +43,15 @@ public interface UserService {
      * 更新用户信息
      */
     boolean updateUserInfo(Long userId, UserDTO userDTO);
+
+    /**
+     * 获取用户偏好
+     */
+    List<UserPreferenceDTO> getUserPreferences(Long userId);
+
+    /**
+     * 保存用户偏好
+     */
+    boolean saveUserPreferences(Long userId, UserPreferencesUpdateDTO preferencesDTO);
 }
 // 用户服务接口
