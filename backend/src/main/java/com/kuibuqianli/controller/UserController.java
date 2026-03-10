@@ -52,5 +52,16 @@ public class UserController {
         UserDTO userDTO = userService.getUserInfo(userId);
         return Result.success(userDTO);
     }
+
+    @Operation(summary = "更新用户信息")
+    @PostMapping("/update")
+    public Result<String> updateUserInfo(@RequestParam Long userId, @RequestBody UserDTO userDTO) {
+        boolean success = userService.updateUserInfo(userId, userDTO);
+        if (success) {
+            return Result.success("用户信息更新成功");
+        } else {
+            return Result.error("用户信息更新失败");
+        }
+    }
 }
 // 用户控制器：处理注册、登录、用户信息

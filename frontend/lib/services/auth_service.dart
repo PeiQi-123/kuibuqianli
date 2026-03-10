@@ -29,13 +29,17 @@ class AuthService {
 
           // 保存新token到本地存储
           await StorageService.saveToken(token);
+          
+          // 保存用户ID到本地存储
+          if (user['id'] != null) {
+            await StorageService.saveUserId(user['id'].toString());
+          }
 
-          return UserModel(
-            id: user['id'].toString(),
-            username: user['username'],
-            email: user['email'],
-            token: token,
-          );
+          // 使用新的fromJson方法创建UserModel，包含所有字段
+          return UserModel.fromJson({
+            ...user,
+            'token': token,
+          });
         } else {
           // 登录失败
           print('Login failed: ${response['message']}');
@@ -62,6 +66,11 @@ class AuthService {
 
       if (response != null) {
         if (response['code'] == 200) {
+          // 注册成功，如果有返回用户信息，保存用户ID
+          final data = response['data'];
+          if (data != null && data['user'] != null && data['user']['id'] != null) {
+            await StorageService.saveUserId(data['user']['id'].toString());
+          }
           return true; // 注册成功
         } else {
           print('Registration failed: ${response['message']}');
@@ -77,6 +86,59 @@ class AuthService {
 
   Future<void> logout() async {
     await StorageService.removeToken();
+    await StorageService.removeUserId();
+  }
+
+  // 更新用户信息
+  Future<bool> updateUserInfo({
+    String? username,
+    String? email,
+    String? phone,
+    String? password,
+    double? height,
+    double? weight,
+    int? age,
+    String? gender,
+    bool? remindEnabled,
+    int? remindInterval,
+    List<Map<String, String>>? remindAvoidTime,
+  }) async {
+    try {
+      final userId = await StorageService.getUserId();
+      if (userId == null || userId.isEmpty) {
+        print('No user ID found');
+        return false;
+      }
+
+      // 构建更新数据
+      final Map<String, dynamic> updateData = {};
+
+      if (username != null) updateData['username'] = username;
+      if (email != null) updateData['email'] = email;
+      if (phone != null) updateData['phone'] = phone;
+      if (password != null && password.isNotEmpty) updateData['password'] = password;
+      if (height != null) updateData['height'] = height;
+      if (weight != null) updateData['weight'] = weight;
+      if (age != null) updateData['age'] = age;
+      if (gender != null) updateData['gender'] = gender;
+      if (remindEnabled != null) updateData['remindEnabled'] = remindEnabled;
+      if (remindInterval != null) updateData['remindInterval'] = remindInterval;
+      if (remindAvoidTime != null) updateData['remindAvoidTime'] = remindAvoidTime;
+
+      // 构建完整的URL，包含userId参数
+      final endpoint = '/user/update?userId=$userId';
+      final response = await _apiService.post(endpoint, updateData);
+
+      if (response != null && response['code'] == 200) {
+        return true;
+      } else {
+        print('Update user info failed: ${response?['message']}');
+        return false;
+      }
+    } catch (e) {
+      print('Update user info error: $e');
+      return false;
+    }
   }
 
   Future<bool> isLoggedIn() async {
@@ -92,16 +154,23 @@ class AuthService {
     }
 
     try {
-      final response = await _apiService.get('/user/info', params: {'userId': '1'});
+      // 尝试从本地存储获取用户ID
+      final userId = await StorageService.getUserId();
+      if (userId == null || userId.isEmpty) {
+        // 如果没有保存的用户ID，尝试从token解析或使用默认值
+        // 这里简化处理，实际应该解析JWT token获取用户ID
+        return null;
+      }
+      
+      final response = await _apiService.get('/user/info', params: {'userId': userId});
 
       if (response != null && response['code'] == 200) {
         final user = response['data'];
-        return UserModel(
-          id: user['id'].toString(),
-          username: user['username'],
-          email: user['email'],
-          token: token,
-        );
+        // 使用新的fromJson方法创建UserModel，包含所有字段
+        return UserModel.fromJson({
+          ...user,
+          'token': token,
+        });
       }
       return null;
     } catch (e) {

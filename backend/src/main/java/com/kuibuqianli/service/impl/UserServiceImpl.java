@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import com.kuibuqianli.dto.LoginResponseDTO;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -88,6 +91,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(user, userDTO);
+        
+        // 确保remindEnabled有默认值（如果数据库为null，默认为true）
+        if (userDTO.getRemindEnabled() == null) {
+            userDTO.setRemindEnabled(true);
+        }
+        
+        // 处理JSON字段：remind_avoid_time
+        if (user.getRemindAvoidTime() != null && !user.getRemindAvoidTime().isEmpty()) {
+            try {
+                ObjectMapper objectMapper = new ObjectMapper();
+                List<Map<String, String>> avoidTimeList = objectMapper.readValue(
+                    user.getRemindAvoidTime(), 
+                    objectMapper.getTypeFactory().constructCollectionType(List.class, Map.class)
+                );
+                userDTO.setRemindAvoidTime(avoidTimeList);
+            } catch (Exception e) {
+                // 如果JSON解析失败，保持为null
+                userDTO.setRemindAvoidTime(null);
+            }
+        }
+        
         return userDTO;
     }
 
@@ -112,15 +136,104 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 生成 token
         String token = jwtTokenProvider.generateToken(user.getId(), user.getUsername());
 
-        // 构建响应
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(user, userDTO);
+        // 构建响应 - 使用getUserInfo方法确保返回完整信息
+        UserDTO userDTO = getUserInfo(user.getId());
 
         LoginResponseDTO response = new LoginResponseDTO();
         response.setToken(token);
         response.setUser(userDTO);
 
         return response;
+    }
+
+    @Override
+    public boolean updateUserInfo(Long userId, UserDTO userDTO) {
+        try {
+            User user = userMapper.selectById(userId);
+            if (user == null) {
+                throw new BusinessException("用户不存在");
+            }
+
+            // 更新基本信息
+            if (userDTO.getUsername() != null) {
+                // 检查用户名是否已被其他用户使用
+                User existingUser = userMapper.findByUsername(userDTO.getUsername());
+                if (existingUser != null && !existingUser.getId().equals(userId)) {
+                    throw new BusinessException("用户名已被使用");
+                }
+                user.setUsername(userDTO.getUsername());
+            }
+            
+            if (userDTO.getEmail() != null) {
+                // 检查邮箱是否已被其他用户使用
+                User existingUser = userMapper.findByEmail(userDTO.getEmail());
+                if (existingUser != null && !existingUser.getId().equals(userId)) {
+                    throw new BusinessException("邮箱已被使用");
+                }
+                user.setEmail(userDTO.getEmail());
+            }
+            
+            if (userDTO.getPhone() != null) {
+                user.setPhone(userDTO.getPhone());
+            }
+            
+            if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+                user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            }
+            
+            // 更新健康信息
+            if (userDTO.getHeight() != null) {
+                user.setHeight(userDTO.getHeight());
+            }
+            
+            if (userDTO.getWeight() != null) {
+                user.setWeight(userDTO.getWeight());
+            }
+            
+            if (userDTO.getAge() != null) {
+                user.setAge(userDTO.getAge());
+            }
+            
+            if (userDTO.getGender() != null) {
+                user.setGender(userDTO.getGender());
+            }
+            
+            // 更新提醒设置
+            if (userDTO.getRemindEnabled() != null) {
+                user.setRemindEnabled(userDTO.getRemindEnabled());
+            }
+            
+            if (userDTO.getRemindInterval() != null) {
+                user.setRemindInterval(userDTO.getRemindInterval());
+            }
+            
+            // 处理免打扰时间段
+            if (userDTO.getRemindAvoidTime() != null) {
+                try {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    String avoidTimeJson = objectMapper.writeValueAsString(userDTO.getRemindAvoidTime());
+                    user.setRemindAvoidTime(avoidTimeJson);
+                } catch (Exception e) {
+                    // 如果JSON序列化失败，保持原值
+                    System.err.println("Failed to serialize remindAvoidTime: " + e.getMessage());
+                }
+            } else if (userDTO.getRemindEnabled() != null && !userDTO.getRemindEnabled()) {
+                // 如果提醒关闭，清空免打扰时间段
+                user.setRemindAvoidTime(null);
+            }
+            
+            user.setUpdatedAt(LocalDateTime.now());
+            
+            // 更新数据库
+            int result = userMapper.updateById(user);
+            return result > 0;
+            
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Update user info error: " + e.getMessage());
+            return false;
+        }
     }
 
 }

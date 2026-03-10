@@ -13,11 +13,13 @@ spring:
       discovery:
         enabled: false  # 关闭服务发现，避免连接Nacos服务器失败
 
+
 # 服务端口
 server:
   port: 8080
   servlet:
     context-path: /api
+  address: 0.0.0.0
 
 # MyBatis Plus 配置（必须放在主配置文件）
 mybatis-plus:

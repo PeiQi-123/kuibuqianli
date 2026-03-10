@@ -33,5 +33,10 @@ public interface UserService {
      * 检查邮箱是否存在
      */
     boolean checkEmailExists(String email);
+
+    /**
+     * 更新用户信息
+     */
+    boolean updateUserInfo(Long userId, UserDTO userDTO);
 }
 // 用户服务接口

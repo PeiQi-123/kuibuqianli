@@ -72,15 +72,15 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 16),
               Text(
                 _currentUser != null
-                  ? '欢迎，${_currentUser!.username}'
-                  : '请先登录',
+                    ? '欢迎，${_currentUser!.username}'
+                    : '请先登录',
                 style: const TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 32),
               if (_currentUser != null)
                 ElevatedButton(
                   onPressed: () {
-                    // 这里可以导航到运动页面
+                    context.go('/app_screen');  // 导航到应用主界面
                   },
                   child: const Text('开始运动'),
                 )

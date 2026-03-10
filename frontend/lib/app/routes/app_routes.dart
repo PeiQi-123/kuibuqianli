@@ -1,5 +1,4 @@
 // 路由配置
-import 'package:flutter/material.dart';
 import '../../screens/login_screen.dart';
 import '../../screens/register_screen.dart';
 import '../../screens/home_screen.dart';
@@ -7,6 +6,9 @@ import '../../screens/app_screen.dart';
 import '../../screens/motion_recommendation_screen.dart';
 import '../../screens/posture_detection_screen.dart';
 import '../../screens/video_player_screen.dart';
+import '../../screens/user_center_screen.dart';
+import '../../screens/user_info_screen.dart';
+import '../../screens/preference_screen.dart';
 import 'package:go_router/go_router.dart';
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -41,6 +43,18 @@ GoRoute(
         final motionData = state.extra as Map<String, dynamic>?;
         return VideoPlayerScreen(motionData: motionData);
       },
+    ),
+    GoRoute(
+      path: '/user_center',
+      builder: (context, state) => const UserCenterScreen(),
+    ),
+    GoRoute(
+      path: '/user_info',
+      builder: (context, state) => const UserInfoScreen(),
+    ),
+    GoRoute(
+      path: '/preference',
+      builder: (context, state) => const PreferenceScreenSimple(),
     ),
   ],
 );

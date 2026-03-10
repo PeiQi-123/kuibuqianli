@@ -1,59 +1,98 @@
 // lib/screens/app_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'user_center_screen.dart';
 
-class AppScreen extends StatelessWidget {
+class AppScreen extends StatefulWidget {
   const AppScreen({super.key});
 
   @override
+  State<AppScreen> createState() => _AppScreenState();
+}
+
+class _AppScreenState extends State<AppScreen> {
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('跬步千里'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: GridView.count(
-          crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
-          children: [
-            _buildMenuCard(
-              context,
-              icon: Icons.fitness_center,
-              title: '微运动推荐',
-              subtitle: 'AI 智能推荐运动方案',
-              color: Colors.blue,
-              onTap: () => context.push('/motion_recommendation'),
-            ),
-            _buildMenuCard(
-              context,
-              icon: Icons.videocam,
-              title: '视频指导',
-              subtitle: '观看运动教学视频',
-              color: Colors.orange,
-              onTap: () => context.push('/video_player'),
-            ),
-            _buildMenuCard(
-              context,
-              icon: Icons.camera_alt,
-              title: '姿态检测',
-              subtitle: '实时检测运动姿态',
-              color: Colors.green,
-              onTap: () => context.push('/posture_detection'),
-            ),
-            _buildMenuCard(
-              context,
-              icon: Icons.bar_chart,
-              title: '健康数据',
-              subtitle: '查看运动统计数据',
-              color: Colors.purple,
-              onTap: () => context.push('/health_data'),
-            ),
-          ],
+    final List<Widget> widgetOptions = <Widget>[
+      // 功能首页
+      Scaffold(
+        appBar: AppBar(
+          title: const Text('跬步千里'),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          foregroundColor: Theme.of(context).colorScheme.onPrimary,
         ),
+        body: Padding(
+          padding: const EdgeInsets.all(16),
+          child: GridView.count(
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            children: [
+              _buildMenuCard(
+                context,
+                icon: Icons.fitness_center,
+                title: '微运动推荐',
+                subtitle: 'AI 智能推荐运动方案',
+                color: Colors.blue,
+                onTap: () => context.push('/motion_recommendation'),
+              ),
+              _buildMenuCard(
+                context,
+                icon: Icons.videocam,
+                title: '视频指导',
+                subtitle: '观看运动教学视频',
+                color: Colors.orange,
+                onTap: () => context.push('/video_player'),
+              ),
+              _buildMenuCard(
+                context,
+                icon: Icons.camera_alt,
+                title: '姿态检测',
+                subtitle: '实时检测运动姿态',
+                color: Colors.green,
+                onTap: () => context.push('/posture_detection'),
+              ),
+              _buildMenuCard(
+                context,
+                icon: Icons.bar_chart,
+                title: '健康数据',
+                subtitle: '查看运动统计数据',
+                color: Colors.purple,
+                onTap: () => context.push('/health_data'),
+              ),
+            ],
+          ),
+        ),
+      ),
+      
+      // 用户中心
+      const UserCenterScreen(),
+    ];
+
+    return Scaffold(
+      body: widgetOptions.elementAt(_selectedIndex),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: '首页',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: '用户中心',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }
