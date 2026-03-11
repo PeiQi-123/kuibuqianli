@@ -1,4 +1,4 @@
-# Spring Boot主配置文件
+# Spring Boot主配置文件：backend/src/main/resources/application.yml
 spring:
   main:
     allow-circular-references: true  # 允许循环引用（临时）

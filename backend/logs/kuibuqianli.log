@@ -1973,3 +1973,786 @@ com.kuibuqianli.common.exception.BusinessException: 不存在
 2026-03-10T21:50:12.742+08:00  INFO 38016 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
 2026-03-10T21:50:13.063+08:00  INFO 38016 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@18c3b28c
 2026-03-10T21:50:13.067+08:00  INFO 38016 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-11T14:37:36.193+08:00  WARN 36328 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T14:37:36.801+08:00  WARN 36328 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T14:37:36.826+08:00  INFO 36328 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 36328 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T14:37:36.828+08:00 DEBUG 36328 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T14:37:36.829+08:00  INFO 36328 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T14:37:40.343+08:00  INFO 36328 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=935b1a7e-c33e-38ce-b58a-063771b0bcb2
+2026-03-11T14:37:41.280+08:00  INFO 36328 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T14:37:41.310+08:00  INFO 36328 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T14:37:41.310+08:00  INFO 36328 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T14:37:41.584+08:00  INFO 36328 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T14:37:41.585+08:00  INFO 36328 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4556 ms
+2026-03-11T14:37:41.721+08:00 DEBUG 36328 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T14:37:43.902+08:00  INFO 36328 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1b475663, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1669931a, org.springframework.security.web.context.SecurityContextHolderFilter@6fc1a8f6, org.springframework.security.web.header.HeaderWriterFilter@6133e20b, org.springframework.web.filter.CorsFilter@6b24ddd7, org.springframework.security.web.authentication.logout.LogoutFilter@7c3c453b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2037f12b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@b94703b, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@12e007be, org.springframework.security.web.session.SessionManagementFilter@3d1c52f5, org.springframework.security.web.access.ExceptionTranslationFilter@49631cfb, org.springframework.security.web.access.intercept.AuthorizationFilter@6f0c45f4]
+2026-03-11T14:37:44.748+08:00  INFO 36328 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T14:37:44.793+08:00  INFO 36328 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 10.25 seconds (process running for 11.526)
+2026-03-11T14:38:54.557+08:00  INFO 36328 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-11T14:38:54.558+08:00  INFO 36328 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-11T14:38:54.561+08:00  INFO 36328 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-11T14:38:54.644+08:00  WARN 36328 --- [http-nio-0.0.0.0-8080-exec-2] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/login' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-11T14:38:55.120+08:00  INFO 36328 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-11T14:38:55.752+08:00  INFO 36328 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@50c02c9c
+2026-03-11T14:38:55.757+08:00  INFO 36328 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-11T14:38:55.989+08:00 ERROR 36328 --- [http-nio-0.0.0.0-8080-exec-2] c.k.c.exception.GlobalExceptionHandler   : BusinessException: 用户名或密码错误
+
+com.kuibuqianli.common.exception.BusinessException: 用户名或密码错误
+	at com.kuibuqianli.service.impl.UserServiceImpl.loginWithUser(UserServiceImpl.java:140) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.14.jar:6.0.14]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699) ~[spring-aop-6.0.14.jar:6.0.14]
+	at com.kuibuqianli.service.impl.UserServiceImpl$$SpringCGLIB$$0.loginWithUser(<generated>) ~[classes/:na]
+	at com.kuibuqianli.controller.UserController.login(UserController.java:43) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:69) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
+
+2026-03-11T14:40:01.268+08:00 ERROR 36328 --- [http-nio-0.0.0.0-8080-exec-5] c.k.c.exception.GlobalExceptionHandler   : BusinessException: 邮箱已被注册
+
+com.kuibuqianli.common.exception.BusinessException: 邮箱已被注册
+	at com.kuibuqianli.service.impl.UserServiceImpl.register(UserServiceImpl.java:56) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.14.jar:6.0.14]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699) ~[spring-aop-6.0.14.jar:6.0.14]
+	at com.kuibuqianli.service.impl.UserServiceImpl$$SpringCGLIB$$0.register(<generated>) ~[classes/:na]
+	at com.kuibuqianli.controller.UserController.register(UserController.java:34) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:69) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
+
+2026-03-11T14:40:48.967+08:00 ERROR 36328 --- [http-nio-0.0.0.0-8080-exec-9] c.k.c.exception.GlobalExceptionHandler   : BusinessException: 用户名已存在
+
+com.kuibuqianli.common.exception.BusinessException: 用户名已存在
+	at com.kuibuqianli.service.impl.UserServiceImpl.register(UserServiceImpl.java:51) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.14.jar:6.0.14]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699) ~[spring-aop-6.0.14.jar:6.0.14]
+	at com.kuibuqianli.service.impl.UserServiceImpl$$SpringCGLIB$$0.register(<generated>) ~[classes/:na]
+	at com.kuibuqianli.controller.UserController.register(UserController.java:34) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:69) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
+
+2026-03-11T18:14:53.249+08:00  INFO 36328 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-11T18:14:53.298+08:00  INFO 36328 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-11T18:15:14.658+08:00  WARN 53984 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T18:15:15.136+08:00  WARN 53984 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T18:15:15.157+08:00  INFO 53984 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 53984 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T18:15:15.158+08:00 DEBUG 53984 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T18:15:15.159+08:00  INFO 53984 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T18:15:17.840+08:00  INFO 53984 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=935b1a7e-c33e-38ce-b58a-063771b0bcb2
+2026-03-11T18:15:18.774+08:00  INFO 53984 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T18:15:18.804+08:00  INFO 53984 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T18:15:18.804+08:00  INFO 53984 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T18:15:19.168+08:00  INFO 53984 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T18:15:19.169+08:00  INFO 53984 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3843 ms
+2026-03-11T18:15:19.336+08:00 DEBUG 53984 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T18:15:21.274+08:00  INFO 53984 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@30cafd13, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1d226f27, org.springframework.security.web.context.SecurityContextHolderFilter@49631cfb, org.springframework.security.web.header.HeaderWriterFilter@52a67293, org.springframework.web.filter.CorsFilter@1d944fc0, org.springframework.security.web.authentication.logout.LogoutFilter@5e24592e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6133e20b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@43deba42, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7c3c453b, org.springframework.security.web.session.SessionManagementFilter@74c7522c, org.springframework.security.web.access.ExceptionTranslationFilter@f59da34, org.springframework.security.web.access.intercept.AuthorizationFilter@7cca31fc]
+2026-03-11T18:15:21.931+08:00  INFO 53984 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T18:15:21.960+08:00  INFO 53984 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 8.589 seconds (process running for 10.03)
+2026-03-11T18:16:49.081+08:00  INFO 53984 --- [http-nio-0.0.0.0-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-11T18:16:49.083+08:00  INFO 53984 --- [http-nio-0.0.0.0-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-11T18:16:49.086+08:00  INFO 53984 --- [http-nio-0.0.0.0-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-03-11T18:16:49.171+08:00  WARN 53984 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/login' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-11T18:16:49.522+08:00  INFO 53984 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-11T18:16:50.039+08:00  INFO 53984 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@403a82f1
+2026-03-11T18:16:50.045+08:00  INFO 53984 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-11T18:20:14.218+08:00  INFO 53984 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-11T18:20:14.233+08:00  INFO 53984 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-11T22:06:40.061+08:00  WARN 44812 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:06:40.474+08:00  WARN 44812 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:06:40.493+08:00  INFO 44812 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 44812 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T22:06:40.494+08:00 DEBUG 44812 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T22:06:40.495+08:00  INFO 44812 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T22:06:42.848+08:00  INFO 44812 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=56af1a49-3a63-3d47-bb82-0a1e0945e383
+2026-03-11T22:06:43.698+08:00  INFO 44812 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T22:06:43.723+08:00  INFO 44812 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T22:06:43.723+08:00  INFO 44812 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T22:06:43.949+08:00  INFO 44812 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T22:06:43.950+08:00  INFO 44812 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3332 ms
+2026-03-11T22:06:44.071+08:00 DEBUG 44812 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T22:06:46.142+08:00  INFO 44812 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3cd46491, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@27d98bef, org.springframework.security.web.context.SecurityContextHolderFilter@6ad6ae45, org.springframework.security.web.header.HeaderWriterFilter@1124910c, org.springframework.web.filter.CorsFilter@349312d5, org.springframework.security.web.authentication.logout.LogoutFilter@6cd45b6c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7893c715, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1bfa5a13, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5885e231, org.springframework.security.web.session.SessionManagementFilter@4a9b92c6, org.springframework.security.web.access.ExceptionTranslationFilter@7fd751de, org.springframework.security.web.access.intercept.AuthorizationFilter@ee2ae9a]
+2026-03-11T22:06:46.733+08:00  INFO 44812 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T22:06:46.763+08:00  INFO 44812 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 8.021 seconds (process running for 9.493)
+2026-03-11T22:15:50.543+08:00  INFO 44812 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-11T22:15:50.545+08:00  INFO 44812 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-11T22:15:50.554+08:00  INFO 44812 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 8 ms
+2026-03-11T22:15:50.583+08:00  WARN 44812 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/micro-motion/health' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-11T22:19:34.451+08:00  WARN 35040 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:19:34.891+08:00  WARN 35040 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:19:34.911+08:00  INFO 35040 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 35040 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T22:19:34.912+08:00 DEBUG 35040 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T22:19:34.914+08:00  INFO 35040 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T22:19:37.283+08:00  INFO 35040 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=56af1a49-3a63-3d47-bb82-0a1e0945e383
+2026-03-11T22:19:38.084+08:00  INFO 35040 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T22:19:38.103+08:00  INFO 35040 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T22:19:38.104+08:00  INFO 35040 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T22:19:38.307+08:00  INFO 35040 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T22:19:38.309+08:00  INFO 35040 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3235 ms
+2026-03-11T22:19:38.419+08:00 DEBUG 35040 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T22:19:40.275+08:00  INFO 35040 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@26994c6a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@3cd46491, org.springframework.security.web.context.SecurityContextHolderFilter@4d20616a, org.springframework.security.web.header.HeaderWriterFilter@e162a35, org.springframework.web.filter.CorsFilter@27d98bef, org.springframework.security.web.authentication.logout.LogoutFilter@12209826, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7c4d1c7b, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7db791df, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@349312d5, org.springframework.security.web.session.SessionManagementFilter@6ce9771c, org.springframework.security.web.access.ExceptionTranslationFilter@27d73d22, org.springframework.security.web.access.intercept.AuthorizationFilter@754de353]
+2026-03-11T22:19:40.904+08:00  INFO 35040 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T22:19:40.937+08:00  INFO 35040 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 7.843 seconds (process running for 8.846)
+2026-03-11T22:20:14.765+08:00  INFO 35040 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-11T22:20:14.766+08:00  INFO 35040 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-11T22:20:14.768+08:00  INFO 35040 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-11T22:20:14.805+08:00  WARN 35040 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/micro-motion/health' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-11T22:21:54.836+08:00  WARN 55132 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:21:55.288+08:00  WARN 55132 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:21:55.310+08:00  INFO 55132 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 55132 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T22:21:55.311+08:00 DEBUG 55132 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T22:21:55.313+08:00  INFO 55132 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T22:21:57.601+08:00  INFO 55132 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=56af1a49-3a63-3d47-bb82-0a1e0945e383
+2026-03-11T22:21:58.398+08:00  INFO 55132 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T22:21:58.419+08:00  INFO 55132 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T22:21:58.419+08:00  INFO 55132 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T22:21:58.648+08:00  INFO 55132 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T22:21:58.649+08:00  INFO 55132 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3226 ms
+2026-03-11T22:21:58.758+08:00 DEBUG 55132 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T22:22:00.628+08:00  INFO 55132 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@754de353, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@ee2ae9a, org.springframework.security.web.context.SecurityContextHolderFilter@6ce9771c, org.springframework.security.web.header.HeaderWriterFilter@2c16677c, org.springframework.web.filter.CorsFilter@58b97c15, org.springframework.security.web.authentication.logout.LogoutFilter@7910f355, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6eed46e9, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7893c715, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@26994c6a, org.springframework.security.web.session.SessionManagementFilter@1d77746b, org.springframework.security.web.access.ExceptionTranslationFilter@30dd00b6, org.springframework.security.web.access.intercept.AuthorizationFilter@62faf77]
+2026-03-11T22:22:01.250+08:00  INFO 55132 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T22:22:01.279+08:00  INFO 55132 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 7.53 seconds (process running for 8.616)
+2026-03-11T22:22:20.444+08:00  INFO 55132 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-11T22:22:20.446+08:00  INFO 55132 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-11T22:22:20.448+08:00  INFO 55132 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-11T22:22:20.484+08:00  WARN 55132 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/micro-motion/health' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-11T22:27:56.453+08:00  WARN 39956 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:27:56.592+08:00  WARN 39956 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:27:56.608+08:00  INFO 39956 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 17.0.1 with PID 39956 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T22:27:56.613+08:00 DEBUG 39956 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T22:27:56.615+08:00  INFO 39956 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T22:27:58.211+08:00  INFO 39956 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=56af1a49-3a63-3d47-bb82-0a1e0945e383
+2026-03-11T22:27:58.867+08:00  INFO 39956 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T22:27:58.887+08:00  INFO 39956 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T22:27:58.888+08:00  INFO 39956 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T22:27:59.074+08:00  INFO 39956 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T22:27:59.076+08:00  INFO 39956 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2332 ms
+2026-03-11T22:27:59.159+08:00 DEBUG 39956 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T22:28:00.660+08:00  INFO 39956 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@25470477, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6182ffef, org.springframework.security.web.context.SecurityContextHolderFilter@e972ee1, org.springframework.security.web.header.HeaderWriterFilter@2037f12b, org.springframework.web.filter.CorsFilter@49e479da, org.springframework.security.web.authentication.logout.LogoutFilter@12e007be, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@6f0a4e30, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@26ffd2c0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2d24cdd9, org.springframework.security.web.session.SessionManagementFilter@acb5508, org.springframework.security.web.access.ExceptionTranslationFilter@6fc1a8f6, org.springframework.security.web.access.intercept.AuthorizationFilter@58739e5e]
+2026-03-11T22:28:01.404+08:00  WARN 39956 --- [main] ConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.context.ApplicationContextException: Failed to start bean 'webServerStartStop'
+2026-03-11T22:28:01.412+08:00  INFO 39956 --- [main] o.apache.catalina.core.StandardService   : Stopping service [Tomcat]
+2026-03-11T22:28:01.438+08:00  INFO 39956 --- [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-03-11T22:28:01.467+08:00 ERROR 39956 --- [main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Web server failed to start. Port 8080 was already in use.
+
+Action:
+
+Identify and stop the process that's listening on port 8080 or configure this application to listen on another port.
+
+2026-03-11T22:31:01.291+08:00  WARN 42364 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:31:01.758+08:00  WARN 42364 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:31:01.782+08:00  INFO 42364 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 42364 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T22:31:01.782+08:00 DEBUG 42364 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T22:31:01.783+08:00  INFO 42364 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T22:31:04.115+08:00  INFO 42364 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=56af1a49-3a63-3d47-bb82-0a1e0945e383
+2026-03-11T22:31:04.957+08:00  INFO 42364 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T22:31:04.987+08:00  INFO 42364 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T22:31:04.987+08:00  INFO 42364 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T22:31:05.230+08:00  INFO 42364 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T22:31:05.230+08:00  INFO 42364 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3239 ms
+2026-03-11T22:31:05.343+08:00 DEBUG 42364 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T22:31:07.136+08:00  INFO 42364 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4d20616a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@6ad6ae45, org.springframework.security.web.context.SecurityContextHolderFilter@12f9f896, org.springframework.security.web.header.HeaderWriterFilter@7f8c48f3, org.springframework.web.filter.CorsFilter@7c4d1c7b, org.springframework.security.web.authentication.logout.LogoutFilter@1124910c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@505f45cc, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@45571cfc, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7893c715, org.springframework.security.web.session.SessionManagementFilter@2af9a5ef, org.springframework.security.web.access.ExceptionTranslationFilter@d28c214, org.springframework.security.web.access.intercept.AuthorizationFilter@6ce9771c]
+2026-03-11T22:31:07.767+08:00  INFO 42364 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T22:31:07.796+08:00  INFO 42364 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 7.772 seconds (process running for 8.945)
+2026-03-11T22:35:52.342+08:00  WARN 47828 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:35:52.736+08:00  WARN 47828 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:35:52.761+08:00  INFO 47828 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 47828 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T22:35:52.762+08:00 DEBUG 47828 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T22:35:52.764+08:00  INFO 47828 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T22:35:55.165+08:00  INFO 47828 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=56af1a49-3a63-3d47-bb82-0a1e0945e383
+2026-03-11T22:35:56.033+08:00  INFO 47828 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T22:35:56.055+08:00  INFO 47828 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T22:35:56.056+08:00  INFO 47828 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T22:35:56.321+08:00  INFO 47828 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T22:35:56.322+08:00  INFO 47828 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3391 ms
+2026-03-11T22:35:56.437+08:00 DEBUG 47828 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T22:35:58.088+08:00  INFO 47828 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@1bfa5a13, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1b1e1f02, org.springframework.security.web.context.SecurityContextHolderFilter@faec277, org.springframework.security.web.header.HeaderWriterFilter@1d226f27, org.springframework.web.filter.CorsFilter@1da75dde, org.springframework.security.web.authentication.logout.LogoutFilter@1231a1be, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1669931a, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@699e0bf0, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5c5f0edc, org.springframework.security.web.session.SessionManagementFilter@5df92089, org.springframework.security.web.access.ExceptionTranslationFilter@29090809, org.springframework.security.web.access.intercept.AuthorizationFilter@36f6d25c]
+2026-03-11T22:35:58.781+08:00  INFO 47828 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T22:35:58.811+08:00  INFO 47828 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 7.554 seconds (process running for 8.514)
+2026-03-11T22:36:39.908+08:00  INFO 47828 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-11T22:36:39.909+08:00  INFO 47828 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-11T22:36:39.911+08:00  INFO 47828 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-11T22:36:39.950+08:00  WARN 47828 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/video/list' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-11T22:38:08.679+08:00 ERROR 47828 --- [http-nio-0.0.0.0-8080-exec-3] c.k.c.exception.GlobalExceptionHandler   : Default exception: When allowCredentials is true, allowedOrigins cannot contain the special value "*" since that cannot be set on the "Access-Control-Allow-Origin" response header. To allow credentials to a set of origins, list them explicitly or consider using "allowedOriginPatterns" instead.
+
+java.lang.IllegalArgumentException: When allowCredentials is true, allowedOrigins cannot contain the special value "*" since that cannot be set on the "Access-Control-Allow-Origin" response header. To allow credentials to a set of origins, list them explicitly or consider using "allowedOriginPatterns" instead.
+	at org.springframework.web.cors.CorsConfiguration.validateAllowCredentials(CorsConfiguration.java:538) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.handler.AbstractHandlerMapping.getHandler(AbstractHandlerMapping.java:538) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.getHandler(DispatcherServlet.java:1275) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1057) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:57) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
+
+2026-03-11T22:39:49.229+08:00  WARN 44236 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:39:49.620+08:00  WARN 44236 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:39:49.642+08:00  INFO 44236 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 44236 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T22:39:49.643+08:00 DEBUG 44236 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T22:39:49.645+08:00  INFO 44236 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T22:39:51.925+08:00  INFO 44236 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=56af1a49-3a63-3d47-bb82-0a1e0945e383
+2026-03-11T22:39:52.749+08:00  INFO 44236 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T22:39:52.767+08:00  INFO 44236 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T22:39:52.768+08:00  INFO 44236 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T22:39:52.959+08:00  INFO 44236 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T22:39:52.960+08:00  INFO 44236 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3189 ms
+2026-03-11T22:39:53.081+08:00 DEBUG 44236 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T22:39:54.873+08:00  INFO 44236 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4ced17f3, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@734a149a, org.springframework.security.web.context.SecurityContextHolderFilter@1b791dca, org.springframework.security.web.header.HeaderWriterFilter@67a8bcbb, org.springframework.web.filter.CorsFilter@6ce9771c, org.springframework.security.web.authentication.logout.LogoutFilter@4656fcc5, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2af9a5ef, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7548e1fb, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4a9b92c6, org.springframework.security.web.session.SessionManagementFilter@1d226f27, org.springframework.security.web.access.ExceptionTranslationFilter@6f0a4e30, org.springframework.security.web.access.intercept.AuthorizationFilter@628ba266]
+2026-03-11T22:39:55.519+08:00  INFO 44236 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T22:39:55.549+08:00  INFO 44236 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 7.393 seconds (process running for 8.36)
+2026-03-11T22:40:05.035+08:00  INFO 44236 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-11T22:40:05.036+08:00  INFO 44236 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-11T22:40:05.038+08:00  INFO 44236 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-11T22:40:05.077+08:00  WARN 44236 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/micro-motion/health' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-11T22:42:25.634+08:00  WARN 37940 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:42:26.112+08:00  WARN 37940 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-11T22:42:26.133+08:00  INFO 37940 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.1 with PID 37940 (C:\Users\lying\Desktop\kuibuqianli\backend\target\classes started by lying in C:\Users\lying\Desktop\kuibuqianli\backend)
+2026-03-11T22:42:26.134+08:00 DEBUG 37940 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-11T22:42:26.136+08:00  INFO 37940 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-11T22:42:28.521+08:00  INFO 37940 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=56af1a49-3a63-3d47-bb82-0a1e0945e383
+2026-03-11T22:42:29.343+08:00  INFO 37940 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-11T22:42:29.360+08:00  INFO 37940 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-11T22:42:29.361+08:00  INFO 37940 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-11T22:42:29.552+08:00  INFO 37940 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-11T22:42:29.552+08:00  INFO 37940 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 3234 ms
+2026-03-11T22:42:29.676+08:00 DEBUG 37940 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-11T22:42:31.332+08:00  INFO 37940 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@595fed99, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7d522180, org.springframework.security.web.context.SecurityContextHolderFilter@699e0bf0, org.springframework.security.web.header.HeaderWriterFilter@34f23816, org.springframework.web.filter.CorsFilter@ff03361, org.springframework.security.web.authentication.logout.LogoutFilter@6eed46e9, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@36d697ab, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5a899811, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@790654d5, org.springframework.security.web.session.SessionManagementFilter@6b24ddd7, org.springframework.security.web.access.ExceptionTranslationFilter@15ac02d5, org.springframework.security.web.access.intercept.AuthorizationFilter@5c5f0edc]
+2026-03-11T22:42:32.003+08:00  INFO 37940 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-11T22:42:32.033+08:00  INFO 37940 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 7.505 seconds (process running for 8.383)
+2026-03-11T22:42:42.912+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-11T22:42:42.914+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-11T22:42:42.916+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-11T22:42:42.946+08:00  WARN 37940 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/video/list' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-11T22:43:21.461+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-11T22:43:21.462+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.k.controller.MicroMotionController     : 身体部位: 颈部
+2026-03-11T22:43:21.462+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.k.controller.MicroMotionController     : 姿态信息: 长时间低头看手机，坐姿
+2026-03-11T22:43:21.462+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.k.controller.MicroMotionController     : 用户信息: {age=28, gender=男, height=175, weight=70, bmi=22.9, bmi_type=正常}
+2026-03-11T22:43:21.463+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 颈部, postureInfo: 长时间低头看手机，坐姿
+2026-03-11T22:43:21.463+08:00 DEBUG 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.kuibuqianli.service.DeepSeekService    : 系统提示词: 你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
+生成简短、实用、安全的微运动建议。
+
+【要求】
+1. 运动建议要简单易行，可以在办公位或家里完成，不需要特殊设备
+2. 考虑用户的BMI和年龄，避免不适合的运动
+3. 每次建议包含2-3个微运动动作
+4. 每个动作要说明：动作名称、具体做法、持续时间、注意事项
+5. 用友好、鼓励的语气，像私人教练一样
+6. 返回格式要清晰易读，使用emoji增加可读性
+7. 如果用户有某些健康禁忌（如腰伤、高血压等），要特别提醒
+8. 结合用户的当前姿态给出针对性建议
+
+【输出格式】
+🎯 针对【部位】的微运动建议
+
+👤 根据您的身体状况：
+- 年龄：[年龄]岁
+- BMI：[BMI] ([BMI类型])
+
+⚡️ 推荐难度：[入门/进阶]
+⏱️ 建议时长：[X]秒
+
+🤸 推荐动作：
+
+1️⃣ [动作名称] ([持续时间]秒)
+📝 做法：[详细说明]
+⚠️ 注意：[注意事项]
+
+2️⃣ [动作名称] ([持续时间]秒)
+📝 做法：[详细说明]
+⚠️ 注意：[注意事项]
+
+3️⃣ [动作名称] ([持续时间]秒)
+📝 做法：[详细说明]
+⚠️ 注意：[注意事项]
+
+💡 温馨提示：[个性化建议]
+
+2026-03-11T22:43:21.464+08:00 DEBUG 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.kuibuqianli.service.DeepSeekService    : 用户提示词: 请为以下用户生成微运动建议：
+
+【身体部位】颈部
+【当前姿态】长时间低头看手机，坐姿
+【用户信息】
+  - 年龄: 28
+  - 性别: 男
+  - 身高(cm): 175
+  - 体重(kg): 70
+  - BMI: 22.9
+  - BMI类型: 正常
+
+2026-03-11T22:43:21.467+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.kuibuqianli.service.DeepSeekService    : 调用DeepSeek API - model: deepseek-chat, maxTokens: 1000, temperature: 0.7
+2026-03-11T22:43:34.170+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.kuibuqianli.service.DeepSeekService    : DeepSeek API调用完成 - 耗时: 12703ms, 状态码: 200 OK
+2026-03-11T22:43:34.171+08:00 DEBUG 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.kuibuqianli.service.DeepSeekService    : 生成的提示词: 🎯 针对【颈部】的微运动建议
+
+👤 根据您的身体状况：
+- 年龄：28岁
+- BMI：22.9 (正常)
+
+⚡️ 推荐难度：入门
+⏱️ 建议时长：60-90秒
+
+🤸 推荐动作：
+
+1️⃣ 下巴后缩 (15秒，重复2-3次)
+📝 做法：坐直或站直，目视前方。缓慢地将下巴水平向后平移，感觉后颈有轻微拉伸感，保持2-3秒，然后放松回到原位。想象用下巴去够后脖颈。
+⚠️ 注意：动作要缓慢、轻柔，不要用力过猛或抬头，避免颈部前倾。
+
+2️⃣ 颈部侧向拉伸 (每侧15-20秒)
+📝 做法：保持身体正直，右手轻轻扶住头部左侧。缓慢地将头向右侧肩膀方向倾斜，直到感觉左侧颈部有舒适的拉伸感。保持呼吸，不要耸肩。换另一侧重复。
+⚠️ 注意：拉伸感应是舒适的，而非疼痛。肩膀要放松下沉，不要用蛮力下拉头部。
+
+3️⃣ 肩颈环绕 (20-30秒)
+📝 做法：双肩放松。缓慢地、有控制地做肩部环绕动作，先向后、向上、向前、向下画圈，做5次，然后反方向再做5次。动作过程中可以配合缓慢的颈部左右轻微转动。
+⚠️ 注意：动作范围要小，速度要慢，重点是放松僵硬的肌肉，而不是追求大幅度。
+
+💡 温馨提示：亲爱的朋友，长时间低头会让颈部前侧的肌肉缩短，后侧的肌肉被拉长并劳损。这几个动作能有效缓解“手机脖”带来的紧张感。记得每小时提醒自己离开屏幕1-2分钟，做做这些微运动，你的颈椎会感谢你的！💪 保持下去，健康就在这些小小的习惯里。
+2026-03-11T22:43:34.175+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.kuibuqianli.service.DeepSeekService    : 微运动提示词生成成功 - token使用: PromptResponse.ApiUsage(promptTokens=404, completionTokens=402, totalTokens=806)
+2026-03-11T22:43:34.180+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.k.controller.MicroMotionController     : 提示词生成成功，时长: 60秒，难度: 进阶
+2026-03-11T22:43:34.181+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-4] c.k.controller.MicroMotionController     : Token使用 - 提示: 404, 完成: 402, 总计: 806
+2026-03-11T22:44:05.368+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-11T22:44:05.369+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 身体部位: 腰部
+2026-03-11T22:44:05.369+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 姿态信息: 久坐办公，腰部酸疼
+2026-03-11T22:44:05.370+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 用户信息: {age=35, gender=女, height=160, weight=65, bmi=25.4, bmi_type=偏胖}
+2026-03-11T22:44:05.370+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 腰部, postureInfo: 久坐办公，腰部酸疼
+2026-03-11T22:44:05.370+08:00 DEBUG 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 系统提示词: 你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
+生成简短、实用、安全的微运动建议。
+
+【要求】
+1. 运动建议要简单易行，可以在办公位或家里完成，不需要特殊设备
+2. 考虑用户的BMI和年龄，避免不适合的运动
+3. 每次建议包含2-3个微运动动作
+4. 每个动作要说明：动作名称、具体做法、持续时间、注意事项
+5. 用友好、鼓励的语气，像私人教练一样
+6. 返回格式要清晰易读，使用emoji增加可读性
+7. 如果用户有某些健康禁忌（如腰伤、高血压等），要特别提醒
+8. 结合用户的当前姿态给出针对性建议
+
+【输出格式】
+🎯 针对【部位】的微运动建议
+
+👤 根据您的身体状况：
+- 年龄：[年龄]岁
+- BMI：[BMI] ([BMI类型])
+
+⚡️ 推荐难度：[入门/进阶]
+⏱️ 建议时长：[X]秒
+
+🤸 推荐动作：
+
+1️⃣ [动作名称] ([持续时间]秒)
+📝 做法：[详细说明]
+⚠️ 注意：[注意事项]
+
+2️⃣ [动作名称] ([持续时间]秒)
+📝 做法：[详细说明]
+⚠️ 注意：[注意事项]
+
+3️⃣ [动作名称] ([持续时间]秒)
+📝 做法：[详细说明]
+⚠️ 注意：[注意事项]
+
+💡 温馨提示：[个性化建议]
+
+2026-03-11T22:44:05.371+08:00 DEBUG 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 用户提示词: 请为以下用户生成微运动建议：
+
+【身体部位】腰部
+【当前姿态】久坐办公，腰部酸疼
+【用户信息】
+  - 年龄: 35
+  - 性别: 女
+  - 身高(cm): 160
+  - 体重(kg): 65
+  - BMI: 25.4
+  - BMI类型: 偏胖
+
+2026-03-11T22:44:05.371+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 调用DeepSeek API - model: deepseek-chat, maxTokens: 1000, temperature: 0.7
+2026-03-11T22:44:20.569+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : DeepSeek API调用完成 - 耗时: 15197ms, 状态码: 200 OK
+2026-03-11T22:44:20.570+08:00 DEBUG 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 生成的提示词: 🎯 针对【腰部】的微运动建议
+
+👤 根据您的身体状况：
+- 年龄：35岁
+- BMI：25.4 (偏胖)
+
+⚡️ 推荐难度：入门
+⏱️ 建议时长：90秒
+
+🤸 推荐动作：
+
+1️⃣ 坐姿猫牛式伸展 (30秒)
+📝 做法：坐在椅子前1/2处，双脚平放地面，双手放在膝盖上。吸气时，挺胸抬头，感受腰部轻微后弯。呼气时，含胸拱背，下巴微收，感受腰部伸展。缓慢重复。
+⚠️ 注意：动作要轻柔缓慢，以舒适为度，不要追求大幅度。如果椅子有靠背，请确保身体离开靠背。
+
+2️⃣ 坐姿体侧伸展 (30秒，每侧15秒)
+📝 做法：保持坐姿，脊柱向上延伸。将右手扶在左膝外侧，吸气准备。呼气时，身体缓慢向左侧弯，感受右侧腰的拉伸。保持呼吸，15秒后换另一侧。
+⚠️ 注意：臀部不要离开椅子，身体不要前倾或后仰，只做侧向的拉伸。感觉肌肉有牵拉感即可，不要过度用力。
+
+3️⃣ 站姿骨盆时钟 (30秒)
+📝 做法：起身站立，双脚与肩同宽，微屈膝，双手叉腰。想象骨盆是一个钟表的指针。缓慢地让骨盆做顺时针画圈运动10-15秒，然后逆时针画圈10-15秒。
+⚠️ 注意：动作幅度要小，速度要慢，主要活动腰部关节，感受腰部肌肉的放松。上半身尽量保持稳定。
+
+💡 温馨提示：亲爱的，久坐是腰疼的常见原因。建议您每坐45-60分钟，就起身活动一下，做做这几个简单的动作。您的BMI显示体重偏重，这会给腰部带来额外压力，除了微运动，平时也要注意坐姿（腰后可以垫个小靠枕），并配合健康的饮食。坚持每天做几次，能有效缓解腰部僵硬和酸疼哦！加油！💪
+2026-03-11T22:44:20.570+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 微运动提示词生成成功 - token使用: PromptResponse.ApiUsage(promptTokens=405, completionTokens=452, totalTokens=857)
+2026-03-11T22:44:20.571+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 提示词生成成功，时长: 60秒，难度: 进阶
+2026-03-11T22:44:20.571+08:00  INFO 37940 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : Token使用 - 提示: 405, 完成: 452, 总计: 857

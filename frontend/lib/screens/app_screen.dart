@@ -50,7 +50,7 @@ class _AppScreenState extends State<AppScreen> {
                 title: '视频指导',
                 subtitle: '观看运动教学视频',
                 color: Colors.orange,
-                onTap: () => context.push('/video_player'),
+                onTap: () => context.push('/choose_part_of_body'),
               ),
               _buildMenuCard(
                 context,
