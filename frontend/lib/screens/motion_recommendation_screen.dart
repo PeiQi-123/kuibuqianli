@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/api_service.dart';
-import '../widgets/loading_indicator.dart';
+import '../services/auth_service.dart';
 
 class MotionRecommendationScreen extends StatefulWidget {
   const MotionRecommendationScreen({super.key});
@@ -13,13 +13,17 @@ class MotionRecommendationScreen extends StatefulWidget {
 
 class _MotionRecommendationScreenState extends State<MotionRecommendationScreen> {
   final ApiService _apiService = ApiService();
+  final AuthService _authService = AuthService();
   
+  String _selectedBodyPart = '颈部';
   String _selectedActivity = '久坐';
   int _selectedDuration = 5;
   String _selectedIntensity = 'low';
   
   Map<String, dynamic>? _motionResult;
   bool _isLoading = false;
+
+  final List<String> _bodyParts = ['颈部', '肩部', '腰部', '背部', '腿部', '手腕'];
 
   final List<Map<String, dynamic>> _activityTypes = [
     {'value': '久坐', 'label': '久坐', 'icon': Icons.computer},
@@ -42,20 +46,31 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
     });
 
     try {
-      final response = await _apiService.post('/motion/generate', {
-        'activity_type': _selectedActivity,
-        'duration': _selectedDuration,
-        'intensity': _selectedIntensity,
+      final currentUser = await _authService.getCurrentUser();
+      final response = await _apiService.post('/micro-motion/generate-prompt', {
+        'body_part': _selectedBodyPart,
+        'posture_info': _buildPostureInfo(),
+        'user_info': _buildUserInfo(currentUser),
       });
 
       setState(() {
-        if (response != null && response['code'] == 200) {
-          _motionResult = response['data'];
+        if (response != null && response['status'] == 'success') {
+          _motionResult = response;
         } else {
           _motionResult = null;
         }
         _isLoading = false;
       });
+
+      if (response == null && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('生成失败，请检查后端 AI 服务配置')),
+        );
+      } else if (response != null && response['status'] != 'success' && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response['error_message']?.toString() ?? '生成失败')),
+        );
+      }
     } catch (e) {
       setState(() {
         _isLoading = false;
@@ -80,7 +95,29 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+            children: [
+            const Text(
+              '选择目标部位',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: _bodyParts.map((bodyPart) {
+                final isSelected = _selectedBodyPart == bodyPart;
+                return ChoiceChip(
+                  label: Text(bodyPart),
+                  selected: isSelected,
+                  onSelected: (selected) {
+                    if (selected) {
+                      setState(() => _selectedBodyPart = bodyPart);
+                    }
+                  },
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 24),
             const Text(
               '选择您的活动类型',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -185,7 +222,19 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
 
   Widget _buildMotionResult() {
     final motion = _motionResult!;
-    final steps = motion['steps'] as List<dynamic>? ?? [];
+    final promptText = motion['prompt_text']?.toString() ?? '';
+    final promptLines = promptText
+        .split('\n')
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty)
+        .toList();
+    final duration = motion['suggested_duration'];
+    final difficulty = motion['difficulty_level']?.toString() ?? '未提供';
+    final motionData = {
+      'motion_name': '$_selectedBodyPart AI 微运动方案',
+      'description': '$_selectedActivity场景 · ${_intensityLabel(_selectedIntensity)} · ${duration ?? _selectedDuration}秒',
+      'steps': promptLines,
+    };
     
     return Card(
       elevation: 4,
@@ -200,7 +249,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    motion['motion_name'] ?? '微运动',
+                    '$_selectedBodyPart AI 微运动方案',
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -208,7 +257,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              motion['description'] ?? '',
+              '基于真实 AI 接口生成的个性化建议',
               style: TextStyle(color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
@@ -216,16 +265,20 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
               children: [
                 Icon(Icons.timer, size: 16, color: Colors.grey[600]),
                 const SizedBox(width: 4),
-                Text('${motion['duration'] ?? 0} 分钟', style: TextStyle(color: Colors.grey[600])),
+                Text('${duration ?? 0} 秒', style: TextStyle(color: Colors.grey[600])),
+                const SizedBox(width: 16),
+                Icon(Icons.tune, size: 16, color: Colors.grey[600]),
+                const SizedBox(width: 4),
+                Text(difficulty, style: TextStyle(color: Colors.grey[600])),
               ],
             ),
             const Divider(height: 24),
             const Text(
-              '运动步骤',
+              'AI 建议内容',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            ...steps.asMap().entries.map((entry) {
+            ...promptLines.asMap().entries.map((entry) {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
@@ -251,7 +304,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                 Expanded(
                   child: OutlinedButton.icon(
                     onPressed: () {
-                      context.push('/video_player', extra: motion);
+                      context.push('/video_player', extra: motionData);
                     },
                     icon: const Icon(Icons.play_circle_outline),
                     label: const Text('查看视频指导'),
@@ -273,5 +326,47 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
         ),
       ),
     );
+  }
+
+  String _buildPostureInfo() {
+    final activityDescriptions = {
+      '久坐': '久坐办公，肩颈和腰背容易僵硬',
+      '工作': '长时间工作中，姿势固定，局部肌肉紧张',
+      '休息': '短暂休息阶段，希望快速放松身体',
+      '学习': '长时间学习伏案，肩颈和背部压力较大',
+    };
+
+    return '${activityDescriptions[_selectedActivity] ?? _selectedActivity}；期望训练时长约$_selectedDuration分钟；强度偏好为${_intensityLabel(_selectedIntensity)}。';
+  }
+
+  Map<String, dynamic> _buildUserInfo(dynamic currentUser) {
+    final Map<String, dynamic> userInfo = {};
+    if (currentUser == null) {
+      return userInfo;
+    }
+
+    if (currentUser.age != null) userInfo['age'] = currentUser.age;
+    if (currentUser.gender != null && currentUser.gender.toString().isNotEmpty) {
+      userInfo['gender'] = currentUser.gender;
+    }
+    if (currentUser.height != null) userInfo['height'] = currentUser.height;
+    if (currentUser.weight != null) userInfo['weight'] = currentUser.weight;
+    if (currentUser.bmi != null) userInfo['bmi'] = currentUser.bmi;
+    if (currentUser.bmiType != null && currentUser.bmiType.toString().isNotEmpty) {
+      userInfo['bmi_type'] = currentUser.bmiType;
+    }
+
+    return userInfo;
+  }
+
+  String _intensityLabel(String intensity) {
+    switch (intensity) {
+      case 'high':
+        return '高强度';
+      case 'medium':
+        return '中强度';
+      default:
+        return '低强度';
+    }
   }
 }
