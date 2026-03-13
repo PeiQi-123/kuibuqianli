@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.Builder;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 /**
  * 微运动提示词生成响应DTO
  */
@@ -16,6 +18,12 @@ public class PromptResponse {
      */
     @JsonProperty("prompt_text")
     private String promptText;
+
+    @JsonProperty("title")
+    private String title;
+
+    @JsonProperty("overview")
+    private String overview;
 
     /**
      * 建议运动时长（秒）
@@ -46,6 +54,28 @@ public class PromptResponse {
      */
     @JsonProperty("error_message")
     private String errorMessage;
+
+    @JsonProperty("actions")
+    private List<ActionItem> actions;
+
+    @JsonProperty("tip")
+    private String tip;
+
+    @Data
+    @Builder
+    public static class ActionItem {
+        @JsonProperty("name")
+        private String name;
+
+        @JsonProperty("seconds")
+        private Integer seconds;
+
+        @JsonProperty("instruction")
+        private String instruction;
+
+        @JsonProperty("warning")
+        private String warning;
+    }
 
     /**
      * API使用情况内部类

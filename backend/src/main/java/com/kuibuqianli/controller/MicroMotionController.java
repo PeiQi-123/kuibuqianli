@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import jakarta.validation.Valid;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/micro-motion")
@@ -92,22 +94,32 @@ public class MicroMotionController {
 
         // 生成一个固定的测试响应
         PromptResponse testResponse = PromptResponse.builder()
-                .promptText(String.format(
-                        "🎯 针对【%s】的微运动建议\n\n" +
-                                "🤸 推荐动作：\n\n" +
-                                "1️⃣ 颈部拉伸 (15秒)\n" +
-                                "📝 做法：缓慢将头向左倾斜，左耳靠近左肩，保持15秒\n" +
-                                "⚠️ 注意：不要耸肩，保持呼吸\n\n" +
-                                "2️⃣ 颈部旋转 (30秒)\n" +
-                                "📝 做法：缓慢将头向左转，看向左肩，保持15秒；然后向右转\n" +
-                                "⚠️ 注意：动作要缓慢，不要过度用力\n\n" +
-                                "3️⃣ 收下巴运动 (30秒)\n" +
-                                "📝 做法：保持头部水平，将下巴向后收，保持15秒\n" +
-                                "⚠️ 注意：感觉颈部后侧有拉伸感即可\n\n" +
-                                "💡 温馨提示：每工作1小时，做一组这些动作，有效缓解颈部疲劳",
-                        bodyPart))
+                .title(String.format("针对%s的微运动方案", bodyPart))
+                .overview(String.format("适合%s不适和%s姿态的快速放松动作。", bodyPart, posture))
+                .promptText(String.format("针对%s的微运动方案", bodyPart))
                 .suggestedDuration(75)
                 .difficultyLevel("入门")
+                .actions(List.of(
+                        PromptResponse.ActionItem.builder()
+                                .name("颈部拉伸")
+                                .seconds(15)
+                                .instruction("缓慢将头向左倾斜，左耳靠近左肩，保持15秒。")
+                                .warning("不要耸肩，保持呼吸。")
+                                .build(),
+                        PromptResponse.ActionItem.builder()
+                                .name("颈部旋转")
+                                .seconds(30)
+                                .instruction("缓慢将头向左转看向左肩，再向右转。")
+                                .warning("动作要缓慢，不要过度用力。")
+                                .build(),
+                        PromptResponse.ActionItem.builder()
+                                .name("收下巴运动")
+                                .seconds(30)
+                                .instruction("保持头部水平，将下巴轻轻向后收。")
+                                .warning("感觉颈部后侧有拉伸感即可。")
+                                .build()
+                ))
+                .tip("每工作1小时做一组这些动作，有效缓解颈部疲劳。")
                 .status("success")
                 .build();
 

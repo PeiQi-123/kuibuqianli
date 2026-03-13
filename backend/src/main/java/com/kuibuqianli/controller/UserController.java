@@ -3,9 +3,11 @@ package com.kuibuqianli.controller;
 import com.kuibuqianli.common.Result;
 import com.kuibuqianli.dto.LoginDTO;
 import com.kuibuqianli.dto.RegisterDTO;
+import com.kuibuqianli.dto.HealthDataDTO;
 import com.kuibuqianli.dto.UserDTO;
 import com.kuibuqianli.dto.UserPreferenceDTO;
 import com.kuibuqianli.dto.UserPreferencesUpdateDTO;
+import com.kuibuqianli.service.HealthDataService;
 import com.kuibuqianli.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +29,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private HealthDataService healthDataService;
 
     @Operation(summary = "用户注册")
     @PostMapping("/register")
@@ -85,6 +90,12 @@ public class UserController {
         } else {
             return Result.error("用户偏好保存失败");
         }
+    }
+
+    @Operation(summary = "获取用户健康数据")
+    @GetMapping("/health-data")
+    public Result<HealthDataDTO> getUserHealthData(@RequestParam Long userId) {
+        return Result.success(healthDataService.getUserHealthData(userId));
     }
 }
 // 用户控制器：处理注册、登录、用户信息

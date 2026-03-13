@@ -45,10 +45,12 @@ public class DeepSeekService {
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
+    private final VideoService videoService;
 
-    public DeepSeekService() {
+    public DeepSeekService(VideoService videoService) {
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
+        this.videoService = videoService;
     }
 
     /**
@@ -62,10 +64,15 @@ public class DeepSeekService {
 
         try {
             // 1. 构建系统提示词
-            String systemPrompt = buildSystemPrompt();
+            List<String> availableVideos = videoService.getAvailableVideos();
+            if (availableVideos == null || availableVideos.isEmpty()) {
+                return PromptResponse.error("当前视频库为空，暂时无法生成可播放的微运动方案");
+            }
+
+            String systemPrompt = buildSystemPrompt(availableVideos);
 
             // 2. 构建用户提示词
-            String userPrompt = buildUserPrompt(request);
+            String userPrompt = buildUserPrompt(request, availableVideos);
 
             log.debug("系统提示词: {}", systemPrompt);
             log.debug("用户提示词: {}", userPrompt);
@@ -74,7 +81,7 @@ public class DeepSeekService {
             DeepSeekResponse apiResponse = callDeepSeekAPI(systemPrompt, userPrompt);
 
             // 4. 解析响应并生成返回结果
-            PromptResponse response = parseResponse(apiResponse, request);
+            PromptResponse response = parseResponse(apiResponse, request, availableVideos);
 
             log.info("微运动提示词生成成功 - token使用: {}", response.getApiUsage());
             return response;
@@ -94,8 +101,9 @@ public class DeepSeekService {
     /**
      * 构建系统提示词
      */
-    private String buildSystemPrompt() {
-        return """
+    private String buildSystemPrompt(List<String> availableVideos) {
+        String videoRule = buildVideoRule(availableVideos);
+        return ("""
             你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
             生成简短、实用、安全的微运动建议。
             
@@ -108,39 +116,32 @@ public class DeepSeekService {
             6. 返回格式要清晰易读，使用emoji增加可读性
             7. 如果用户有某些健康禁忌（如腰伤、高血压等），要特别提醒
             8. 结合用户的当前姿态给出针对性建议
+            9. 动作名称必须严格从系统提供的视频动作库中选择，不能自创、改写、扩写，也不能输出视频库以外的动作
+            10. 只返回 JSON，不要返回 markdown，不要写 ```json，不要添加任何解释文字
             
-            【输出格式】
-            🎯 针对【部位】的微运动建议
-            
-            👤 根据您的身体状况：
-            - 年龄：[年龄]岁
-            - BMI：[BMI] ([BMI类型])
-            
-            ⚡️ 推荐难度：[入门/进阶]
-            ⏱️ 建议时长：[X]秒
-            
-            🤸 推荐动作：
-            
-            1️⃣ [动作名称] ([持续时间]秒)
-            📝 做法：[详细说明]
-            ⚠️ 注意：[注意事项]
-            
-            2️⃣ [动作名称] ([持续时间]秒)
-            📝 做法：[详细说明]
-            ⚠️ 注意：[注意事项]
-            
-            3️⃣ [动作名称] ([持续时间]秒)
-            📝 做法：[详细说明]
-            ⚠️ 注意：[注意事项]
-            
-            💡 温馨提示：[个性化建议]
-            """;
+            【JSON格式】
+            {
+              "title": "针对颈部的微运动方案",
+              "overview": "一句简短说明，告诉用户这套动作适合什么情况",
+              "difficulty_level": "入门或进阶",
+              "suggested_duration": 60,
+              "actions": [
+                {
+                  "name": "动作名称，必须来自视频动作库",
+                  "seconds": 20,
+                  "instruction": "一句清晰做法",
+                  "warning": "一句注意事项"
+                }
+              ],
+              "tip": "一句个性化提醒"
+            }
+            """ + "\n\n" + videoRule);
     }
 
     /**
      * 构建用户提示词
      */
-    private String buildUserPrompt(PromptRequest request) {
+    private String buildUserPrompt(PromptRequest request, List<String> availableVideos) {
         StringBuilder prompt = new StringBuilder();
 
         prompt.append("请为以下用户生成微运动建议：\n\n");
@@ -156,7 +157,46 @@ public class DeepSeekService {
             prompt.append("  - 无特定用户信息\n");
         }
 
+        prompt.append("\n【可选动作库】\n");
+        List<String> actionNames = toActionNames(availableVideos);
+        if (actionNames.isEmpty()) {
+            prompt.append("  - 当前没有可用视频动作，请返回最基础的通用部位放松建议\n");
+        } else {
+            for (String actionName : actionNames) {
+                prompt.append("  - ").append(actionName).append("\n");
+            }
+            prompt.append("\n请严格只从上面的动作库里选择 2-3 个动作作为推荐动作名称。\n");
+        }
+
         return prompt.toString();
+    }
+
+    private String buildVideoRule(List<String> availableVideos) {
+        List<String> actionNames = toActionNames(availableVideos);
+        if (actionNames.isEmpty()) {
+            return "【视频动作库】当前为空。";
+        }
+        return "【视频动作库】你只能从以下动作名称中选择：" + String.join("、", actionNames);
+    }
+
+    private List<String> toActionNames(List<String> availableVideos) {
+        if (availableVideos == null || availableVideos.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return availableVideos.stream()
+                .map(this::normalizeVideoName)
+                .filter(name -> !name.isEmpty())
+                .distinct()
+                .toList();
+    }
+
+    private String normalizeVideoName(String filename) {
+        if (filename == null) {
+            return "";
+        }
+        String name = filename.replaceFirst("\\.[^.]+$", "");
+        name = name.replace('_', ' ').replace('-', ' ').trim();
+        return name;
     }
 
     /**
@@ -252,15 +292,22 @@ public class DeepSeekService {
     /**
      * 解析API响应
      */
-    private PromptResponse parseResponse(DeepSeekResponse apiResponse, PromptRequest originalRequest) {
+    private PromptResponse parseResponse(DeepSeekResponse apiResponse, PromptRequest originalRequest, List<String> availableVideos) {
         if (apiResponse == null || apiResponse.getChoices() == null || apiResponse.getChoices().isEmpty()) {
             log.error("API返回无效响应: {}", apiResponse);
             throw new RuntimeException("API返回无效响应");
         }
 
         // 获取生成的提示词
-        String promptText = apiResponse.getChoices().get(0).getMessage().getContent();
-        log.debug("生成的提示词: {}", promptText);
+        String rawContent = sanitizeAiText(apiResponse.getChoices().get(0).getMessage().getContent());
+        Map<String, Object> content = parseAiJsonContent(rawContent);
+        List<PromptResponse.ActionItem> actions = buildActionItems(content.get("actions"), availableVideos, originalRequest.getBodyPart());
+
+        String title = stringValue(content.get("title"), "针对" + originalRequest.getBodyPart() + "的微运动方案");
+        String overview = stringValue(content.get("overview"), "基于当前状态生成的微运动建议");
+        String tip = stringValue(content.get("tip"), "动作过程中如有明显不适，请立即停止。");
+        String promptText = buildReadablePromptText(title, overview, actions, tip);
+        log.debug("生成的结构化提示词: {}", promptText);
 
         // 根据用户信息推荐运动时长
         Integer duration = recommendDuration(originalRequest.getUserInfo());
@@ -279,12 +326,165 @@ public class DeepSeekService {
         }
 
         return PromptResponse.builder()
+                .title(title)
+                .overview(overview)
                 .promptText(promptText)
                 .suggestedDuration(duration)
                 .difficultyLevel(difficulty)
+                .actions(actions)
+                .tip(tip)
                 .apiUsage(usage)
                 .status("success")
                 .build();
+    }
+
+    private String sanitizeAiText(String text) {
+        if (text == null) {
+            return "";
+        }
+        return text.replace('*', ' ');
+    }
+
+    private Map<String, Object> parseAiJsonContent(String rawContent) {
+        String cleaned = rawContent == null ? "" : rawContent.trim();
+        cleaned = cleaned.replace("```json", "").replace("```", "").trim();
+        try {
+            return objectMapper.readValue(cleaned, Map.class);
+        } catch (Exception e) {
+            log.warn("AI 返回的不是合法 JSON，将回退为兜底结构。内容: {}", rawContent);
+            Map<String, Object> fallback = new HashMap<>();
+            fallback.put("title", "微运动方案");
+            fallback.put("overview", cleaned);
+            fallback.put("actions", Collections.emptyList());
+            fallback.put("tip", "请结合视频指导安全完成动作。");
+            return fallback;
+        }
+    }
+
+    private List<PromptResponse.ActionItem> buildActionItems(Object actionsObject, List<String> availableVideos, String bodyPart) {
+        List<String> allowedActions = toActionNames(availableVideos);
+        List<String> preferredActions = pickPreferredActions(allowedActions, bodyPart);
+        List<PromptResponse.ActionItem> result = new ArrayList<>();
+
+        if (actionsObject instanceof List<?> actionList) {
+            int replacementIndex = 0;
+            for (Object item : actionList) {
+                if (!(item instanceof Map<?, ?> actionMap)) {
+                    continue;
+                }
+                String currentAction = stringValue(actionMap.get("name"), "");
+                String resolvedAction = resolveAllowedAction(currentAction, allowedActions, preferredActions, replacementIndex);
+                if (!resolvedAction.isEmpty()) {
+                    replacementIndex++;
+                }
+                result.add(PromptResponse.ActionItem.builder()
+                        .name(resolvedAction)
+                        .seconds(intValue(actionMap.get("seconds"), 20))
+                        .instruction(stringValue(actionMap.get("instruction"), "请按照视频动作缓慢完成。"))
+                        .warning(stringValue(actionMap.get("warning"), "如果感到不适，请立即停止。"))
+                        .build());
+            }
+        }
+
+        if (result.isEmpty()) {
+            int index = 0;
+            for (String action : preferredActions.isEmpty() ? allowedActions : preferredActions) {
+                result.add(PromptResponse.ActionItem.builder()
+                        .name(action)
+                        .seconds(20)
+                        .instruction("请跟随视频动作缓慢完成。")
+                        .warning("动作保持轻柔，出现不适请立即停止。")
+                        .build());
+                index++;
+                if (index >= 3) {
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private String buildReadablePromptText(String title, String overview, List<PromptResponse.ActionItem> actions, String tip) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(title).append("\n");
+        builder.append(overview).append("\n");
+        for (int i = 0; i < actions.size(); i++) {
+            PromptResponse.ActionItem action = actions.get(i);
+            builder.append(i + 1).append(". ")
+                    .append(action.getName())
+                    .append(" (")
+                    .append(action.getSeconds())
+                    .append("秒)\n")
+                    .append("做法：")
+                    .append(action.getInstruction())
+                    .append("\n注意：")
+                    .append(action.getWarning())
+                    .append("\n");
+        }
+        builder.append("提示：").append(tip);
+        return builder.toString().trim();
+    }
+
+    private String stringValue(Object value, String fallback) {
+        if (value == null) {
+            return fallback;
+        }
+        String text = value.toString().trim();
+        return text.isEmpty() ? fallback : text;
+    }
+
+    private List<String> pickPreferredActions(List<String> allowedActions, String bodyPart) {
+        if (bodyPart == null || bodyPart.isBlank()) {
+            return allowedActions;
+        }
+        List<String> matched = allowedActions.stream()
+                .filter(name -> normalizeForCompare(name).contains(normalizeForCompare(bodyPart)))
+                .toList();
+        return matched.isEmpty() ? allowedActions : matched;
+    }
+
+    private String resolveAllowedAction(String currentAction, List<String> allowedActions, List<String> preferredActions, int replacementIndex) {
+        if (allowedActions.isEmpty()) {
+            return currentAction == null ? "" : currentAction;
+        }
+        for (String allowed : allowedActions) {
+            if (normalizeForCompare(allowed).equals(normalizeForCompare(currentAction))) {
+                return allowed;
+            }
+        }
+
+        for (String allowed : allowedActions) {
+            String normalizedAllowed = normalizeForCompare(allowed);
+            String normalizedCurrent = normalizeForCompare(currentAction);
+            if (normalizedAllowed.contains(normalizedCurrent) || normalizedCurrent.contains(normalizedAllowed)) {
+                return allowed;
+            }
+        }
+
+        List<String> source = preferredActions.isEmpty() ? allowedActions : preferredActions;
+        return source.get(Math.min(replacementIndex, source.size() - 1));
+    }
+
+    private int intValue(Object value, int fallback) {
+        if (value == null) {
+            return fallback;
+        }
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return fallback;
+        }
+    }
+
+    private String normalizeForCompare(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replaceAll("\\s+", "").replaceAll("[^\\p{IsHan}A-Za-z0-9]", "").toLowerCase(Locale.ROOT);
     }
 
     /**

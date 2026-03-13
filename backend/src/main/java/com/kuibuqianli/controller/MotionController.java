@@ -2,6 +2,8 @@ package com.kuibuqianli.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuibuqianli.common.Result;
+import com.kuibuqianli.dto.ExerciseRecordCreateDTO;
+import com.kuibuqianli.service.ExerciseRecordService;
 import com.kuibuqianli.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,8 +29,9 @@ public class MotionController {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final VideoService videoService;
+    private final ExerciseRecordService exerciseRecordService;
 
-    public MotionController(VideoService videoService) {
+    public MotionController(VideoService videoService, ExerciseRecordService exerciseRecordService) {
         this.restTemplate = new RestTemplate();
         
         // 配置 UTF-8 编码
@@ -40,6 +43,7 @@ public class MotionController {
         
         this.objectMapper = new ObjectMapper();
         this.videoService = videoService;
+        this.exerciseRecordService = exerciseRecordService;
     }
 
     @Operation(summary = "生成微运动方案")
@@ -118,5 +122,12 @@ public class MotionController {
         } catch (Exception e) {
             return Result.error("调用 AI 服务失败: " + e.getMessage());
         }
+    }
+
+    @Operation(summary = "保存运动记录")
+    @PostMapping("/record")
+    public Result<String> saveExerciseRecord(@RequestParam Long userId, @RequestBody ExerciseRecordCreateDTO request) {
+        boolean success = exerciseRecordService.createRecord(userId, request);
+        return success ? Result.success("运动记录保存成功") : Result.error("运动记录保存失败");
     }
 }

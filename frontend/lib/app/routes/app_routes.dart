@@ -10,6 +10,7 @@ import '../../screens/video_player_screen.dart';
 import '../../screens/user_center_screen.dart';
 import '../../screens/user_info_screen.dart';
 import '../../screens/preference_screen.dart';
+import '../../screens/health_data_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(
@@ -61,6 +62,10 @@ GoRoute(
     GoRoute(
       path: '/preference',
       builder: (context, state) => const PreferenceScreenSimple(),
+    ),
+    GoRoute(
+      path: '/health_data',
+      builder: (context, state) => const HealthDataScreen(),
     ),
   ],
 );

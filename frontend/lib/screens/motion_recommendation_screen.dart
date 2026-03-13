@@ -222,18 +222,19 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
 
   Widget _buildMotionResult() {
     final motion = _motionResult!;
-    final promptText = motion['prompt_text']?.toString() ?? '';
-    final promptLines = promptText
-        .split('\n')
-        .map((line) => line.trim())
-        .where((line) => line.isNotEmpty)
+    final actions = (motion['actions'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
         .toList();
     final duration = motion['suggested_duration'];
     final difficulty = motion['difficulty_level']?.toString() ?? '未提供';
     final motionData = {
-      'motion_name': '$_selectedBodyPart AI 微运动方案',
-      'description': '$_selectedActivity场景 · ${_intensityLabel(_selectedIntensity)} · ${duration ?? _selectedDuration}秒',
-      'steps': promptLines,
+      'motion_id': '$_selectedBodyPart-${DateTime.now().millisecondsSinceEpoch}',
+      'motion_name': motion['title']?.toString() ?? '$_selectedBodyPart AI 微运动方案',
+      'description': motion['overview']?.toString() ?? '$_selectedActivity场景 · ${_intensityLabel(_selectedIntensity)} · ${duration ?? _selectedDuration}秒',
+      'duration': duration ?? _selectedDuration * 60,
+      'actions': actions,
+      'steps': actions.map((action) => action['name']?.toString() ?? '').where((name) => name.isNotEmpty).toList(),
+      'tip': motion['tip'],
     };
     
     return Card(
@@ -249,7 +250,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
-                    '$_selectedBodyPart AI 微运动方案',
+                    motion['title']?.toString() ?? '$_selectedBodyPart AI 微运动方案',
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -257,7 +258,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              '基于真实 AI 接口生成的个性化建议',
+              motion['overview']?.toString() ?? '基于真实 AI 接口生成的个性化建议',
               style: TextStyle(color: Colors.grey[600]),
             ),
             const SizedBox(height: 8),
@@ -274,30 +275,58 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
             ),
             const Divider(height: 24),
             const Text(
-              'AI 建议内容',
+              '推荐动作',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
-            ...promptLines.asMap().entries.map((entry) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 12,
-                      backgroundColor: Colors.blue,
-                      child: Text(
-                        '${entry.key + 1}',
-                        style: const TextStyle(color: Colors.white, fontSize: 12),
+            ...actions.asMap().entries.map((entry) {
+              final action = entry.value;
+              return Card(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 12,
+                            backgroundColor: Colors.blue,
+                            child: Text(
+                              '${entry.key + 1}',
+                              style: const TextStyle(color: Colors.white, fontSize: 12),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              action['name']?.toString() ?? '未命名动作',
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          Text('${action['seconds'] ?? 20} 秒'),
+                        ],
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(entry.value.toString())),
-                  ],
+                      const SizedBox(height: 8),
+                      Text('做法：${action['instruction'] ?? '请跟随视频指导完成动作。'}'),
+                      const SizedBox(height: 6),
+                      Text(
+                        '注意：${action['warning'] ?? '如有不适请立即停止。'}',
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                    ],
+                  ),
                 ),
               );
             }),
+            if ((motion['tip']?.toString() ?? '').isNotEmpty) ...[
+              const SizedBox(height: 8),
+              Text(
+                '提示：${motion['tip']}',
+                style: TextStyle(color: Colors.grey[700]),
+              ),
+            ],
             const SizedBox(height: 16),
             Row(
               children: [
