@@ -116,3 +116,37 @@
 1. 增加推荐反馈历史页与趋势图，让学习过程对用户更可见
 2. 把收藏、复看、跳过等行为继续纳入偏好学习权重模型
 3. 增强冷启动策略和禁忌动作规避逻辑，提升新用户与特殊人群推荐稳定性
+
+## 2026-03-15
+
+### 今日完成
+
+#### 1. 项目联调启动与环境核验
+- 启动并验证 AI 服务、Spring Boot 后端和 Flutter Web 前端主链路
+- 确认前端访问 `http://127.0.0.1:3000`、后端访问 `http://127.0.0.1:8080/api`、AI 服务访问 `http://127.0.0.1:8000`
+- 检查本地 Java、Maven、Python、Flutter、MySQL 运行环境可用性
+
+#### 2. 数据库基础表补齐
+- 发现本地库仅包含 `user`、`user_preference`、`exercise_record`、`device_data` 四张表，提醒模块依赖的 `remind_log` 等表缺失
+- 补跑 `database/init/01_create_tables.sql`，补齐提醒、视频及关联统计表，恢复提醒接口运行基础
+- 识别出 `database/init/03_alter_exercise_record_add_feedback.sql` 在当前 MySQL 版本下存在 `ADD COLUMN IF NOT EXISTS` 兼容性问题，已记录为待修复项
+
+#### 3. 3D 身体部位选择器体验微调
+- 根据模型真实姿态，重新校准左右手臂热点位置，使其更贴合手臂向下约 45 度的姿势
+- 将身体选择页切换到蓝色版本 3D 模型资源，并增加轻微冷色滤镜强化整体蓝色观感
+- 保持热点点击、部位选择和后续推荐/视频跳转链路不变
+
+### 本次涉及文件
+- 文档：`WORK_LOG.md`、`TODO.md`
+- 前端：`frontend/lib/constants/body_part_catalog.dart`、`frontend/lib/screens/choose_part_of_body_screen.dart`
+- 数据库：`database/init/01_create_tables.sql`、`database/init/03_alter_exercise_record_add_feedback.sql`
+
+### 当前效果
+- 项目主链路已经可以在本地正常拉起并完成基础联调
+- 身体部位选择页的模型风格更偏蓝，手臂热点与当前模型姿态更一致
+- 提醒相关接口所需基础表已补齐，但训练反馈增量脚本仍需做一次 MySQL 兼容修正
+
+### 下一步建议
+1. 修复 `03_alter_exercise_record_add_feedback.sql` 的兼容语法，补齐反馈字段增量升级流程
+2. 继续微调 3D 模型热点，按实际视觉效果校准手臂、肩部等边缘部位命中区域
+3. 清理运行产生的日志、缓存和编译产物，避免影响仓库整洁度与后续提交
