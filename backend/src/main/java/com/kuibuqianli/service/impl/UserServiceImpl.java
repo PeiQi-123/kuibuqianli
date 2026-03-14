@@ -67,6 +67,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
         user.setIsActive(true);
+        user.setRemindEnabled(true);
+        user.setRemindInterval(30);
+        user.setRemindMaxTimes(3);
 
         // 保存用户
         userMapper.insert(user);
@@ -104,6 +107,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 确保remindEnabled有默认值（如果数据库为null，默认为true）
         if (userDTO.getRemindEnabled() == null) {
             userDTO.setRemindEnabled(true);
+        }
+        if (userDTO.getRemindInterval() == null) {
+            userDTO.setRemindInterval(30);
+        }
+        if (userDTO.getRemindMaxTimes() == null) {
+            userDTO.setRemindMaxTimes(3);
         }
         
         // 处理JSON字段：remind_avoid_time
@@ -216,6 +225,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             
             if (userDTO.getRemindInterval() != null) {
                 user.setRemindInterval(userDTO.getRemindInterval());
+            }
+
+            if (userDTO.getRemindMaxTimes() != null) {
+                user.setRemindMaxTimes(userDTO.getRemindMaxTimes());
             }
             
             // 处理免打扰时间段

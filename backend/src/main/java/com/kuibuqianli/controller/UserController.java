@@ -4,10 +4,12 @@ import com.kuibuqianli.common.Result;
 import com.kuibuqianli.dto.LoginDTO;
 import com.kuibuqianli.dto.RegisterDTO;
 import com.kuibuqianli.dto.HealthDataDTO;
+import com.kuibuqianli.dto.PreferenceLearningDTO;
 import com.kuibuqianli.dto.UserDTO;
 import com.kuibuqianli.dto.UserPreferenceDTO;
 import com.kuibuqianli.dto.UserPreferencesUpdateDTO;
 import com.kuibuqianli.service.HealthDataService;
+import com.kuibuqianli.service.PreferenceLearningService;
 import com.kuibuqianli.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -32,6 +34,9 @@ public class UserController {
 
     @Autowired
     private HealthDataService healthDataService;
+
+    @Autowired
+    private PreferenceLearningService preferenceLearningService;
 
     @Operation(summary = "用户注册")
     @PostMapping("/register")
@@ -96,6 +101,12 @@ public class UserController {
     @GetMapping("/health-data")
     public Result<HealthDataDTO> getUserHealthData(@RequestParam Long userId) {
         return Result.success(healthDataService.getUserHealthData(userId));
+    }
+
+    @Operation(summary = "获取用户动态学习偏好画像")
+    @GetMapping("/preferences/insights")
+    public Result<PreferenceLearningDTO> getPreferenceInsights(@RequestParam Long userId) {
+        return Result.success(preferenceLearningService.buildLearningProfile(userId));
     }
 }
 // 用户控制器：处理注册、登录、用户信息

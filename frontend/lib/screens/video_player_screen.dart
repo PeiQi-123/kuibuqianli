@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import '../services/api_service.dart';
+import '../services/sedentary_reminder_service.dart';
 import '../services/storage_service.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -25,6 +26,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   bool _isPlaying = false;
   bool _isSavingRecord = false;
   bool _recordSaved = false;
+  int? _savedRecordId;
+  bool _isSavingFeedback = false;
+  String? _feedbackTag;
 
   VideoPlayerController? _controller;
   bool _isControllerInitialized = false;
@@ -75,7 +79,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   Future<void> _loadVideos() async {
     setState(() => _isLoading = true);
     try {
-      final response = await _apiService.get('/video/list');
+      final userId = await StorageService.getUserId();
+      final params = <String, String>{};
+      if (userId != null && userId.isNotEmpty) {
+        params['userId'] = userId;
+      }
+      final bodyPart = widget.motionData?['body_part']?.toString();
+      if (bodyPart != null && bodyPart.isNotEmpty) {
+        params['bodyPart'] = bodyPart;
+      }
+
+      final response = await _apiService.get(
+        '/video/list',
+        params: params.isEmpty ? null : params,
+      );
       if (response != null && response['code'] == 200) {
         final videos = List<String>.from(response['data'] ?? []);
         final matchedVideos = _matchVideosToActions(videos);
@@ -118,6 +135,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
       if (!mounted) return;
       if (response != null && response['code'] == 200) {
+        final data = response['data'] as Map<String, dynamic>?;
+        _savedRecordId = data?['recordId'] as int?;
+        await SedentaryReminderService.instance.markExerciseCompleted();
+        if (!mounted) return;
         setState(() {
           _recordSaved = true;
           _isSavingRecord = false;
@@ -125,6 +146,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('已记录到健康数据')), 
         );
+        await _showFeedbackDialog();
       } else {
         setState(() => _isSavingRecord = false);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -137,6 +159,94 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('保存运动记录失败: $e')),
       );
+    }
+  }
+
+  Future<void> _showFeedbackDialog() async {
+    if (_savedRecordId == null || !mounted) return;
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('本次推荐是否合适？'),
+          content: const Text('你的反馈会参与后续偏好学习，让下次推荐更贴近你的需求。'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('稍后再说'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('too_easy'),
+              child: const Text('太简单'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('fit'),
+              child: const Text('合适'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('too_hard'),
+              child: const Text('太难'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('dislike'),
+              child: const Text('不喜欢'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null) {
+      await _submitFeedback(result);
+    }
+  }
+
+  Future<void> _submitFeedback(String tag) async {
+    if (_savedRecordId == null || _isSavingFeedback) return;
+    final userId = await StorageService.getUserId();
+    if (userId == null || userId.isEmpty) return;
+
+    setState(() => _isSavingFeedback = true);
+    try {
+      final response = await _apiService.post('/motion/feedback?userId=$userId', {
+        'recordId': _savedRecordId,
+        'feedbackTag': tag,
+      });
+      if (!mounted) return;
+      if (response != null && response['code'] == 200) {
+        setState(() {
+          _feedbackTag = tag;
+          _isSavingFeedback = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_feedbackLabel(tag))),
+        );
+      } else {
+        setState(() => _isSavingFeedback = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response?['message']?.toString() ?? '保存反馈失败')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isSavingFeedback = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('保存反馈失败: $e')),
+      );
+    }
+  }
+
+  String _feedbackLabel(String tag) {
+    switch (tag) {
+      case 'too_easy':
+        return '已记录：本次推荐太简单';
+      case 'too_hard':
+        return '已记录：本次推荐太难';
+      case 'dislike':
+        return '已记录：你不喜欢这类推荐';
+      default:
+        return '已记录：本次推荐很合适';
     }
   }
 
@@ -479,19 +589,40 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   if (_selectedVideo != null && steps.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: _recordSaved || _isSavingRecord ? null : _saveExerciseRecord,
-                          icon: _isSavingRecord
-                              ? const SizedBox(
-                                  height: 16,
-                                  width: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                )
-                              : Icon(_recordSaved ? Icons.check_circle : Icons.task_alt),
-                          label: Text(_recordSaved ? '本次运动已记录' : '完成本次运动并写入健康数据'),
-                        ),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: _recordSaved || _isSavingRecord ? null : _saveExerciseRecord,
+                              icon: _isSavingRecord
+                                  ? const SizedBox(
+                                      height: 16,
+                                      width: 16,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : Icon(_recordSaved ? Icons.check_circle : Icons.task_alt),
+                              label: Text(_recordSaved ? '本次运动已记录' : '完成本次运动并写入健康数据'),
+                            ),
+                          ),
+                          if (_recordSaved) ...[
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton.icon(
+                                onPressed: _isSavingFeedback ? null : _showFeedbackDialog,
+                                icon: _isSavingFeedback
+                                    ? const SizedBox(
+                                        height: 16,
+                                        width: 16,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                      )
+                                    : const Icon(Icons.rate_review_outlined),
+                                label: Text(_feedbackTag == null ? '评价本次推荐' : _feedbackLabel(_feedbackTag!)),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
                    

@@ -3,6 +3,7 @@ package com.kuibuqianli.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuibuqianli.common.Result;
 import com.kuibuqianli.dto.ExerciseRecordCreateDTO;
+import com.kuibuqianli.dto.RecommendationFeedbackDTO;
 import com.kuibuqianli.service.ExerciseRecordService;
 import com.kuibuqianli.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -126,8 +128,20 @@ public class MotionController {
 
     @Operation(summary = "保存运动记录")
     @PostMapping("/record")
-    public Result<String> saveExerciseRecord(@RequestParam Long userId, @RequestBody ExerciseRecordCreateDTO request) {
-        boolean success = exerciseRecordService.createRecord(userId, request);
-        return success ? Result.success("运动记录保存成功") : Result.error("运动记录保存失败");
+    public Result<Map<String, Object>> saveExerciseRecord(@RequestParam Long userId, @RequestBody ExerciseRecordCreateDTO request) {
+        Long recordId = exerciseRecordService.createRecord(userId, request);
+        if (recordId == null) {
+            return Result.error("运动记录保存失败");
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("recordId", recordId);
+        return Result.success("运动记录保存成功", data);
+    }
+
+    @Operation(summary = "保存推荐反馈")
+    @PostMapping("/feedback")
+    public Result<String> saveRecommendationFeedback(@RequestParam Long userId, @RequestBody RecommendationFeedbackDTO request) {
+        boolean success = exerciseRecordService.saveFeedback(userId, request);
+        return success ? Result.success("推荐反馈保存成功") : Result.error("推荐反馈保存失败");
     }
 }

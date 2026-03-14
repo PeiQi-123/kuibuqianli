@@ -14,6 +14,7 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
   final ApiService _apiService = ApiService();
   bool _isLoading = true;
   bool _isSaving = false;
+  Map<String, dynamic>? _learningInsights;
   
   // 身体部位偏好
   final List<String> bodyParts = ['头部', '脖子','脊椎', '腰椎', '肩周', '手腕', '手指', '眼睛', '小臂','大臂','大腿', '小腿', '脚踝', '腰背', '腹部','全身'];
@@ -200,6 +201,11 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
             // 特殊情况
             _buildSectionTitle('特殊情况'),
             _buildSpecialConditions(),
+
+            const SizedBox(height: 24),
+
+            _buildSectionTitle('动态学习偏好画像'),
+            _buildLearningInsightsSection(),
 
             const SizedBox(height: 32),
 
@@ -402,6 +408,149 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
     );
   }
 
+  Widget _buildLearningInsightsSection() {
+    if (_learningInsights == null) {
+      return Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.grey[100],
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: const Text('暂无动态学习结果，系统会根据近30天训练记录逐步学习你的运动偏好。'),
+      );
+    }
+
+    final learned = (_learningInsights!['learnedPreferences'] as Map<String, dynamic>? ?? {});
+    final merged = (_learningInsights!['mergedPreferences'] as Map<String, dynamic>? ?? {});
+    final feedbackDistribution = (_learningInsights!['feedbackDistribution'] as Map<String, dynamic>? ?? {});
+    final summary = _learningInsights!['summary']?.toString() ?? '';
+    final completionRate = _learningInsights!['completionRate'];
+    final completedSessions = _learningInsights!['completedSessions'];
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.blue.shade50,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            summary.isNotEmpty ? summary : '系统正在结合训练记录更新偏好画像。',
+            style: TextStyle(color: Colors.blue.shade900),
+          ),
+          const SizedBox(height: 10),
+          Text('近30天完成训练：${completedSessions ?? 0} 次，完成率：${_formatPercent(completionRate)}'),
+          const SizedBox(height: 12),
+          _buildFeedbackSummary(feedbackDistribution),
+          const SizedBox(height: 12),
+          _buildInsightChips('系统学习到的偏好', learned),
+          const SizedBox(height: 12),
+          _buildInsightChips('融合后的推荐偏好', merged),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeedbackSummary(Map<String, dynamic> feedbackDistribution) {
+    if (feedbackDistribution.isEmpty) {
+      return const Text('推荐反馈：暂无评价数据');
+    }
+
+    final entries = [
+      ['太简单', feedbackDistribution['too_easy'] ?? 0],
+      ['合适', feedbackDistribution['fit'] ?? 0],
+      ['太难', feedbackDistribution['too_hard'] ?? 0],
+      ['不喜欢', feedbackDistribution['dislike'] ?? 0],
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('推荐反馈分布', style: TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        Wrap(
+          spacing: 8,
+          runSpacing: 8,
+          children: entries
+              .map(
+                (entry) => Chip(
+                  label: Text('${entry[0]} ${entry[1]}次'),
+                  backgroundColor: Colors.white,
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildInsightChips(String title, Map<String, dynamic> source) {
+    final entries = source.entries.where((entry) => (entry.value as List?)?.isNotEmpty ?? false).toList();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
+        const SizedBox(height: 8),
+        if (entries.isEmpty)
+          const Text('暂无足够训练数据')
+        else
+          ...entries.map((entry) {
+            final values = (entry.value as List).map((e) => e.toString()).toList();
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(_displayName(entry.key), style: TextStyle(color: Colors.grey[700])),
+                  const SizedBox(height: 4),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: values
+                        .map(
+                          (value) => Chip(
+                            label: Text(value),
+                            backgroundColor: Colors.white,
+                          ),
+                        )
+                        .toList(),
+                  ),
+                ],
+              ),
+            );
+          }),
+      ],
+    );
+  }
+
+  String _displayName(String key) {
+    switch (key) {
+      case 'body_part':
+        return '部位';
+      case 'sport_type':
+        return '运动类型';
+      case 'scene':
+        return '场景';
+      case 'duration':
+        return '时长';
+      case 'pace':
+        return '节奏';
+      case 'difficulty':
+        return '难度';
+      default:
+        return key;
+    }
+  }
+
+  String _formatPercent(dynamic value) {
+    final number = value is num ? value.toDouble() : double.tryParse(value?.toString() ?? '0') ?? 0;
+    return '${(number * 100).toStringAsFixed(0)}%';
+  }
+
   // 从后端加载用户偏好
   Future<void> _loadUserPreferences() async {
     try {
@@ -411,6 +560,11 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
       }
 
       final response = await _apiService.get('/user/preferences', params: {'userId': userId});
+      final insightResponse = await _apiService.get('/user/preferences/insights', params: {'userId': userId});
+
+      if (insightResponse != null && insightResponse['code'] == 200 && insightResponse['data'] is Map) {
+        _learningInsights = Map<String, dynamic>.from(insightResponse['data']);
+      }
       
       if (response != null && response['code'] == 200) {
         final List<dynamic> preferences = response['data'];
@@ -566,6 +720,7 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
       });
 
       if (response != null && response['code'] == 200) {
+        await _loadUserPreferences();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(

@@ -24,8 +24,11 @@ public class VideoController {
 
     @Operation(summary = "获取可用视频列表")
     @GetMapping("/list")
-    public Result<List<String>> getVideoList() {
-        List<String> videos = videoService.getAvailableVideos();
+    public Result<List<String>> getVideoList(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String bodyPart
+    ) {
+        List<String> videos = videoService.getAvailableVideos(userId, bodyPart);
         return Result.success(videos);
     }
 

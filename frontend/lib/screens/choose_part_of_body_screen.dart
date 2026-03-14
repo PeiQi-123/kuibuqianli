@@ -485,6 +485,7 @@ class _ChoosePartOfBodyScreenState extends State<ChoosePartOfBodyScreen> with Ti
       case BodyPart.neck:
         return {
           'motion_name': '🧘 ${part.displayName}舒缓运动',
+          'body_part': part.displayName,
           'description': '针对${part.displayName}的舒缓放松运动，缓解疲劳',
           'steps': [
             '坐直身体，放松肩膀',
@@ -501,6 +502,7 @@ class _ChoosePartOfBodyScreenState extends State<ChoosePartOfBodyScreen> with Ti
       case BodyPart.rightHand:
         return {
           'motion_name': '💪 ${part.displayName}力量训练',
+          'body_part': part.displayName,
           'description': '针对${part.displayName}的力量训练，增强肌肉力量',
           'steps': [
             '站立姿势，保持身体稳定',
@@ -514,6 +516,7 @@ class _ChoosePartOfBodyScreenState extends State<ChoosePartOfBodyScreen> with Ti
       case BodyPart.hip:
         return {
           'motion_name': '⚡ ${part.displayName}核心训练',
+          'body_part': part.displayName,
           'description': '针对${part.displayName}的核心训练，改善身体姿态',
           'steps': [
             '平躺姿势，双手放在身体两侧',
@@ -528,6 +531,7 @@ class _ChoosePartOfBodyScreenState extends State<ChoosePartOfBodyScreen> with Ti
       case BodyPart.rightFoot:
         return {
           'motion_name': '🏃 ${part.displayName}柔韧性训练',
+          'body_part': part.displayName,
           'description': '针对${part.displayName}的柔韧性训练，增加关节灵活性',
           'steps': [
             '坐姿或站姿，保持身体稳定',

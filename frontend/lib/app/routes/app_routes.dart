@@ -1,4 +1,5 @@
 // 路由配置
+import 'package:flutter/material.dart';
 import '../../screens/login_screen.dart';
 import '../../screens/register_screen.dart';
 import '../../screens/home_screen.dart';
@@ -13,7 +14,10 @@ import '../../screens/preference_screen.dart';
 import '../../screens/health_data_screen.dart';
 import 'package:go_router/go_router.dart';
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final GoRouter router = GoRouter(
+  navigatorKey: rootNavigatorKey,
   initialLocation: '/',
   routes: [
     GoRoute(

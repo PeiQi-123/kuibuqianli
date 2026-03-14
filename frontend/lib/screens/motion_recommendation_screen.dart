@@ -21,6 +21,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
   String _selectedIntensity = 'low';
   
   Map<String, dynamic>? _motionResult;
+  Map<String, dynamic>? _learningInsights;
   bool _isLoading = false;
 
   final List<String> _bodyParts = ['颈部', '肩部', '腰部', '背部', '腿部', '手腕'];
@@ -47,6 +48,15 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
 
     try {
       final currentUser = await _authService.getCurrentUser();
+      if (currentUser?.id != null) {
+        final insights = await _apiService.get(
+          '/user/preferences/insights',
+          params: {'userId': currentUser!.id!},
+        );
+        if (insights != null && insights['code'] == 200 && insights['data'] is Map<String, dynamic>) {
+          _learningInsights = insights['data'] as Map<String, dynamic>;
+        }
+      }
       final response = await _apiService.post('/micro-motion/generate-prompt', {
         'body_part': _selectedBodyPart,
         'posture_info': _buildPostureInfo(),
@@ -230,6 +240,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
     final motionData = {
       'motion_id': '$_selectedBodyPart-${DateTime.now().millisecondsSinceEpoch}',
       'motion_name': motion['title']?.toString() ?? '$_selectedBodyPart AI 微运动方案',
+      'body_part': _selectedBodyPart,
       'description': motion['overview']?.toString() ?? '$_selectedActivity场景 · ${_intensityLabel(_selectedIntensity)} · ${duration ?? _selectedDuration}秒',
       'duration': duration ?? _selectedDuration * 60,
       'actions': actions,
@@ -327,6 +338,21 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                 style: TextStyle(color: Colors.grey[700]),
               ),
             ],
+            if (_learningInsights != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Text(
+                  '动态学习：${_learningInsights!['summary'] ?? '已结合近期训练记录优化推荐结果'}',
+                  style: TextStyle(color: Colors.blue.shade900),
+                ),
+              ),
+            ],
             const SizedBox(height: 16),
             Row(
               children: [
@@ -375,6 +401,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
     }
 
     if (currentUser.age != null) userInfo['age'] = currentUser.age;
+    if (currentUser.id != null) userInfo['user_id'] = currentUser.id;
     if (currentUser.gender != null && currentUser.gender.toString().isNotEmpty) {
       userInfo['gender'] = currentUser.gender;
     }

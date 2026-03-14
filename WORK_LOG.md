@@ -73,3 +73,46 @@
 3. 接入真正的 AI 模型，替换硬编码示例数据，实现更智能的微运动方案生成
 4. 在 Android/iOS 真机上实测视频播放和姿态检测，优化交互体验
 5. 开发健康数据统计页面（使用 fl_chart 展示运动次数/时长趋势）
+
+## 2026-03-14
+
+### 今日完成
+
+#### 1. 久坐自动预警与分级提醒闭环
+- 新增 `SedentaryReminderService`，实现前台久坐计时、加速度活动检测、免打扰判断与分级提醒逻辑
+- 支持轻提醒 / 中风险 / 高风险三级提醒，并在高风险时直接引导到视频指导或微运动推荐
+- 在首页增加“久坐提醒状态卡片”，展示当前久坐时长、下一次提醒时间、今日提醒次数和当前预警等级
+- 在用户信息页补充“每日最大提醒次数”配置，并与后端用户提醒配置同步
+- 后端新增 `ReminderController` 和 `ReminderServiceImpl`，支持获取提醒状态、记录提醒日志并计算下一次建议提醒时间
+
+#### 2. 推荐反馈学习闭环
+- 将运动记录保存接口升级为返回 `recordId`，为一次训练绑定后续反馈提供依据
+- 新增推荐反馈接口 `/motion/feedback`，支持“太简单 / 合适 / 太难 / 不喜欢”四类反馈写入 `exercise_record`
+- 在视频指导页完成训练后自动弹出推荐评价对话框，并支持后续再次评价
+- 为 `exercise_record` 增加 `feedback_tag`、`feedback_score`、`feedback_at` 字段，并补充数据库增量脚本 `03_alter_exercise_record_add_feedback.sql`
+
+#### 3. 用户偏好动态学习算法
+- 新增 `PreferenceLearningServiceImpl`，基于近 30 天训练记录构建动态学习画像
+- 学习维度覆盖部位、运动类型、场景、时长、节奏和建议难度，并加入时间衰减、完成率和反馈权重
+- 新增 `/user/preferences/insights` 接口，输出显式偏好、动态偏好、融合偏好、反馈分布和学习总结
+- 将动态学习结果注入 `DeepSeekService` 提示词构造流程，使推荐时长、难度和动作选择直接受到学习画像影响
+
+#### 4. 反馈分布可视化与视频排序联动
+- 在偏好设置页新增“动态学习偏好画像”模块，展示学习总结、完成率、反馈分布、系统学习偏好和融合偏好
+- 在微运动推荐页展示动态学习总结，提示当前推荐已经结合近期训练行为进行优化
+- 后端 `VideoService` 新增按用户反馈偏好和目标部位对视频列表进行排序的能力
+- 前端视频指导页请求 `/video/list` 时携带 `userId` 和 `bodyPart`，让视频排序与个人反馈习惯联动
+
+### 本次核心改动文件
+- 后端：`ReminderController.java`、`ReminderServiceImpl.java`、`PreferenceLearningServiceImpl.java`、`DeepSeekService.java`、`MotionController.java`、`ExerciseRecordServiceImpl.java`、`VideoService.java`
+- 前端：`sedentary_reminder_service.dart`、`app_screen.dart`、`user_info_screen.dart`、`video_player_screen.dart`、`motion_recommendation_screen.dart`、`preference_screen.dart`
+- 数据库：`01_create_tables.sql`、`03_alter_exercise_record_add_feedback.sql`
+
+### 当前效果
+- 系统已经具备“久坐检测 -> 分级提醒 -> 进入训练 -> 完成训练 -> 反馈评价 -> 动态学习 -> 优化下次推荐”的完整闭环
+- 动态学习不再停留在静态偏好存储，而是已经真正参与推荐提示词、难度判断和视频排序
+
+### 下一步建议
+1. 增加推荐反馈历史页与趋势图，让学习过程对用户更可见
+2. 把收藏、复看、跳过等行为继续纳入偏好学习权重模型
+3. 增强冷启动策略和禁忌动作规避逻辑，提升新用户与特殊人群推荐稳定性

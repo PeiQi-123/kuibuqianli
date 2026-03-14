@@ -1,8 +1,12 @@
 package com.kuibuqianli.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import java.io.*;
 import java.nio.file.*;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,14 +39,26 @@ public class VideoService {
             Map.entry("呼吸", "呼吸")
     );
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     public List<String> getAvailableVideos() {
+        return getAvailableVideos(null, null);
+    }
+
+    public List<String> getAvailableVideos(Long userId, String bodyPart) {
         try {
             Files.createDirectories(Paths.get(OUTPUT_DIR));
-            return Files.list(Paths.get(VIDEO_DIR))
+            List<String> videos = Files.list(Paths.get(VIDEO_DIR))
                     .filter(Files::isRegularFile)
                     .filter(p -> p.toString().endsWith(".mp4"))
                     .map(p -> p.getFileName().toString())
                     .collect(Collectors.toList());
+
+            if (userId == null) {
+                return videos;
+            }
+            return sortVideosByPreference(videos, userId, bodyPart);
         } catch (IOException e) {
             return Collections.emptyList();
         }
@@ -208,5 +224,81 @@ public class VideoService {
     public String getVideoPath(String filename) {
         String path = VIDEO_DIR + "/" + filename;
         return Files.exists(Paths.get(path)) ? path : null;
+    }
+
+    private List<String> sortVideosByPreference(List<String> videos, Long userId, String bodyPart) {
+        if (videos.isEmpty()) {
+            return videos;
+        }
+
+        Map<String, Double> feedbackScores = loadFeedbackScores(userId);
+        String normalizedBodyPart = normalizeKeyword(bodyPart);
+
+        return videos.stream()
+                .sorted((left, right) -> {
+                    double rightScore = calculateVideoScore(right, feedbackScores, normalizedBodyPart);
+                    double leftScore = calculateVideoScore(left, feedbackScores, normalizedBodyPart);
+                    int compare = Double.compare(rightScore, leftScore);
+                    if (compare != 0) {
+                        return compare;
+                    }
+                    return left.compareToIgnoreCase(right);
+                })
+                .collect(Collectors.toList());
+    }
+
+    private Map<String, Double> loadFeedbackScores(Long userId) {
+        LocalDateTime threshold = LocalDateTime.now().minusDays(30);
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(
+                "SELECT motion_name, feedback_tag, feedback_at, created_at FROM exercise_record WHERE user_id = ? AND feedback_tag IS NOT NULL AND created_at >= ?",
+                userId,
+                Timestamp.valueOf(threshold)
+        );
+
+        Map<String, Double> scores = new HashMap<>();
+        for (Map<String, Object> row : rows) {
+            String motionName = Objects.toString(row.get("motion_name"), "");
+            String feedbackTag = Objects.toString(row.get("feedback_tag"), "");
+            Timestamp feedbackTime = (Timestamp) row.get("feedback_at");
+            Timestamp createdAt = (Timestamp) row.get("created_at");
+            LocalDateTime reference = feedbackTime != null ? feedbackTime.toLocalDateTime() : createdAt.toLocalDateTime();
+            long days = Math.max(java.time.Duration.between(reference, LocalDateTime.now()).toDays(), 0);
+            double recency = days <= 7 ? 1.0 : days <= 14 ? 0.8 : 0.6;
+            double weight = switch (feedbackTag) {
+                case "fit" -> 2.5;
+                case "too_easy" -> 1.4;
+                case "too_hard" -> -0.8;
+                case "dislike" -> -2.5;
+                default -> 0.0;
+            };
+            String normalizedMotion = normalizeKeyword(motionName);
+            if (!normalizedMotion.isEmpty() && weight != 0.0) {
+                scores.merge(normalizedMotion, weight * recency, Double::sum);
+            }
+        }
+        return scores;
+    }
+
+    private double calculateVideoScore(String videoName, Map<String, Double> feedbackScores, String normalizedBodyPart) {
+        String normalizedVideo = normalizeKeyword(videoName.replaceFirst("\\.[^.]+$", ""));
+        double score = 0.0;
+        if (!normalizedBodyPart.isEmpty() && normalizedVideo.contains(normalizedBodyPart)) {
+            score += 2.0;
+        }
+        for (Map.Entry<String, Double> entry : feedbackScores.entrySet()) {
+            if (normalizedVideo.contains(entry.getKey()) || entry.getKey().contains(normalizedVideo)) {
+                score += entry.getValue();
+            }
+        }
+        return score;
+    }
+
+    private String normalizeKeyword(String value) {
+        if (value == null) {
+            return "";
+        }
+        return value.replaceAll("\\s+", "")
+                .replaceAll("[^\\p{IsHan}A-Za-z0-9]", "")
+                .toLowerCase(Locale.ROOT);
     }
 }

@@ -46,11 +46,13 @@ public class DeepSeekService {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final VideoService videoService;
+    private final PreferenceLearningService preferenceLearningService;
 
-    public DeepSeekService(VideoService videoService) {
+    public DeepSeekService(VideoService videoService, PreferenceLearningService preferenceLearningService) {
         this.restTemplate = new RestTemplate();
         this.objectMapper = new ObjectMapper();
         this.videoService = videoService;
+        this.preferenceLearningService = preferenceLearningService;
     }
 
     /**
@@ -63,6 +65,8 @@ public class DeepSeekService {
                 request.getBodyPart(), request.getPostureInfo());
 
         try {
+            request.setUserInfo(enrichUserInfo(request.getUserInfo()));
+
             // 1. 构建系统提示词
             List<String> availableVideos = videoService.getAvailableVideos();
             if (availableVideos == null || availableVideos.isEmpty()) {
@@ -95,6 +99,30 @@ public class DeepSeekService {
         } catch (Exception e) {
             log.error("调用DeepSeek API失败", e);
             return PromptResponse.error("生成微运动提示词失败: " + e.getMessage());
+        }
+    }
+
+    private Map<String, Object> enrichUserInfo(Map<String, Object> userInfo) {
+        Map<String, Object> safeUserInfo = userInfo == null ? new HashMap<>() : new HashMap<>(userInfo);
+        Long userId = extractUserId(safeUserInfo);
+        if (userId == null) {
+            return safeUserInfo;
+        }
+        return preferenceLearningService.enrichUserInfo(userId, safeUserInfo);
+    }
+
+    private Long extractUserId(Map<String, Object> userInfo) {
+        Object idValue = userInfo.get("user_id");
+        if (idValue == null) {
+            idValue = userInfo.get("id");
+        }
+        if (idValue == null) {
+            return null;
+        }
+        try {
+            return Long.parseLong(idValue.toString());
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 
@@ -214,6 +242,18 @@ public class DeepSeekService {
             }
         }
 
+        appendPreferenceLine(prompt, "preferred_body_parts", userInfo.get("preferred_body_parts"));
+        appendPreferenceLine(prompt, "preferred_sport_types", userInfo.get("preferred_sport_types"));
+        appendPreferenceLine(prompt, "preferred_scenes", userInfo.get("preferred_scenes"));
+        appendPreferenceLine(prompt, "preferred_durations", userInfo.get("preferred_durations"));
+        appendPreferenceLine(prompt, "preferred_pace", userInfo.get("preferred_pace"));
+        appendPreferenceLine(prompt, "preferred_difficulty", userInfo.get("preferred_difficulty"));
+        if (userInfo.get("preference_learning_summary") != null) {
+            prompt.append("  - 动态学习结论: ")
+                    .append(userInfo.get("preference_learning_summary"))
+                    .append("\n");
+        }
+
         // 显示其他可能有用的信息
         for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
             String key = entry.getKey();
@@ -222,9 +262,20 @@ public class DeepSeekService {
                     && !key.equals("password")
                     && !key.equals("phone")
                     && !key.equals("email")
+                    && !key.equals("user_id")
+                    && !key.startsWith("preferred_")
+                    && !key.endsWith("_preferences")
+                    && !key.equals("preference_learning_summary")
                     && entry.getValue() != null) {
                 prompt.append("  - ").append(getDisplayName(key)).append(": ").append(entry.getValue()).append("\n");
             }
+        }
+    }
+
+    private void appendPreferenceLine(StringBuilder prompt, String key, Object value) {
+        if (value instanceof List<?> list && !list.isEmpty()) {
+            String joined = list.stream().map(String::valueOf).collect(java.util.stream.Collectors.joining("、"));
+            prompt.append("  - ").append(getDisplayName(key)).append(": ").append(joined).append("\n");
         }
     }
 
@@ -241,6 +292,12 @@ public class DeepSeekService {
         displayNames.put("bmi_type", "BMI类型");
         displayNames.put("remind_enabled", "提醒开启");
         displayNames.put("remind_interval", "提醒间隔(分钟)");
+        displayNames.put("preferred_body_parts", "动态学习偏好部位");
+        displayNames.put("preferred_sport_types", "动态学习偏好运动类型");
+        displayNames.put("preferred_scenes", "动态学习偏好场景");
+        displayNames.put("preferred_durations", "动态学习偏好时长");
+        displayNames.put("preferred_pace", "动态学习偏好节奏");
+        displayNames.put("preferred_difficulty", "动态学习建议难度");
 
         return displayNames.getOrDefault(key, key);
     }
@@ -301,7 +358,12 @@ public class DeepSeekService {
         // 获取生成的提示词
         String rawContent = sanitizeAiText(apiResponse.getChoices().get(0).getMessage().getContent());
         Map<String, Object> content = parseAiJsonContent(rawContent);
-        List<PromptResponse.ActionItem> actions = buildActionItems(content.get("actions"), availableVideos, originalRequest.getBodyPart());
+        List<PromptResponse.ActionItem> actions = buildActionItems(
+                content.get("actions"),
+                availableVideos,
+                originalRequest.getBodyPart(),
+                originalRequest.getUserInfo()
+        );
 
         String title = stringValue(content.get("title"), "针对" + originalRequest.getBodyPart() + "的微运动方案");
         String overview = stringValue(content.get("overview"), "基于当前状态生成的微运动建议");
@@ -361,9 +423,9 @@ public class DeepSeekService {
         }
     }
 
-    private List<PromptResponse.ActionItem> buildActionItems(Object actionsObject, List<String> availableVideos, String bodyPart) {
+    private List<PromptResponse.ActionItem> buildActionItems(Object actionsObject, List<String> availableVideos, String bodyPart, Map<String, Object> userInfo) {
         List<String> allowedActions = toActionNames(availableVideos);
-        List<String> preferredActions = pickPreferredActions(allowedActions, bodyPart);
+        List<String> preferredActions = pickPreferredActions(allowedActions, bodyPart, userInfo);
         List<PromptResponse.ActionItem> result = new ArrayList<>();
 
         if (actionsObject instanceof List<?> actionList) {
@@ -434,12 +496,20 @@ public class DeepSeekService {
         return text.isEmpty() ? fallback : text;
     }
 
-    private List<String> pickPreferredActions(List<String> allowedActions, String bodyPart) {
-        if (bodyPart == null || bodyPart.isBlank()) {
+    private List<String> pickPreferredActions(List<String> allowedActions, String bodyPart, Map<String, Object> userInfo) {
+        List<String> targetTerms = new ArrayList<>();
+        if (bodyPart != null && !bodyPart.isBlank()) {
+            targetTerms.add(bodyPart);
+        }
+        if (userInfo != null && userInfo.get("preferred_body_parts") instanceof List<?> list) {
+            list.stream().map(String::valueOf).filter(value -> !value.isBlank()).forEach(targetTerms::add);
+        }
+        if (targetTerms.isEmpty()) {
             return allowedActions;
         }
         List<String> matched = allowedActions.stream()
-                .filter(name -> normalizeForCompare(name).contains(normalizeForCompare(bodyPart)))
+                .filter(name -> targetTerms.stream().anyMatch(term -> normalizeForCompare(name).contains(normalizeForCompare(term))))
+                .distinct()
                 .toList();
         return matched.isEmpty() ? allowedActions : matched;
     }
@@ -497,6 +567,11 @@ public class DeepSeekService {
 
         int duration = defaultDuration;
 
+        List<Integer> preferredDurations = extractPreferredDurationSeconds(userInfo);
+        if (!preferredDurations.isEmpty()) {
+            duration = preferredDurations.get(0);
+        }
+
         try {
             // 根据BMI调整运动时长
             if (userInfo.containsKey("bmi")) {
@@ -543,6 +618,16 @@ public class DeepSeekService {
             return "入门";
         }
 
+        if (userInfo.get("preferred_difficulty") instanceof List<?> list && !list.isEmpty()) {
+            String preferredDifficulty = String.valueOf(list.get(0));
+            if (preferredDifficulty.contains("零基础") || preferredDifficulty.contains("入门")) {
+                return "入门";
+            }
+            if (preferredDifficulty.contains("有难度") || preferredDifficulty.contains("进阶")) {
+                return "进阶";
+            }
+        }
+
         boolean hasHealthIssue = false;
         boolean isFit = true;
 
@@ -586,5 +671,19 @@ public class DeepSeekService {
         } else {
             return "入门";
         }
+    }
+
+    private List<Integer> extractPreferredDurationSeconds(Map<String, Object> userInfo) {
+        if (!(userInfo.get("preferred_durations") instanceof List<?> list)) {
+            return Collections.emptyList();
+        }
+        List<Integer> result = new ArrayList<>();
+        for (Object item : list) {
+            java.util.regex.Matcher matcher = java.util.regex.Pattern.compile("(\\d+)").matcher(String.valueOf(item));
+            if (matcher.find()) {
+                result.add(Integer.parseInt(matcher.group(1)) * 60);
+            }
+        }
+        return result;
     }
 }

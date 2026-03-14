@@ -1,7 +1,5 @@
 // lib/services/auth_service.dart
 // 认证服务类
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 import '../services/api_service.dart';
 import '../services/storage_service.dart';
@@ -98,6 +96,7 @@ class AuthService {
     String? gender,
     bool? remindEnabled,
     int? remindInterval,
+    int? remindMaxTimes,
     List<Map<String, String>>? remindAvoidTime,
   }) async {
     try {
@@ -120,6 +119,7 @@ class AuthService {
       if (gender != null) updateData['gender'] = gender;
       if (remindEnabled != null) updateData['remindEnabled'] = remindEnabled;
       if (remindInterval != null) updateData['remindInterval'] = remindInterval;
+      if (remindMaxTimes != null) updateData['remindMaxTimes'] = remindMaxTimes;
       if (remindAvoidTime != null) updateData['remindAvoidTime'] = remindAvoidTime;
 
       // 构建完整的URL，包含userId参数

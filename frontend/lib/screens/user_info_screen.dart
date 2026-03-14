@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
 import '../models/user_model.dart';
+import '../services/sedentary_reminder_service.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({super.key});
@@ -26,6 +27,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   String _gender = '男';
   bool _remindEnabled = true;
   int _remindInterval = 30;
+  int _remindMaxTimes = 3;
   List<Map<String, String>> _avoidTimes = [
     {'start': '22:00', 'end': '08:00'}
   ];
@@ -53,6 +55,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       // 初始化提醒设置：使用remindEnabled字段
       _remindEnabled = user?.remindEnabled ?? true; // 默认开启提醒
       _remindInterval = user?.remindInterval ?? 30;
+      _remindMaxTimes = user?.remindMaxTimes ?? 3;
       
       // 初始化免打扰时间段
       if (user?.remindAvoidTime != null && user!.remindAvoidTime!.isNotEmpty) {
@@ -101,23 +104,28 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
           gender: _gender,
           remindEnabled: _remindEnabled,
           remindInterval: _remindEnabled ? _remindInterval : null,
+          remindMaxTimes: _remindEnabled ? _remindMaxTimes : null,
           remindAvoidTime: _remindEnabled ? _avoidTimes : null,
         );
 
         if (success) {
           // 保存成功，重新加载用户数据
           await _loadCurrentUser();
+          await SedentaryReminderService.instance.refreshConfig();
+          if (!mounted) return;
           
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('用户信息已保存成功')),
           );
         } else {
+          if (!mounted) return;
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('保存失败，请重试')),
           );
         }
       } catch (e) {
         print('Save user info error: $e');
+        if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('保存出错: $e')),
         );
@@ -277,6 +285,14 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                         min: 5,
                         max: 240,
                         onChanged: (value) => setState(() => _remindInterval = value.toInt()),
+                      ),
+                      const SizedBox(height: 12),
+                      _buildNumberField(
+                        label: '每日最大提醒次数',
+                        value: _remindMaxTimes.toDouble(),
+                        min: 1,
+                        max: 10,
+                        onChanged: (value) => setState(() => _remindMaxTimes = value.toInt()),
                       ),
                       const SizedBox(height: 16),
                       _buildAvoidTimesSection(),
