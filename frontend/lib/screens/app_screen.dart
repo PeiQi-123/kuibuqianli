@@ -39,18 +39,10 @@ class _AppScreenState extends State<AppScreen> {
               _buildMenuCard(
                 context,
                 icon: Icons.fitness_center,
-                title: '微运动推荐',
+                title: '微运动推荐与视频指导',
                 subtitle: 'AI 智能推荐运动方案',
                 color: Colors.blue,
                 onTap: () => context.push('/motion_recommendation'),
-              ),
-              _buildMenuCard(
-                context,
-                icon: Icons.videocam,
-                title: '视频指导',
-                subtitle: '观看运动教学视频',
-                color: Colors.orange,
-                onTap: () => context.push('/choose_part_of_body'),
               ),
               _buildMenuCard(
                 context,
