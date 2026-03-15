@@ -38,7 +38,16 @@ GoRoute(
     ),
     GoRoute(
       path: '/motion_recommendation',
-      builder: (context, state) => const MotionRecommendationScreen(),
+      builder: (context, state) {
+        String? initialBodyPart;
+        final extra = state.extra;
+        if (extra is String) {
+          initialBodyPart = extra;
+        } else if (extra is Map) {
+          initialBodyPart = extra['bodyPart']?.toString();
+        }
+        return MotionRecommendationScreen(initialBodyPart: initialBodyPart);
+      },
     ),
     GoRoute(
       path: '/posture_detection',

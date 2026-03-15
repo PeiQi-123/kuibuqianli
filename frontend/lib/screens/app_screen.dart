@@ -63,8 +63,8 @@ class _AppScreenState extends State<AppScreen> {
                     _buildMenuCard(
                       context,
                       icon: Icons.videocam,
-                      title: '视频指导',
-                      subtitle: '观看运动教学视频',
+                      title: '选择身体部位',
+                      subtitle: '通过 3D 人体选择目标区域',
                       color: Colors.orange,
                       onTap: () => context.push('/choose_part_of_body'),
                     ),

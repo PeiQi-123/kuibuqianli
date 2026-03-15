@@ -1,11 +1,14 @@
 // 微运动推荐页面
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../constants/body_part_catalog.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 
 class MotionRecommendationScreen extends StatefulWidget {
-  const MotionRecommendationScreen({super.key});
+  const MotionRecommendationScreen({super.key, this.initialBodyPart});
+
+  final String? initialBodyPart;
 
   @override
   State<MotionRecommendationScreen> createState() => _MotionRecommendationScreenState();
@@ -15,7 +18,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
   final ApiService _apiService = ApiService();
   final AuthService _authService = AuthService();
   
-  String _selectedBodyPart = '颈部';
+  late String _selectedBodyPart;
   String _selectedActivity = '久坐';
   int _selectedDuration = 5;
   String _selectedIntensity = 'low';
@@ -24,7 +27,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
   Map<String, dynamic>? _learningInsights;
   bool _isLoading = false;
 
-  final List<String> _bodyParts = ['颈部', '肩部', '腰部', '背部', '腿部', '手腕'];
+  final List<String> _bodyParts = BodyPartCatalog.recommendationBodyParts;
 
   final List<Map<String, dynamic>> _activityTypes = [
     {'value': '久坐', 'label': '久坐', 'icon': Icons.computer},
@@ -39,6 +42,13 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
     {'value': 'medium', 'label': '中强度', 'icon': Icons.directions_run},
     {'value': 'high', 'label': '高强度', 'icon': Icons.fitness_center},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    final initial = widget.initialBodyPart;
+    _selectedBodyPart = _bodyParts.contains(initial) ? initial! : _bodyParts.first;
+  }
 
   Future<void> _generateMotion() async {
     setState(() {
