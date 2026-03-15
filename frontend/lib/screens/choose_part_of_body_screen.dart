@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 import '../constants/body_part_catalog.dart';
+import '../services/body_part_message_bridge.dart';
 
 class ChoosePartOfBodyScreen extends StatefulWidget {
   const ChoosePartOfBodyScreen({super.key});
@@ -13,7 +14,10 @@ class ChoosePartOfBodyScreen extends StatefulWidget {
 }
 
 class _ChoosePartOfBodyScreenState extends State<ChoosePartOfBodyScreen> {
+  static const String _bodyPartMessagePrefix = 'body-part-selection:';
+  static const String _debugMessagePrefix = '__debug__:';
   BodyPartOption? _selectedPart;
+  Object? _bodyPartMessageListener;
 
   static const String _hotspotCss = '''
 .body-hotspot {
@@ -55,9 +59,33 @@ model-viewer#body-model-viewer {
   viewer.dataset.bodyPickBound = '1';
 
   const bridge = window.BodyPartBridge;
-  const pickThresholdSquared = 0.045;
+  const postToFlutterWindow = (payload) => {
+    const targets = [window, window.parent, window.top];
+    const posted = new Set();
+    targets.forEach((target) => {
+      if (!target || posted.has(target) || typeof target.postMessage !== 'function') {
+        return;
+      }
+      try {
+        target.postMessage(payload, '*');
+        posted.add(target);
+      } catch (_) {
+      }
+    });
+  };
+  const debug = (message) => {
+    const text = String(message || '');
+    if (typeof console !== 'undefined' && typeof console.log === 'function') {
+      console.log('[BodyHotspot] ' + text);
+    }
+    postToFlutterWindow('__debug__:' + text);
+    if (bridge && typeof bridge.postMessage === 'function') {
+      bridge.postMessage('__debug__:' + text);
+    }
+  };
+  debug('hotspot script mounted; bridge=' + (bridge ? 'ready' : 'missing') + '; inIframe=' + (window !== window.top));
 
-  const parseMeters = (raw) => {
+  const parsePoint = (raw) => {
     if (!raw || typeof raw !== 'string') return null;
     const values = raw
       .trim()
@@ -69,62 +97,151 @@ model-viewer#body-model-viewer {
     return values;
   };
 
+  const parsePaths = (raw) => {
+    if (!raw || typeof raw !== 'string') return [];
+    return raw
+      .split('|')
+      .map((path) => path
+        .split(';')
+        .map((point) => parsePoint(point))
+        .filter((point) => Array.isArray(point) && point.length === 3))
+      .filter((path) => path.length > 0);
+  };
+
   const toVector = (value) => {
     if (!value) return null;
-    if (typeof value === 'string') return parseMeters(value);
+    if (typeof value === 'string') return parsePoint(value);
     if (typeof value.x === 'number' && typeof value.y === 'number' && typeof value.z === 'number') {
       return [value.x, value.y, value.z];
     }
     if (typeof value.toString === 'function') {
-      return parseMeters(value.toString());
+      return parsePoint(value.toString());
     }
     return null;
   };
 
   const postPart = (partId) => {
     if (!partId) return;
+    debug('postPart -> ' + partId);
+    postToFlutterWindow('body-part-selection:' + partId);
     if (bridge && typeof bridge.postMessage === 'function') {
       bridge.postMessage(partId);
     }
   };
 
+  const bindHotspotClicks = () => {
+    Array.from(viewer.querySelectorAll('.body-hotspot')).forEach((hotspot) => {
+      if (hotspot.dataset.bodyHotspotBound === '1') {
+        return;
+      }
+      hotspot.dataset.bodyHotspotBound = '1';
+
+      hotspot.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        debug('hotspot click: ' + (hotspot.getAttribute('data-part-id') || ''));
+        postPart(hotspot.getAttribute('data-part-id') || '');
+      });
+
+      hotspot.addEventListener('pointerdown', (event) => {
+        event.stopPropagation();
+      });
+    });
+  };
+
   const hotspotAnchors = () => Array.from(viewer.querySelectorAll('.body-hotspot'))
     .map((hotspot) => ({
       id: hotspot.getAttribute('data-part-id') || '',
-      pos: parseMeters(hotspot.getAttribute('data-position') || ''),
+      pos: parsePoint(hotspot.getAttribute('data-position') || ''),
+      paths: parsePaths(hotspot.getAttribute('data-paths') || ''),
+      radius: Number(hotspot.getAttribute('data-radius') || '0'),
     }))
     .filter((anchor) => anchor.id && anchor.pos);
+
+  const distanceSquared = (a, b) => {
+    const dx = a[0] - b[0];
+    const dy = a[1] - b[1];
+    const dz = a[2] - b[2];
+    return (dx * dx) + (dy * dy) + (dz * dz);
+  };
+
+  const segmentDistanceSquared = (point, start, end) => {
+    const ab = [end[0] - start[0], end[1] - start[1], end[2] - start[2]];
+    const ap = [point[0] - start[0], point[1] - start[1], point[2] - start[2]];
+    const lengthSquared = (ab[0] * ab[0]) + (ab[1] * ab[1]) + (ab[2] * ab[2]);
+    if (lengthSquared <= 1e-8) {
+      return distanceSquared(point, start);
+    }
+
+    const projection = ((ap[0] * ab[0]) + (ap[1] * ab[1]) + (ap[2] * ab[2])) / lengthSquared;
+    const clamped = Math.max(0, Math.min(1, projection));
+    const closest = [
+      start[0] + (ab[0] * clamped),
+      start[1] + (ab[1] * clamped),
+      start[2] + (ab[2] * clamped),
+    ];
+    return distanceSquared(point, closest);
+  };
+
+  const pathDistanceSquared = (point, path) => {
+    if (!Array.isArray(path) || path.length === 0) {
+      return Number.POSITIVE_INFINITY;
+    }
+    if (path.length === 1) {
+      return distanceSquared(point, path[0]);
+    }
+
+    let best = Number.POSITIVE_INFINITY;
+    for (let index = 1; index < path.length; index += 1) {
+      const current = segmentDistanceSquared(point, path[index - 1], path[index]);
+      if (current < best) {
+        best = current;
+      }
+    }
+    return best;
+  };
 
   const nearestPartId = (pickedPos) => {
     const anchors = hotspotAnchors();
     if (!anchors.length || !pickedPos) return '';
 
     let nearestId = '';
-    let nearestDistance = Number.POSITIVE_INFINITY;
+    let nearestScore = Number.POSITIVE_INFINITY;
     for (const anchor of anchors) {
-      const dx = anchor.pos[0] - pickedPos[0];
-      const dy = anchor.pos[1] - pickedPos[1];
-      const dz = anchor.pos[2] - pickedPos[2];
-      const distance = (dx * dx) + (dy * dy) + (dz * dz);
-      if (distance < nearestDistance) {
-        nearestDistance = distance;
+      let bestDistanceSquared = distanceSquared(pickedPos, anchor.pos);
+      for (const path of anchor.paths) {
+        const current = pathDistanceSquared(pickedPos, path);
+        if (current < bestDistanceSquared) {
+          bestDistanceSquared = current;
+        }
+      }
+
+      const radius = Math.max(anchor.radius, 0.001);
+      const score = bestDistanceSquared / (radius * radius);
+      if (score < nearestScore) {
+        nearestScore = score;
         nearestId = anchor.id;
       }
     }
 
-    return nearestDistance <= pickThresholdSquared ? nearestId : '';
+    return nearestScore <= 1.35 ? nearestId : '';
   };
 
+  bindHotspotClicks();
+  viewer.addEventListener('load', bindHotspotClicks);
+  viewer.addEventListener('load', () => {
+    debug('viewer load; hotspot count=' + viewer.querySelectorAll('.body-hotspot').length);
+  });
+
   viewer.addEventListener('click', (event) => {
-    const target = event.target;
-    if (target && typeof target.closest === 'function') {
-      const hotspot = target.closest('.body-hotspot');
-      if (hotspot) {
-        event.preventDefault();
-        event.stopPropagation();
-        postPart(hotspot.getAttribute('data-part-id') || '');
-        return;
-      }
+    const path = typeof event.composedPath === 'function' ? event.composedPath() : [];
+    const hotspot = path.find((node) => node && node.classList && node.classList.contains('body-hotspot'));
+    if (hotspot) {
+      event.preventDefault();
+      event.stopPropagation();
+      debug('viewer delegated hotspot click: ' + (hotspot.getAttribute('data-part-id') || ''));
+      postPart(hotspot.getAttribute('data-part-id') || '');
+      return;
     }
 
     if (typeof viewer.positionAndNormalFromPoint !== 'function') {
@@ -133,11 +250,14 @@ model-viewer#body-model-viewer {
 
     const picked = viewer.positionAndNormalFromPoint(event.clientX, event.clientY);
     const pickedPos = toVector(picked && picked.position ? picked.position : picked);
+    debug('viewer click pick: ' + JSON.stringify(pickedPos));
     if (!pickedPos) {
       return;
     }
 
-    postPart(nearestPartId(pickedPos));
+    const nearestId = nearestPartId(pickedPos);
+    debug('nearestPartId: ' + nearestId);
+    postPart(nearestId);
   });
 })();
 ''';
@@ -146,8 +266,21 @@ model-viewer#body-model-viewer {
     if (kIsWeb) {
       return true;
     }
-    return defaultTargetPlatform == TargetPlatform.android ||
+        return defaultTargetPlatform == TargetPlatform.android ||
         defaultTargetPlatform == TargetPlatform.iOS;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    debugPrint('[BodyHotspot] initState attach message listener');
+    _bodyPartMessageListener = listenToBodyPartMessages(_handlePartSelection);
+  }
+
+  @override
+  void dispose() {
+    cancelBodyPartMessageListener(_bodyPartMessageListener);
+    super.dispose();
   }
 
   @override
@@ -194,12 +327,12 @@ model-viewer#body-model-viewer {
           children: [
             ModelViewer(
               id: 'body-model-viewer',
-              src: 'assets/models/human_body.glb',
+              src: 'assets/models/human_body_blue_clean.glb',
               alt: '人体 3D 模型',
               ar: false,
               autoRotate: false,
               cameraControls: true,
-              disableTap: true,
+              disableTap: false,
               interactionPrompt: InteractionPrompt.none,
               backgroundColor: Colors.transparent,
               minHotspotOpacity: 0.95,
@@ -240,14 +373,45 @@ model-viewer#body-model-viewer {
   }
 
   void _onHotspotMessage(dynamic message) {
-    final raw = message?.message?.toString();
+    String? raw;
+    if (message is String) {
+      raw = message;
+    } else {
+      try {
+        raw = (message as dynamic).message?.toString();
+      } catch (_) {
+        raw = message?.toString();
+      }
+    }
     if (raw == null || raw.isEmpty) {
       return;
     }
-    final option = _findOptionById(raw);
-    if (option == null) {
+    if (raw.startsWith(_debugMessagePrefix)) {
+      debugPrint('[BodyHotspot] ${raw.substring(_debugMessagePrefix.length)}');
       return;
     }
+    debugPrint('[BodyHotspot] channel message: $raw');
+    _handlePartSelection(raw);
+  }
+
+  void _handlePartSelection(String id) {
+    debugPrint('[BodyHotspot] _handlePartSelection input: $id');
+    var normalizedId = id.trim();
+    if (normalizedId.startsWith(_bodyPartMessagePrefix)) {
+      normalizedId = normalizedId.substring(_bodyPartMessagePrefix.length).trim();
+    }
+    debugPrint('[BodyHotspot] normalized id: $normalizedId');
+    if (normalizedId.isEmpty) {
+      debugPrint('[BodyHotspot] normalized id empty, ignore');
+      return;
+    }
+
+    final option = _findOptionById(normalizedId);
+    if (option == null) {
+      debugPrint('[BodyHotspot] no option found for id: $normalizedId');
+      return;
+    }
+    debugPrint('[BodyHotspot] selected option: ${option.id}/${option.displayName}');
     setState(() => _selectedPart = option);
   }
 
@@ -265,15 +429,34 @@ model-viewer#body-model-viewer {
     for (final option in BodyPartCatalog.options) {
       html
         ..write('<button class="body-hotspot" slot="hotspot-${option.id}" ')
+        ..write('type="button" ')
         ..write('data-part-id="${option.id}" ')
-        ..write('data-position="${option.hotspotPosition}" ')
-        ..write('data-normal="${option.hotspotNormal}" ')
+        ..write('data-position="${option.hotspotPositionString}" ')
+        ..write('data-normal="${option.hotspotNormalString}" ')
+        ..write('data-paths="${option.selectionPathsString}" ')
+        ..write('data-radius="${option.selectionRadiusString}" ')
+        ..write('onpointerdown="$_inlineStopPointerHandler" ')
+        ..write('onclick="${_inlineHotspotClickHandler(option.id)}" ')
         ..write('aria-label="${option.displayName}"></button>')
         ..write('<div class="body-hotspot-annotation" slot="hotspot-${option.id}">')
         ..write(option.displayName)
         ..write('</div>');
     }
     return html.toString();
+  }
+
+  static const String _inlineStopPointerHandler =
+      'event.stopPropagation();';
+
+  static String _inlineHotspotClickHandler(String partId) {
+    final message = 'body-part-selection:$partId';
+    return 'event.preventDefault();'
+        'event.stopPropagation();'
+        'try{window.postMessage(\'$message\',\'*\');}catch(_){}'
+        'try{if(window.parent&&window.parent!==window){window.parent.postMessage(\'$message\',\'*\');}}catch(_){}'
+        'try{if(window.top&&window.top!==window){window.top.postMessage(\'$message\',\'*\');}}catch(_){}'
+        'try{if(window.BodyPartBridge&&typeof window.BodyPartBridge.postMessage===\'function\'){window.BodyPartBridge.postMessage(\'$partId\');}}catch(_){}'
+        'return false;';
   }
 
   Widget _buildFallbackArea() {

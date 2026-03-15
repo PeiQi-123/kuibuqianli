@@ -58,6 +58,10 @@ GoRoute(
       builder: (context, state) => const ChoosePartOfBodyScreen(),
     ),
     GoRoute(
+      path: '/preview/body_model',
+      builder: (context, state) => const ChoosePartOfBodyScreen(),
+    ),
+    GoRoute(
       path: '/video_player',
       builder: (context, state) {
         final motionData = state.extra as Map<String, dynamic>?;

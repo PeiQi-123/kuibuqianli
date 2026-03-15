@@ -5,7 +5,6 @@ import '../widgets/custom_textfield.dart';
 import '../widgets/custom_button.dart';
 import '../services/auth_service.dart';
 import '../utils/validators.dart';
-import '../models/user_model.dart';
 import 'package:go_router/go_router.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -56,6 +55,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   context.go('/register');
                 },
                 child: const Text('还没有账号？点击注册'),
+              ),
+              const SizedBox(height: 8),
+              OutlinedButton.icon(
+                onPressed: () {
+                  context.push('/preview/body_model');
+                },
+                icon: const Icon(Icons.view_in_ar_outlined),
+                label: const Text('免登录测试 3D 身体模型'),
               ),
             ],
           ),
