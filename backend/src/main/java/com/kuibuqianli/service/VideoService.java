@@ -39,6 +39,15 @@ public class VideoService {
             Map.entry("呼吸", "呼吸")
     );
 
+    private static final Map<String, List<String>> BODY_PART_ALIASES = Map.ofEntries(
+            Map.entry("颈部", List.of("颈", "颈椎", "脖子", "头颈")),
+            Map.entry("肩部", List.of("肩", "肩颈", "斜方肌", "肩膀")),
+            Map.entry("背部", List.of("背", "上背", "下背", "脊柱", "胸背")),
+            Map.entry("腰部", List.of("腰", "腰背", "腰椎", "核心")),
+            Map.entry("腿部", List.of("腿", "大腿", "小腿", "膝", "踝", "下肢")),
+            Map.entry("手腕", List.of("手腕", "腕", "手臂", "手", "前臂"))
+    );
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -282,8 +291,10 @@ public class VideoService {
     private double calculateVideoScore(String videoName, Map<String, Double> feedbackScores, String normalizedBodyPart) {
         String normalizedVideo = normalizeKeyword(videoName.replaceFirst("\\.[^.]+$", ""));
         double score = 0.0;
-        if (!normalizedBodyPart.isEmpty() && normalizedVideo.contains(normalizedBodyPart)) {
-            score += 2.0;
+        for (String keyword : resolveBodyPartKeywords(normalizedBodyPart)) {
+            if (normalizedVideo.contains(keyword)) {
+                score += keyword.length() >= 2 ? 2.0 : 1.2;
+            }
         }
         for (Map.Entry<String, Double> entry : feedbackScores.entrySet()) {
             if (normalizedVideo.contains(entry.getKey()) || entry.getKey().contains(normalizedVideo)) {
@@ -300,5 +311,33 @@ public class VideoService {
         return value.replaceAll("\\s+", "")
                 .replaceAll("[^\\p{IsHan}A-Za-z0-9]", "")
                 .toLowerCase(Locale.ROOT);
+    }
+
+    private List<String> resolveBodyPartKeywords(String normalizedBodyPart) {
+        if (normalizedBodyPart == null || normalizedBodyPart.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        LinkedHashSet<String> keywords = new LinkedHashSet<>();
+        keywords.add(normalizedBodyPart);
+
+        String bodyPartWithoutSuffix = normalizedBodyPart.endsWith("部")
+                ? normalizedBodyPart.substring(0, normalizedBodyPart.length() - 1)
+                : normalizedBodyPart;
+        if (!bodyPartWithoutSuffix.isEmpty()) {
+            keywords.add(bodyPartWithoutSuffix);
+        }
+
+        List<String> aliases = BODY_PART_ALIASES.get(normalizedBodyPart);
+        if (aliases != null) {
+            for (String alias : aliases) {
+                String normalizedAlias = normalizeKeyword(alias);
+                if (!normalizedAlias.isEmpty()) {
+                    keywords.add(normalizedAlias);
+                }
+            }
+        }
+
+        return new ArrayList<>(keywords);
     }
 }
