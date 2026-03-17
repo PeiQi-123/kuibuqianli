@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../widgets/custom_textfield.dart';
 import '../widgets/custom_button.dart';
 import '../services/auth_service.dart';
+import '../services/storage_service.dart';
 import '../utils/validators.dart';
 import 'package:go_router/go_router.dart';
 class LoginScreen extends StatefulWidget {
@@ -87,9 +88,18 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       if (result != null) {
-        // 登录成功，跳转到主页
+        // 登录成功，检查是否需要完成调查问卷
         if (mounted) {
-          context.go('/app_screen');
+          // 检查本地是否已标记调查完成
+          final isSurveyCompleted = await StorageService.isOnboardingCompleted();
+          
+          if (!isSurveyCompleted) {
+            // 跳转到调查问卷页面
+            context.go('/onboarding_survey');
+          } else {
+            // 跳转到主页
+            context.go('/app_screen');
+          }
         }
       } else {
         if (mounted) {
