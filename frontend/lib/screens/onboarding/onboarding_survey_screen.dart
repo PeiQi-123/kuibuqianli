@@ -22,46 +22,49 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
   final _formKey = GlobalKey<FormState>();
   final AuthService _authService = AuthService();
   final ApiService _apiService = ApiService();
-  
+
   // 用户基本信息
   final TextEditingController _heightController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   String _gender = '男';
   final List<String> _genders = ['男', '女'];
-  
+
   // 特殊健康状况
   final List<String> _specialConditions = [];
   final List<String> _availableConditions = [
     '脊椎病', '腰椎间盘突出', '膝关节损伤', '高血压', '孕妇', '肩周炎', '其他'
   ];
-  
+  String? _otherConditionText;
+  bool _showOtherInput = false;
+  final TextEditingController _otherConditionController = TextEditingController();
+
   // 提醒设置
   bool _remindEnabled = false;
   final TextEditingController _remindIntervalController = TextEditingController(text: '60');
   final TextEditingController _remindMaxTimesController = TextEditingController(text: '5');
-  
+
   // 免打扰时段
   final List<Map<String, String>> _avoidTimes = [];
-  
+
   // 运动偏好（可选）
   final List<String> _preferredBodyParts = [];
   final List<String> _availableBodyParts = [
     '头部', '颈部','左肩', '右肩', '胸背', '腰部', '胯部', '左手臂','右手臂','左手', '右手', '左腿', '右腿', '左膝盖','右膝盖','左脚踝','右脚踝'
   ];
-  
+
   final List<String> _exerciseScenarios = [];
   final List<String> _availableScenarios = [
     '办公久坐', '通勤间隙', '睡前放松', '起床唤醒', '用眼过度', '长时间用手', '饭后消食','运动后拉伸'
   ];
-  
+
   final List<String> _sportTypes = [];
   final List<String> _availableSportTypes = [
     '静态拉伸', '动态拉伸', '有氧运动', '微力量锻炼', '关节活动', '眼部放松', '按摩放松', '体态矫正','深呼吸'
   ];
-  
+
   bool _isLoading = false;
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,45 +87,45 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
                   style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
               ),
-              
+
               // 基本信息部分
               _buildSectionTitle('基本信息'),
               _buildBasicInfoSection(),
-              
+
               const SizedBox(height: 24),
-              
+
               // 特殊健康状况部分
               _buildSectionTitle('特殊健康状况（可选）'),
               _buildSpecialConditionsSection(),
-              
+
               const SizedBox(height: 24),
-              
+
               // 提醒设置部分
               _buildSectionTitle('久坐提醒设置'),
               _buildReminderSection(),
-              
+
               const SizedBox(height: 24),
-              
+
               // 运动偏好部分（可选）
               _buildSectionTitle('运动偏好（可选）'),
               _buildPreferencesSection(),
-              
+
               const SizedBox(height: 32),
-              
+
               // 提交按钮
               _isLoading
                   ? const Center(child: CircularProgressIndicator())
                   : CustomButton(
-                      text: '完成并开始使用',
-                      onPressed: _submitSurvey,
-                    ),
+                text: '完成并开始使用',
+                onPressed: _submitSurvey,
+              ),
             ],
           ),
         ),
       ),
     );
   }
-  
+
   Widget _buildSectionTitle(String title) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
@@ -136,7 +139,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
       ),
     );
   }
-  
+
   Widget _buildBasicInfoSection() {
     return Column(
       children: [
@@ -157,7 +160,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
           },
         ),
         const SizedBox(height: 16),
-        
+
         // 体重
         CustomTextField(
           controller: _weightController,
@@ -175,7 +178,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
           },
         ),
         const SizedBox(height: 16),
-        
+
         // 年龄
         CustomTextField(
           controller: _ageController,
@@ -193,7 +196,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
           },
         ),
         const SizedBox(height: 16),
-        
+
         // 性别
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,7 +229,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
       ],
     );
   }
-  
+
   Widget _buildSpecialConditionsSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -247,18 +250,76 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
                 setState(() {
                   if (selected) {
                     _specialConditions.add(condition);
+                    // 如果选择的是"其他"，显示输入框
+                    if (condition == '其他') {
+                      _showOtherInput = true;
+                    }
                   } else {
                     _specialConditions.remove(condition);
+                    // 如果取消选择"其他"，隐藏输入框并清空内容
+                    if (condition == '其他') {
+                      _showOtherInput = false;
+                      _otherConditionController.clear();
+                      _otherConditionText = null;
+                    }
                   }
                 });
               },
             );
           }).toList(),
         ),
+
+        // 其他条件输入框
+        if (_showOtherInput) ...[
+          const SizedBox(height: 12),
+          Card(
+            color: Colors.grey[50],
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '请输入其他健康状况:',
+                    style: TextStyle(fontWeight: FontWeight.w500),
+                  ),
+                  const SizedBox(height: 8),
+                  TextFormField(
+                    controller: _otherConditionController,
+                    decoration: InputDecoration(
+                      hintText: '例如: 糖尿病，哮喘等',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                    ),
+                    maxLines: 2,
+                    onChanged: (value) {
+                      _otherConditionText = value.trim();
+                    },
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    '多个健康状况请用逗号分隔',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ],
     );
   }
-  
+
   Widget _buildReminderSection() {
     return Column(
       children: [
@@ -272,10 +333,10 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
             });
           },
         ),
-        
+
         if (_remindEnabled) ...[
           const SizedBox(height: 16),
-          
+
           // 提醒间隔
           CustomTextField(
             controller: _remindIntervalController,
@@ -294,9 +355,9 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
               return null;
             },
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 最大提醒次数
           CustomTextField(
             controller: _remindMaxTimesController,
@@ -315,16 +376,16 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
               return null;
             },
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // 免打扰时段
           _buildAvoidTimesSection(),
         ],
       ],
     );
   }
-  
+
   Widget _buildAvoidTimesSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -394,7 +455,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
       ],
     );
   }
-  
+
   Widget _buildTimePicker({
     required String label,
     required String value,
@@ -449,7 +510,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
       ],
     );
   }
-  
+
   void _addAvoidTime() {
     setState(() {
       _avoidTimes.add({
@@ -458,19 +519,19 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
       });
     });
   }
-  
+
   void _updateAvoidTime(int index, String key, String value) {
     setState(() {
       _avoidTimes[index][key] = value;
     });
   }
-  
+
   void _removeAvoidTime(int index) {
     setState(() {
       _avoidTimes.removeAt(index);
     });
   }
-  
+
   Widget _buildPreferencesSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -500,9 +561,9 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
             );
           }).toList(),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // 运动场景
         const Text(
           '主要运动场景（可多选）',
@@ -528,9 +589,9 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
             );
           }).toList(),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // 运动类型
         const Text(
           '偏好的运动类型（可多选）',
@@ -559,16 +620,16 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
       ],
     );
   }
-  
+
   Future<void> _submitSurvey() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    
+
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       // 1. 更新用户基本信息（使用现有的updateUserInfo方法）
       final userUpdateSuccess = await _authService.updateUserInfo(
@@ -581,20 +642,20 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
         remindMaxTimes: _remindEnabled ? int.tryParse(_remindMaxTimesController.text) : null,
         remindAvoidTime: _remindEnabled && _avoidTimes.isNotEmpty ? _avoidTimes : null,
       );
-      
+
       if (!userUpdateSuccess) {
         throw Exception('用户信息更新失败');
       }
-      
+
       // 2. 保存运动偏好（使用现有的/user/preferences API）
       final userId = await StorageService.getUserId();
       if (userId == null || userId.isEmpty) {
         throw Exception('用户未登录');
       }
-      
+
       // 构建偏好数据，格式与preference_screen.dart保持一致
       final List<Map<String, dynamic>> preferences = [];
-      
+
       // 身体部位偏好
       if (_preferredBodyParts.isNotEmpty) {
         preferences.add({
@@ -602,7 +663,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
           'preferenceValue': _preferredBodyParts,
         });
       }
-      
+
       // 运动类型偏好
       if (_sportTypes.isNotEmpty) {
         preferences.add({
@@ -610,7 +671,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
           'preferenceValue': _sportTypes,
         });
       }
-      
+
       // 运动场景偏好
       if (_exerciseScenarios.isNotEmpty) {
         preferences.add({
@@ -618,34 +679,61 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
           'preferenceValue': _exerciseScenarios,
         });
       }
-      
+
       // 特殊情况（健康状况）
       if (_specialConditions.isNotEmpty) {
-        preferences.add({
-          'preferenceKey': 'special_case',
-          'preferenceValue': _specialConditions,
-        });
+        List<String> finalConditions = List.from(_specialConditions);
+
+        // 如果选择了"其他"并且有输入内容，处理其他条件
+        if (_specialConditions.contains('其他') &&
+            _otherConditionText != null &&
+            _otherConditionText!.isNotEmpty) {
+          // 移除"其他"选项
+          finalConditions.remove('其他');
+
+          // 分割用户输入的多个条件（按逗号分隔）
+          final otherConditions = _otherConditionText!
+              .split(',')
+              .map((e) => e.trim())
+              .where((e) => e.isNotEmpty)
+              .toList();
+
+          // 添加用户输入的其他条件
+          finalConditions.addAll(otherConditions);
+        } else if (_specialConditions.contains('其他') &&
+            (_otherConditionText == null || _otherConditionText!.isEmpty)) {
+          // 如果选择了"其他"但没有输入内容，移除"其他"选项
+          finalConditions.remove('其他');
+        }
+
+        // 只有当有实际条件时才添加
+        if (finalConditions.isNotEmpty) {
+          preferences.add({
+            'preferenceKey': 'special_case',
+            'preferenceValue': finalConditions,
+          });
+        }
       }
-      
+
       // 如果有偏好数据，则保存
       if (preferences.isNotEmpty) {
         final preferenceResponse = await _apiService.post('/user/preferences?userId=$userId', {
           'preferences': preferences,
         });
-        
+
         if (preferenceResponse == null || preferenceResponse['code'] != 200) {
           throw Exception('偏好设置保存失败: ${preferenceResponse?['message']}');
         }
       }
-      
+
       // 3. 标记调查已完成（仅本地标记）
       await StorageService.markOnboardingCompleted();
-      
+
       // 4. 跳转到主界面
       if (mounted) {
         context.go('/app_screen');
       }
-      
+
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -660,7 +748,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
       }
     }
   }
-  
+
   @override
   void dispose() {
     _heightController.dispose();
@@ -668,6 +756,7 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
     _ageController.dispose();
     _remindIntervalController.dispose();
     _remindMaxTimesController.dispose();
+    _otherConditionController.dispose();
     super.dispose();
   }
 }

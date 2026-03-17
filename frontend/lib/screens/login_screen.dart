@@ -5,8 +5,10 @@ import '../widgets/custom_textfield.dart';
 import '../widgets/custom_button.dart';
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
+import '../models/user_model.dart';
 import '../utils/validators.dart';
 import 'package:go_router/go_router.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -47,9 +49,9 @@ class _LoginScreenState extends State<LoginScreen> {
               _isLoading
                   ? const CircularProgressIndicator()
                   : CustomButton(
-                      text: '登录',
-                      onPressed: _handleLogin,
-                    ),
+                text: '登录',
+                onPressed: _handleLogin,
+              ),
               const SizedBox(height: 16),
               TextButton(
                 onPressed: () {
@@ -78,34 +80,71 @@ class _LoginScreenState extends State<LoginScreen> {
         _isLoading = true;
       });
 
-      final result = await _authService.login(
-        _usernameController.text.trim(),
-        _passwordController.text,
-      );
+      try {
+        // 登录并获取完整的用户模型
+        final userModel = await _authService.login(
+          _usernameController.text.trim(),
+          _passwordController.text,
+        );
 
-      setState(() {
-        _isLoading = false;
-      });
+        if (userModel != null && mounted) {
+          // 判断用户是否已填写问卷
+          // 根据返回的UserModel判断：如果有身高、体重、年龄等基本信息，说明已填写问卷
+          bool hasCompletedSurvey =
+              userModel.height != null &&
+                  userModel.weight != null &&
+                  userModel.age != null;
 
-      if (result != null) {
-        // 登录成功，检查是否需要完成调查问卷
-        if (mounted) {
-          // 检查本地是否已标记调查完成
-          final isSurveyCompleted = await StorageService.isOnboardingCompleted();
-          
-          if (!isSurveyCompleted) {
-            // 跳转到调查问卷页面
-            context.go('/onboarding_survey');
+          // 或者更严格的条件：检查是否有完整的用户信息
+          // bool hasCompletedSurvey =
+          //     userModel.height != null &&
+          //     userModel.weight != null &&
+          //     userModel.age != null &&
+          //     userModel.gender != null;
+
+          print('=== 用户问卷状态检查 ===');
+          print('用户ID: ${userModel.id}');
+          print('用户名: ${userModel.username}');
+          print('身高: ${userModel.height}');
+          print('体重: ${userModel.weight}');
+          print('年龄: ${userModel.age}');
+          print('性别: ${userModel.gender}');
+          print('是否已完成问卷: $hasCompletedSurvey');
+          print('======================');
+
+          if (hasCompletedSurvey) {
+            // 用户已填写问卷，标记本地状态并跳转到主界面
+            await StorageService.markOnboardingCompleted();
+
+            if (mounted) {
+              context.go('/app_screen');
+            }
           } else {
-            // 跳转到主页
-            context.go('/app_screen');
+            // 用户未填写问卷，确保本地状态为false并跳转到问卷页面
+            await StorageService.clearOnboardingStatus();
+
+            if (mounted) {
+              context.go('/onboarding_survey');
+            }
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('登录失败，请检查用户名和密码')),
+            );
           }
         }
-      } else {
+      } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('登录失败，请检查用户名和密码')),
+            SnackBar(content: Text('登录失败: $e')),
           );
+        }
+      } finally {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+          });
         }
       }
     }
