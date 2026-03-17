@@ -1,5 +1,6 @@
 // 用户信息详情页面
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import '../services/auth_service.dart';
 import '../models/user_model.dart';
 
@@ -13,7 +14,7 @@ class UserInfoScreen extends StatefulWidget {
 class _UserInfoScreenState extends State<UserInfoScreen> {
   final AuthService _authService = AuthService();
   UserModel? _currentUser;
-  
+
   // 表单数据
   final _formKey = GlobalKey<FormState>();
   String _username = '';
@@ -45,15 +46,28 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       _username = user?.username ?? '';
       _email = user?.email ?? '';
       _phone = user?.phone ?? '';
+
+      // 身高、体重、年龄：如果为0或null，使用默认值
       _height = user?.height ?? 0;
+      if (_height <= 0) _height = 160.0;
+
       _weight = user?.weight ?? 0;
+      if (_weight <= 0) _weight = 50.0;
+
       _age = user?.age ?? 0;
+      if (_age <= 0) _age = 16;
+
       _gender = user?.gender ?? '男';
-      
+
       // 初始化提醒设置：使用remindEnabled字段
-      _remindEnabled = user?.remindEnabled ?? true; // 默认开启提醒
+      // 注意：user?.remindEnabled 已经是布尔值（来自UserModel.fromJson的解析）
+      _remindEnabled = user?.remindEnabled ?? true;
       _remindInterval = user?.remindInterval ?? 30;
+<<<<<<< Updated upstream
       
+=======
+
+>>>>>>> Stashed changes
       // 初始化免打扰时间段
       if (user?.remindAvoidTime != null && user!.remindAvoidTime!.isNotEmpty) {
         _avoidTimes = List.from(user.remindAvoidTime!);
@@ -82,7 +96,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   Future<void> _saveUserInfo() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      
+
       // 显示加载指示器
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('正在保存用户信息...')),
@@ -107,7 +121,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         if (success) {
           // 保存成功，重新加载用户数据
           await _loadCurrentUser();
+<<<<<<< Updated upstream
           
+=======
+
+>>>>>>> Stashed changes
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('用户信息已保存成功')),
           );
@@ -145,123 +163,129 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       body: _currentUser == null
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // 基本信息
-                    _buildSectionTitle('基本信息'),
-                    _buildTextField(
-                      label: '用户名',
-                      initialValue: _username,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '请输入用户名';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => _username = value!,
-                    ),
-                    _buildTextField(
-                      label: '邮箱',
-                      initialValue: _email,
-                      keyboardType: TextInputType.emailAddress,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '请输入邮箱';
-                        }
-                        if (!value.contains('@')) {
-                          return '请输入有效的邮箱地址';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => _email = value!,
-                    ),
-                    _buildTextField(
-                      label: '电话',
-                      initialValue: _phone,
-                      keyboardType: TextInputType.phone,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '请输入电话';
-                        }
-                        if (value.length != 11) {
-                          return '请输入11位手机号码';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => _phone = value!,
-                    ),
-                    _buildTextField(
-                      label: '密码',
-                      initialValue: '',
-                      obscureText: true,
-                      hintText: '留空表示不修改',
-                      validator: (value) {
-                        if (value != null && value.isNotEmpty && value.length < 6) {
-                          return '密码至少6位';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => _password = value ?? '',
-                    ),
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // 基本信息
+              _buildSectionTitle('基本信息'),
+              _buildTextField(
+                label: '用户名',
+                initialValue: _username,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '请输入用户名';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _username = value!,
+              ),
+              _buildTextField(
+                label: '邮箱',
+                initialValue: _email,
+                keyboardType: TextInputType.emailAddress,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '请输入邮箱';
+                  }
+                  if (!value.contains('@')) {
+                    return '请输入有效的邮箱地址';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _email = value!,
+              ),
+               _buildTextField(
+                label: '电话（可选）',
+                initialValue: _phone,
+                keyboardType: TextInputType.phone,
+                validator: (value) {
+                  // 电话为可选字段，可以为空
+                  if (value != null && value.isNotEmpty) {
+                    // 如果用户输入了电话，则验证格式
+                    if (value.length != 11) {
+                      return '请输入11位手机号码（或留空）';
+                    }
+                  }
+                  return null;
+                },
+                onSaved: (value) => _phone = value ?? '',
+              ),
+              _buildTextField(
+                label: '密码',
+                initialValue: '',
+                obscureText: true,
+                hintText: '留空表示不修改',
+                validator: (value) {
+                  if (value != null && value.isNotEmpty && value.length < 6) {
+                    return '密码至少6位';
+                  }
+                  return null;
+                },
+                onSaved: (value) => _password = value ?? '',
+              ),
 
-                    const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
-                    // 健康信息
-                    _buildSectionTitle('健康信息'),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildNumberField(
-                            label: '身高 (cm)',
-                            value: _height,
-                            min: 50,
-                            max: 250,
-                            onChanged: (value) => setState(() => _height = value),
-                          ),
-                        ),
-                      ],
+              // 健康信息
+              _buildSectionTitle('健康信息'),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildNumberField(
+                      label: '身高 (cm)',
+                      value: _height > 0 ? _height : 160.0,
+                      min: 50,
+                      max: 250,
+                      onChanged: (value) => setState(() => _height = value),
+                      isInt: true,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildNumberField(
-                            label: '体重 (kg)',
-                            value: _weight,
-                            min: 20,
-                            max: 200,
-                            onChanged: (value) => setState(() => _weight = value),
-                          ),
-                        ),
-                      ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildNumberField(
+                      label: '体重 (kg)',
+                      value: _weight > 0 ? _weight : 50.0,
+                      min: 20,
+                      max: 200,
+                      onChanged: (value) => setState(() => _weight = value),
+                      isInt: false, // 体重支持0.5kg增量
                     ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildNumberField(
-                            label: '年龄',
-                            value: _age.toDouble(),
-                            min: 1,
-                            max: 120,
-                            onChanged: (value) => setState(() => _age = value.toInt()),
-                          ),
-                        ),
-                      ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildNumberField(
+                      label: '年龄',
+                      value: _age > 0 ? _age.toDouble() : 16.0,
+                      min: 16,
+                      max: 120,
+                      onChanged: (value) => setState(() => _age = value.toInt()),
+                      isInt: true,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildGenderSelector(),
-                        ),
-                      ],
-                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: _buildGenderSelector(),
+                  ),
+                ],
+              ),
 
-                    const SizedBox(height: 24),
+              const SizedBox(height: 24),
 
+<<<<<<< Updated upstream
                     // 提醒设置
                     _buildSectionTitle('提醒设置'),
                     SwitchListTile(
@@ -281,26 +305,47 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                       const SizedBox(height: 16),
                       _buildAvoidTimesSection(),
                     ],
+=======
+              // 提醒设置
+              _buildSectionTitle('提醒设置'),
+              SwitchListTile(
+                title: const Text('启用提醒'),
+                value: _remindEnabled,
+                onChanged: (value) => setState(() => _remindEnabled = value),
+              ),
+              if (_remindEnabled) ...[
+                const SizedBox(height: 8),
+                _buildNumberField(
+                  label: '提醒间隔 (分钟)',
+                  value: _remindInterval.toDouble(),
+                  min: 5,
+                  max: 240,
+                  onChanged: (value) => setState(() => _remindInterval = value.toInt()),
+                ),
+                const SizedBox(height: 16),
+                _buildAvoidTimesSection(),
+              ],
+>>>>>>> Stashed changes
 
-                    const SizedBox(height: 32),
+              const SizedBox(height: 32),
 
-                    // 保存按钮
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          await _saveUserInfo();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        child: const Text('保存用户信息'),
-                      ),
-                    ),
-                  ],
+              // 保存按钮
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    await _saveUserInfo();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: const Text('保存用户信息'),
                 ),
               ),
-            ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -352,7 +397,16 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     required double min,
     required double max,
     required void Function(double) onChanged,
+    bool isInt = true,
   }) {
+    // 生成选项列表
+    final List<double> options = [];
+    for (double i = min; i <= max; i += (isInt ? 1 : 0.5)) {
+      options.add(i);
+    }
+
+    final int selectedIndex = options.indexOf(value);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -361,28 +415,39 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
           style: const TextStyle(fontSize: 14, color: Colors.grey),
         ),
         const SizedBox(height: 4),
-        Row(
-          children: [
-            IconButton(
-              onPressed: value > min
-                  ? () => onChanged(value - 1)
-                  : null,
-              icon: const Icon(Icons.remove),
+        Container(
+          height: 150,
+          decoration: BoxDecoration(
+            color: Colors.grey[50],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: Colors.grey[300]!),
+          ),
+          child: CupertinoPicker(
+            itemExtent: 40,
+            scrollController: FixedExtentScrollController(
+              initialItem: selectedIndex >= 0 ? selectedIndex : 0,
             ),
-            Expanded(
-              child: Text(
-                value.toStringAsFixed(value == value.toInt() ? 0 : 1),
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
-            IconButton(
-              onPressed: value < max
-                  ? () => onChanged(value + 1)
-                  : null,
-              icon: const Icon(Icons.add),
-            ),
-          ],
+            onSelectedItemChanged: (index) {
+              onChanged(options[index]);
+            },
+            children: options.map((option) {
+              return Center(
+                child: Text(
+                  isInt ? option.toInt().toString() : option.toStringAsFixed(1),
+                  style: const TextStyle(fontSize: 20),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          '当前选择: ${isInt ? value.toInt() : value.toStringAsFixed(1)}',
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.blue[600],
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ],
     );
@@ -518,12 +583,12 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
               hour: int.parse(time[0]),
               minute: int.parse(time[1]),
             );
-            
+
             final selectedTime = await showTimePicker(
               context: context,
               initialTime: initialTime,
             );
-            
+
             if (selectedTime != null) {
               final formattedTime =
                   '${selectedTime.hour.toString().padLeft(2, '0')}:'

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 2026-03-10T02:59:29.758+08:00  WARN 35084 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=3h30m11s450ms683µs600ns).
 2026-03-10T08:43:09.379+08:00  WARN 35084 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=5h43m41s928ms949µs200ns).
 2026-03-10T08:43:35.828+08:00  INFO 35084 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
@@ -1973,3 +1974,7 @@ com.kuibuqianli.common.exception.BusinessException: 不存在
 2026-03-10T21:50:12.742+08:00  INFO 38016 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
 2026-03-10T21:50:13.063+08:00  INFO 38016 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@18c3b28c
 2026-03-10T21:50:13.067+08:00  INFO 38016 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+=======
+2026-03-17T03:11:05.183+08:00  WARN 46624 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=2h29m30s394ms514µs800ns).
+2026-03-17T10:46:00.049+08:00  WARN 46624 --- [HikariPool-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=7h35m4s143ms80µs300ns).
+>>>>>>> Stashed changes

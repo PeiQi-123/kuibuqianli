@@ -13,6 +13,10 @@ spring:
       connection-timeout: 30000
       maximum-pool-size: 20
       minimum-idle: 5
+      max-lifetime: 28770000       # 连接最大存活时间（必须小于MySQL的8小时超时）
+      idle-timeout: 600000         # 空闲连接超时时间
+      connection-test-query: SELECT 1  # 验证连接有效性的SQL
+      validation-timeout: 5000     # 连接校验超时时间
 
   # HTTP编码配置
   servlet:

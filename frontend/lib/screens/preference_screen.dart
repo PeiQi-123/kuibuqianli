@@ -14,22 +14,19 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
   final ApiService _apiService = ApiService();
   bool _isLoading = true;
   bool _isSaving = false;
+<<<<<<< Updated upstream
   
+=======
+
+>>>>>>> Stashed changes
   // 身体部位偏好
-  final List<String> bodyParts = ['头部', '脖子','脊椎', '腰椎', '肩周', '手腕', '手指', '眼睛', '小臂','大臂','大腿', '小腿', '脚踝', '腰背', '腹部','全身'];
+  final List<String> bodyParts = ['头部', '颈部','左肩', '右肩', '胸背', '腰部', '胯部', '左手臂','右手臂','左手', '右手', '左腿', '右腿', '左膝盖','右膝盖','左脚踝','右脚踝'];
   List<String> selectedBodyParts = [];
 
   // 动作难度偏好（多选）
   final List<String> difficulties = ['零基础', '入门级', '有难度'];
   List<String> selectedDifficulties = [];
 
-  // 偏好时长（分钟）（多选）
-  final List<int> durations = [1, 2, 3,4, 5, 10];
-  List<int> selectedDurations = [];
-
-  // 节奏偏好（多选）
-  final List<String> paceOptions = ['快', '中', '慢'];
-  List<String> selectedPaces = [];
 
   // 运动类型偏好（多选）
   final List<String> sportTypes = ['静态拉伸', '动态拉伸', '有氧运动', '微力量锻炼', '关节活动', '眼部放松', '按摩放松', '体态矫正','深呼吸'];
@@ -73,12 +70,12 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
         actions: [
           IconButton(
             onPressed: _isSaving ? null : _savePreferences,
-            icon: _isSaving 
+            icon: _isSaving
                 ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            )
                 : const Icon(Icons.save),
             tooltip: '保存偏好',
           ),
@@ -129,9 +126,7 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
 
             const SizedBox(height: 24),
 
-            // 偏好时长
-            _buildSectionTitle('偏好的运动时长（分钟）'),
-            _buildDurationSelector(),
+
 
             const SizedBox(height: 24),
 
@@ -175,27 +170,6 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
 
             const SizedBox(height: 24),
 
-            // 节奏偏好
-            _buildSectionTitle('节奏偏好'),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '偏好动作的节奏速度',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _buildPaceSelector(),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
 
             // 特殊情况
             _buildSectionTitle('特殊情况'),
@@ -253,73 +227,8 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
 
 
 
-  Widget _buildDurationSelector() {
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: durations.map((duration) {
-        final isSelected = selectedDurations.contains(duration);
-        return FilterChip(
-          label: Text('$duration分钟'),
-          selected: isSelected,
-          onSelected: (selected) {
-            setState(() {
-              if (selected) {
-                if (!selectedDurations.contains(duration)) {
-                  selectedDurations = [...selectedDurations, duration];
-                }
-              } else {
-                selectedDurations = selectedDurations.where((d) => d != duration).toList();
-              }
-            });
-          },
-          selectedColor: Colors.blue.shade100,
-          checkmarkColor: Colors.blue,
-          backgroundColor: Colors.grey[100],
-          labelStyle: TextStyle(
-            color: isSelected ? Colors.blue : Colors.grey[700],
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        );
-      }).toList(),
-    );
-  }
 
 
-
-  Widget _buildPaceSelector() {
-    final List<String> paceOptions = ['快', '中', '慢'];
-    
-    return Wrap(
-      spacing: 8,
-      runSpacing: 8,
-      children: paceOptions.map((pace) {
-        final isSelected = selectedPaces.contains(pace);
-        return FilterChip(
-          label: Text(pace),
-          selected: isSelected,
-          onSelected: (selected) {
-            setState(() {
-              if (selected) {
-                if (!selectedPaces.contains(pace)) {
-                  selectedPaces = [...selectedPaces, pace];
-                }
-              } else {
-                selectedPaces = selectedPaces.where((p) => p != pace).toList();
-              }
-            });
-          },
-          selectedColor: Colors.blue.shade100,
-          checkmarkColor: Colors.blue,
-          backgroundColor: Colors.grey[100],
-          labelStyle: TextStyle(
-            color: isSelected ? Colors.blue : Colors.grey[700],
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          ),
-        );
-      }).toList(),
-    );
-  }
 
   Widget _buildSpecialConditions() {
     return Column(
@@ -355,9 +264,9 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
             );
           }).toList(),
         ),
-        
+
         const SizedBox(height: 16),
-        
+
         // 自定义特殊情况输入
         TextFormField(
           initialValue: customCondition,
@@ -370,9 +279,9 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
           ),
           onChanged: (value) => customCondition = value,
         ),
-        
+
         const SizedBox(height: 8),
-        
+
         Text(
           '例如：糖尿病、心脏病、骨质疏松等',
           style: TextStyle(
@@ -411,16 +320,18 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
       }
 
       final response = await _apiService.get('/user/preferences', params: {'userId': userId});
+<<<<<<< Updated upstream
       
+=======
+
+>>>>>>> Stashed changes
       if (response != null && response['code'] == 200) {
         final List<dynamic> preferences = response['data'];
-        
+
         // 清空当前选择
         setState(() {
           selectedBodyParts = [];
           selectedDifficulties = [];
-          selectedDurations = [];
-          selectedPaces = [];
           selectedSportTypes = [];
           selectedScenes = [];
           selectedConditions = [];
@@ -454,30 +365,18 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
                 selectedScenes = stringValues;
               });
               break;
-            case 'duration':
-              setState(() {
-                selectedDurations = stringValues.map((v) {
-                  // 处理"5分钟"格式，提取数字
-                  final match = RegExp(r'(\d+)').firstMatch(v);
-                  return match != null ? int.parse(match.group(1)!) : 5;
-                }).toList();
-              });
-              break;
+
             case 'special_case':
-              // 分离预设条件和自定义条件
+            // 分离预设条件和自定义条件
               final presetConditions = stringValues.where((v) => specialConditions.contains(v)).toList();
               final customConditions = stringValues.where((v) => !specialConditions.contains(v)).toList();
-              
+
               setState(() {
                 selectedConditions = presetConditions;
                 customCondition = customConditions.isNotEmpty ? customConditions.first : '';
               });
               break;
-            case 'pace':
-              setState(() {
-                selectedPaces = stringValues;
-              });
-              break;
+
           }
         }
       }
@@ -487,8 +386,7 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
       setState(() {
         selectedBodyParts = ['全身', '大臂'];
         selectedDifficulties = ['零基础'];
-        selectedDurations = [2];
-        selectedPaces = ['中'];
+
         selectedSportTypes = ['静态拉伸', '有氧运动'];
         selectedScenes = ['办公久坐', '通勤间隙'];
       });
@@ -538,11 +436,7 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
         'preferenceValue': selectedScenes,
       });
 
-      // 时长（转换为"X分钟"格式）
-      preferences.add({
-        'preferenceKey': 'duration',
-        'preferenceValue': selectedDurations.map((d) => '$d分钟').toList(),
-      });
+
 
       // 特殊情况（合并预设和自定义）
       final List<String> allSpecialCases = [...selectedConditions];
@@ -554,11 +448,6 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
         'preferenceValue': allSpecialCases,
       });
 
-      // 节奏
-      preferences.add({
-        'preferenceKey': 'pace',
-        'preferenceValue': selectedPaces,
-      });
 
       // 发送到后端
       final response = await _apiService.post('/user/preferences?userId=$userId', {

@@ -69,12 +69,15 @@ class UserModel {
       height: json['height'] != null ? double.tryParse(json['height'].toString()) : null,
       weight: json['weight'] != null ? double.tryParse(json['weight'].toString()) : null,
       bmi: json['bmi'] != null ? double.tryParse(json['bmi'].toString()) : null,
-      bmiType: json['bmi_type'],
+      bmiType: json['bmiType'] ?? json['bmi_type'],
       age: json['age'] != null ? int.tryParse(json['age'].toString()) : null,
       gender: json['gender'],
-      remindEnabled: json['remind_enabled'] != null ? (json['remind_enabled'] is bool ? json['remind_enabled'] : json['remind_enabled'] == 1 || json['remind_enabled'] == true) : null,
-      remindInterval: json['remind_interval'] != null ? int.tryParse(json['remind_interval'].toString()) : null,
-      remindMaxTimes: json['remind_max_times'] != null ? int.tryParse(json['remind_max_times'].toString()) : null,
+      remindEnabled: (json['remindEnabled'] ?? json['remind_enabled']) != null ? 
+          ((json['remindEnabled'] ?? json['remind_enabled']) is bool ? 
+            (json['remindEnabled'] ?? json['remind_enabled']) : 
+            (json['remindEnabled'] ?? json['remind_enabled']) == 1 || (json['remindEnabled'] ?? json['remind_enabled']) == true) : null,
+      remindInterval: (json['remindInterval'] ?? json['remind_interval']) != null ? int.tryParse((json['remindInterval'] ?? json['remind_interval']).toString()) : null,
+      remindMaxTimes: (json['remindMaxTimes'] ?? json['remind_max_times']) != null ? int.tryParse((json['remindMaxTimes'] ?? json['remind_max_times']).toString()) : null,
       remindAvoidTime: avoidTime,
     );
   }
@@ -92,10 +95,10 @@ class UserModel {
       'bmi_type': bmiType,
       'age': age,
       'gender': gender,
-      'remind_enabled': remindEnabled,
-      'remind_interval': remindInterval,
-      'remind_max_times': remindMaxTimes,
-      'remind_avoid_time': remindAvoidTime,
+      'remindEnabled': remindEnabled,
+      'remindInterval': remindInterval,
+      'remindMaxTimes': remindMaxTimes,
+      'remindAvoidTime': remindAvoidTime,
     };
   }
 }

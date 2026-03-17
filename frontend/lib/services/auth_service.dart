@@ -118,7 +118,7 @@ class AuthService {
       if (weight != null) updateData['weight'] = weight;
       if (age != null) updateData['age'] = age;
       if (gender != null) updateData['gender'] = gender;
-      if (remindEnabled != null) updateData['remindEnabled'] = remindEnabled;
+      if (remindEnabled != null) updateData['remindEnabled'] = remindEnabled ? 1 : 0;
       if (remindInterval != null) updateData['remindInterval'] = remindInterval;
       if (remindAvoidTime != null) updateData['remindAvoidTime'] = remindAvoidTime;
 
