@@ -76,3 +76,39 @@ ai:
   semantic-api-url: http://localhost:8000/semantic
   video-api-url: http://localhost:8001/video
   api-key: your_ai_api_key
+
+# ========== 新增：DeepSeek API配置 ==========
+deepseek:
+  api:
+    # DeepSeek API密钥
+    key: sk-04cf1565ef1648118ee522f05dfee000
+    # DeepSeek API地址
+    url: https://api.deepseek.com/chat/completions
+    # 使用的模型
+    model: deepseek-chat
+    # 连接超时时间（毫秒）
+    connect-timeout: 30000
+    # 读取超时时间（毫秒）
+    read-timeout: 60000
+    # 最大响应token数
+    max-tokens: 1000
+    # 温度参数（0-2之间，越低越确定性，越高越创造性）
+    temperature: 0.7
+
+# 微运动服务专用配置
+micro-motion:
+  # 默认运动时长（秒）
+  default-duration: 60
+  # 是否启用AI生成
+  ai-enabled: true
+  # 缓存提示词（分钟）
+  prompt-cache-minutes: 30
+
+# 日志级别配置（添加DeepSeek服务日志）
+logging:
+  level:
+    com.kuibuqianli: debug
+    com.kuibuqianli.service.DeepSeekService: debug
+    com.kuibuqianli.controller.MicroMotionController: debug
+    org.springframework.web: info
+    org.hibernate.SQL: debug

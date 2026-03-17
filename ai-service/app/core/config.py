@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     # AI 模型配置
     ai_model_url: Optional[str] = None
     ai_api_key: Optional[str] = None
+
+    # 后端服务配置
+    backend_api_base_url: str = "http://127.0.0.1:8080/api"
     
     # 数据库配置（如需要）
     database_url: Optional[str] = None

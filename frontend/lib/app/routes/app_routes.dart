@@ -12,11 +12,16 @@ import '../../screens/user_center_screen.dart';
 import '../../screens/user_info_screen.dart';
 import '../../screens/preference_screen.dart';
 import '../../screens/health_data_screen.dart';
+<<<<<<< HEAD
 import '../../screens/onboarding/onboarding_survey_screen.dart';
 import 'package:go_router/go_router.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
+=======
+import 'package:go_router/go_router.dart';
+
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
 final GoRouter router = GoRouter(
   navigatorKey: rootNavigatorKey,
   initialLocation: '/',
@@ -59,10 +64,13 @@ GoRoute(
       builder: (context, state) => const ChoosePartOfBodyScreen(),
     ),
     GoRoute(
+<<<<<<< HEAD
       path: '/preview/body_model',
       builder: (context, state) => const ChoosePartOfBodyScreen(),
     ),
     GoRoute(
+=======
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
       path: '/video_player',
       builder: (context, state) {
         final motionData = state.extra as Map<String, dynamic>?;
@@ -85,10 +93,13 @@ GoRoute(
       path: '/health_data',
       builder: (context, state) => const HealthDataScreen(),
     ),
+<<<<<<< HEAD
     GoRoute(
       path: '/onboarding_survey',
       builder: (context, state) => const OnboardingSurveyScreen(),
     ),
+=======
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
   ],
 );
 

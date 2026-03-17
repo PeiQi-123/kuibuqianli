@@ -4,7 +4,10 @@ import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import '../services/api_service.dart';
+<<<<<<< HEAD
 import '../services/sedentary_reminder_service.dart';
+=======
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
 import '../services/storage_service.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -26,9 +29,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   bool _isPlaying = false;
   bool _isSavingRecord = false;
   bool _recordSaved = false;
+<<<<<<< HEAD
   int? _savedRecordId;
   bool _isSavingFeedback = false;
   String? _feedbackTag;
+=======
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
 
   VideoPlayerController? _controller;
   bool _isControllerInitialized = false;
@@ -135,10 +141,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
       if (!mounted) return;
       if (response != null && response['code'] == 200) {
+<<<<<<< HEAD
         final data = response['data'] as Map<String, dynamic>?;
         _savedRecordId = data?['recordId'] as int?;
         await SedentaryReminderService.instance.markExerciseCompleted();
         if (!mounted) return;
+=======
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
         setState(() {
           _recordSaved = true;
           _isSavingRecord = false;
@@ -146,7 +155,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('已记录到健康数据')), 
         );
+<<<<<<< HEAD
         await _showFeedbackDialog();
+=======
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
       } else {
         setState(() => _isSavingRecord = false);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -162,6 +174,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     }
   }
 
+<<<<<<< HEAD
   Future<void> _showFeedbackDialog() async {
     if (_savedRecordId == null || !mounted) return;
 
@@ -250,6 +263,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     }
   }
 
+=======
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
   int _estimatedDurationSeconds() {
     final durationFromMotion = widget.motionData?['duration'];
     if (durationFromMotion is int && durationFromMotion > 0) {
@@ -589,6 +604,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   if (_selectedVideo != null && steps.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+<<<<<<< HEAD
                       child: Column(
                         children: [
                           SizedBox(
@@ -623,6 +639,21 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             ),
                           ],
                         ],
+=======
+                      child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton.icon(
+                          onPressed: _recordSaved || _isSavingRecord ? null : _saveExerciseRecord,
+                          icon: _isSavingRecord
+                              ? const SizedBox(
+                                  height: 16,
+                                  width: 16,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : Icon(_recordSaved ? Icons.check_circle : Icons.task_alt),
+                          label: Text(_recordSaved ? '本次运动已记录' : '完成本次运动并写入健康数据'),
+                        ),
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
                       ),
                     ),
                    

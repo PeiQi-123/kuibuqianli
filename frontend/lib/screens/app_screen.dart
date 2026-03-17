@@ -41,6 +41,7 @@ class _AppScreenState extends State<AppScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
+<<<<<<< HEAD
               AnimatedBuilder(
                 animation: SedentaryReminderService.instance,
                 builder: (context, _) => _buildReminderCard(context),
@@ -86,6 +87,31 @@ class _AppScreenState extends State<AppScreen> {
                     ),
                   ],
                 ),
+=======
+              _buildMenuCard(
+                context,
+                icon: Icons.fitness_center,
+                title: '微运动推荐与视频指导',
+                subtitle: 'AI 智能推荐运动方案',
+                color: Colors.blue,
+                onTap: () => context.push('/motion_recommendation'),
+              ),
+              _buildMenuCard(
+                context,
+                icon: Icons.camera_alt,
+                title: '姿态检测',
+                subtitle: '实时检测运动姿态',
+                color: Colors.green,
+                onTap: () => context.push('/posture_detection'),
+              ),
+              _buildMenuCard(
+                context,
+                icon: Icons.bar_chart,
+                title: '健康数据',
+                subtitle: '查看运动统计数据',
+                color: Colors.purple,
+                onTap: () => context.push('/health_data'),
+>>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
               ),
             ],
           ),

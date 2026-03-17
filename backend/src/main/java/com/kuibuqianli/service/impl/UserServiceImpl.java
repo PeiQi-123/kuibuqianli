@@ -22,6 +22,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import com.kuibuqianli.dto.LoginResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Map;
 
@@ -204,6 +206,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             if (userDTO.getGender() != null) {
                 user.setGender(userDTO.getGender());
             }
+
+            updateHealthMetrics(user);
             
             // 更新提醒设置
             if (userDTO.getRemindEnabled() != null) {
@@ -332,6 +336,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             System.err.println("Save user preferences error: " + e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private void updateHealthMetrics(User user) {
+        if (user.getHeight() == null || user.getWeight() == null || BigDecimal.ZERO.compareTo(user.getHeight()) == 0) {
+            return;
+        }
+
+        BigDecimal heightMeter = user.getHeight().divide(BigDecimal.valueOf(100), 4, RoundingMode.HALF_UP);
+        BigDecimal bmi = user.getWeight().divide(heightMeter.multiply(heightMeter), 2, RoundingMode.HALF_UP);
+        user.setBmi(bmi);
+
+        double bmiValue = bmi.doubleValue();
+        if (bmiValue < 18.5) {
+            user.setBmiType("偏瘦");
+        } else if (bmiValue < 24.0) {
+            user.setBmiType("正常");
+        } else if (bmiValue < 28.0) {
+            user.setBmiType("偏胖");
+        } else {
+            user.setBmiType("肥胖");
         }
     }
 
