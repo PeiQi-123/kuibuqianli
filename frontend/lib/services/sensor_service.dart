@@ -7,7 +7,7 @@ class SensorService {
   StreamSubscription<GyroscopeEvent>? _gyroscopeSubscription;
 
   final StreamController<Map<String, double>> _sensorDataController =
-      StreamController<Map<String, double>>.broadcast();
+  StreamController<Map<String, double>>.broadcast();
 
   Stream<Map<String, double>> get sensorDataStream => _sensorDataController.stream;
 
@@ -18,7 +18,8 @@ class SensorService {
     if (_isRunning) return;
     _isRunning = true;
 
-    _accelerometerSubscription = accelerometerEventStream().listen((event) {
+
+    _accelerometerSubscription = accelerometerEvents.listen((event) {
       _sensorDataController.add(<String, double>{
         'ax': event.x,
         'ay': event.y,
@@ -26,7 +27,8 @@ class SensorService {
       });
     });
 
-    _gyroscopeSubscription = gyroscopeEventStream().listen((event) {
+
+    _gyroscopeSubscription = gyroscopeEvents.listen((event) {
       _sensorDataController.add(<String, double>{
         'gx': event.x,
         'gy': event.y,

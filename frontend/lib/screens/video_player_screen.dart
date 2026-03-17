@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import '../services/api_service.dart';
+import '../services/sedentary_reminder_service.dart';
+import '../services/storage_service.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
   final Map<String, dynamic>? motionData;
@@ -17,19 +19,28 @@ class VideoPlayerScreen extends StatefulWidget {
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   final ApiService _apiService = ApiService();
   
-  List<String> _availableVideos = [];
+  List<String> _matchedVideos = [];
   bool _isLoading = false;
   String? _selectedVideo;
   int _currentStep = 0;
   bool _isPlaying = false;
+  bool _isSavingRecord = false;
+  bool _recordSaved = false;
+  int? _savedRecordId;
+  bool _isSavingFeedback = false;
+  String? _feedbackTag;
 
   VideoPlayerController? _controller;
   bool _isControllerInitialized = false;
+  bool _isAdvancingVideo = false;
 
-  bool get _isMobileDevice {
-    if (kIsWeb) return false;
+  bool get _supportsEmbeddedVideo {
+    if (kIsWeb) return true;
     return defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS;
+        defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.windows ||
+        defaultTargetPlatform == TargetPlatform.macOS ||
+        defaultTargetPlatform == TargetPlatform.linux;
   }
 
   @override
@@ -40,6 +51,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   void dispose() {
+    _controller?.removeListener(_handleVideoProgress);
     _controller?.dispose();
     super.dispose();
   }
@@ -54,6 +66,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     );
 
     if (!await canLaunchUrl(url)) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('无法打开视频链接')),
       );
@@ -66,11 +79,31 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   Future<void> _loadVideos() async {
     setState(() => _isLoading = true);
     try {
-      final response = await _apiService.get('/video/list');
+      final userId = await StorageService.getUserId();
+      final params = <String, String>{};
+      if (userId != null && userId.isNotEmpty) {
+        params['userId'] = userId;
+      }
+      final bodyPart = widget.motionData?['body_part']?.toString();
+      if (bodyPart != null && bodyPart.isNotEmpty) {
+        params['bodyPart'] = bodyPart;
+      }
+
+      final response = await _apiService.get(
+        '/video/list',
+        params: params.isEmpty ? null : params,
+      );
       if (response != null && response['code'] == 200) {
+        final videos = List<String>.from(response['data'] ?? []);
+        final matchedVideos = _matchVideosToActions(videos);
         setState(() {
-          _availableVideos = List<String>.from(response['data'] ?? []);
+          _matchedVideos = matchedVideos;
+          _selectedVideo = matchedVideos.isNotEmpty ? matchedVideos.first : null;
+          _currentStep = 0;
         });
+        if (_selectedVideo != null) {
+          await _initVideoController(autoPlay: true);
+        }
       }
     } catch (e) {
       debugPrint('加载视频列表失败: $e');
@@ -78,10 +111,167 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     setState(() => _isLoading = false);
   }
 
-  Future<void> _initVideoController() async {
-    if (!_isMobileDevice || _selectedVideo == null) return;
+  Future<void> _saveExerciseRecord() async {
+    if (_isSavingRecord || _recordSaved) return;
+
+    final userId = await StorageService.getUserId();
+    if (userId == null || userId.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('未获取到当前用户，无法保存运动记录')),
+      );
+      return;
+    }
+
+    setState(() => _isSavingRecord = true);
+
+    try {
+      final response = await _apiService.post('/motion/record?userId=$userId', {
+        'motionId': widget.motionData?['motion_id'] ?? widget.motionData?['motion_name'] ?? 'custom_motion',
+        'motionName': widget.motionData?['motion_name'] ?? '微运动训练',
+        'duration': _estimatedDurationSeconds(),
+        'completed': true,
+      });
+
+      if (!mounted) return;
+      if (response != null && response['code'] == 200) {
+        final data = response['data'] as Map<String, dynamic>?;
+        _savedRecordId = data?['recordId'] as int?;
+        await SedentaryReminderService.instance.markExerciseCompleted();
+        if (!mounted) return;
+        setState(() {
+          _recordSaved = true;
+          _isSavingRecord = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('已记录到健康数据')), 
+        );
+        await _showFeedbackDialog();
+      } else {
+        setState(() => _isSavingRecord = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response?['message']?.toString() ?? '保存运动记录失败')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isSavingRecord = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('保存运动记录失败: $e')),
+      );
+    }
+  }
+
+  Future<void> _showFeedbackDialog() async {
+    if (_savedRecordId == null || !mounted) return;
+
+    final result = await showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('本次推荐是否合适？'),
+          content: const Text('你的反馈会参与后续偏好学习，让下次推荐更贴近你的需求。'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(),
+              child: const Text('稍后再说'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('too_easy'),
+              child: const Text('太简单'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('fit'),
+              child: const Text('合适'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('too_hard'),
+              child: const Text('太难'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop('dislike'),
+              child: const Text('不喜欢'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (result != null) {
+      await _submitFeedback(result);
+    }
+  }
+
+  Future<void> _submitFeedback(String tag) async {
+    if (_savedRecordId == null || _isSavingFeedback) return;
+    final userId = await StorageService.getUserId();
+    if (userId == null || userId.isEmpty) return;
+
+    setState(() => _isSavingFeedback = true);
+    try {
+      final response = await _apiService.post('/motion/feedback?userId=$userId', {
+        'recordId': _savedRecordId,
+        'feedbackTag': tag,
+      });
+      if (!mounted) return;
+      if (response != null && response['code'] == 200) {
+        setState(() {
+          _feedbackTag = tag;
+          _isSavingFeedback = false;
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(_feedbackLabel(tag))),
+        );
+      } else {
+        setState(() => _isSavingFeedback = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response?['message']?.toString() ?? '保存反馈失败')),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isSavingFeedback = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('保存反馈失败: $e')),
+      );
+    }
+  }
+
+  String _feedbackLabel(String tag) {
+    switch (tag) {
+      case 'too_easy':
+        return '已记录：本次推荐太简单';
+      case 'too_hard':
+        return '已记录：本次推荐太难';
+      case 'dislike':
+        return '已记录：你不喜欢这类推荐';
+      default:
+        return '已记录：本次推荐很合适';
+    }
+  }
+
+  int _estimatedDurationSeconds() {
+    final durationFromMotion = widget.motionData?['duration'];
+    if (durationFromMotion is int && durationFromMotion > 0) {
+      return durationFromMotion;
+    }
+    final description = widget.motionData?['description']?.toString() ?? '';
+    final match = RegExp(r'(\d+)').firstMatch(description);
+    if (match != null) {
+      final value = int.tryParse(match.group(1)!);
+      if (value != null) {
+        return description.contains('分钟') ? value * 60 : value;
+      }
+    }
+    final steps = widget.motionData?['steps'] as List<dynamic>? ?? [];
+    return steps.isNotEmpty ? steps.length * 30 : 60;
+  }
+
+  Future<void> _initVideoController({bool autoPlay = false}) async {
+    if (!_supportsEmbeddedVideo || _selectedVideo == null) return;
 
     // 先释放旧的
+    _controller?.removeListener(_handleVideoProgress);
     _controller?.dispose();
     _controller = null;
     _isControllerInitialized = false;
@@ -92,18 +282,102 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     final controller = VideoPlayerController.networkUrl(Uri.parse(url));
     try {
       await controller.initialize();
-      controller.setLooping(true);
+      controller.setLooping(false);
+      controller.addListener(_handleVideoProgress);
+      if (autoPlay) {
+        await controller.play();
+      }
       setState(() {
         _controller = controller;
         _isControllerInitialized = true;
+        _isPlaying = autoPlay;
       });
     } catch (e) {
       debugPrint('视频初始化失败: $e');
     }
   }
 
+  void _handleVideoProgress() {
+    if (_controller == null || !_controller!.value.isInitialized || _isAdvancingVideo) {
+      return;
+    }
+
+    final value = _controller!.value;
+    if (value.duration.inMilliseconds <= 0) return;
+
+    final isFinished = value.position >= value.duration - const Duration(milliseconds: 300);
+    if (isFinished && !value.isPlaying) {
+      _playNextMatchedVideo();
+    }
+  }
+
+  Future<void> _playNextMatchedVideo() async {
+    if (_matchedVideos.isEmpty || _selectedVideo == null) return;
+    final currentIndex = _matchedVideos.indexOf(_selectedVideo!);
+    if (currentIndex < 0 || currentIndex >= _matchedVideos.length - 1) {
+      if (mounted) {
+        setState(() => _isPlaying = false);
+      }
+      return;
+    }
+
+    _isAdvancingVideo = true;
+    if (mounted) {
+      setState(() {
+        _selectedVideo = _matchedVideos[currentIndex + 1];
+        _currentStep = currentIndex + 1;
+      });
+    }
+    await _initVideoController(autoPlay: true);
+    _isAdvancingVideo = false;
+  }
+
+  List<String> _matchVideosToActions(List<String> videos) {
+    final actions = (widget.motionData?['actions'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .toList();
+    final orderedMatches = <String>[];
+
+    for (final action in actions) {
+      final actionName = action['name']?.toString() ?? '';
+      final matched = _findBestVideoForAction(actionName, videos);
+      if (matched != null && !orderedMatches.contains(matched)) {
+        orderedMatches.add(matched);
+      }
+    }
+
+    return orderedMatches.isNotEmpty ? orderedMatches : videos;
+  }
+
+  String? _findBestVideoForAction(String actionName, List<String> videos) {
+    if (actionName.isEmpty) return null;
+    final normalizedAction = _normalizeName(actionName);
+
+    for (final video in videos) {
+      if (_normalizeName(video) == normalizedAction) {
+        return video;
+      }
+    }
+
+    for (final video in videos) {
+      final normalizedVideo = _normalizeName(video);
+      if (normalizedVideo.contains(normalizedAction) || normalizedAction.contains(normalizedVideo)) {
+        return video;
+      }
+    }
+    return null;
+  }
+
+  String _normalizeName(String value) {
+    return value
+        .replaceAll('.mp4', '')
+        .replaceAll(RegExp(r'\s+'), '')
+        .replaceAll(RegExp(r'[^\u4e00-\u9fa5A-Za-z0-9]'), '')
+        .toLowerCase();
+  }
+
   Widget _buildVideoArea() {
-    if (_isMobileDevice && _controller != null && _isControllerInitialized) {
+    if (_supportsEmbeddedVideo && _controller != null && _isControllerInitialized) {
       return GestureDetector(
         onTap: _togglePlayPause,
         child: Stack(
@@ -172,7 +446,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   }
 
   void _togglePlayPause() {
-    if (!_isMobileDevice || _controller == null || !_isControllerInitialized) {
+    if (!_supportsEmbeddedVideo || _controller == null || !_isControllerInitialized) {
       return;
     }
     setState(() {
@@ -190,7 +464,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   Widget build(BuildContext context) {
     final motionName = widget.motionData?['motion_name'] ?? '微运动指导';
     final description = widget.motionData?['description'] ?? '';
-    final steps = widget.motionData?['steps'] as List<dynamic>? ?? [];
+    final actions = (widget.motionData?['actions'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .toList();
+    final steps = actions.isNotEmpty
+        ? actions.map((action) => action['name']?.toString() ?? '').where((name) => name.isNotEmpty).toList()
+        : (widget.motionData?['steps'] as List<dynamic>? ?? []);
 
     return Scaffold(
       appBar: AppBar(
@@ -223,26 +502,27 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8),
-                        if (_availableVideos.isEmpty)
-                          const Text('暂无视频，请先上传视频文件')
+                        if (_matchedVideos.isEmpty)
+                          const Text('当前方案没有匹配到可播放的视频')
                         else
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: _availableVideos.map((video) {
+                            children: _matchedVideos.map((video) {
                               final isSelected = _selectedVideo == video;
                               return ChoiceChip(
                                 label: Text(video, style: const TextStyle(fontSize: 12)),
                                 selected: isSelected,
-                                 onSelected: (selected) async {
-                                  setState(() {
-                                    _selectedVideo = selected ? video : null;
-                                    _isPlaying = false;
-                                  });
-                                  if (_isMobileDevice && selected) {
-                                    await _initVideoController();
-                                  }
-                                },
+                                  onSelected: (selected) async {
+                                   setState(() {
+                                     _selectedVideo = selected ? video : null;
+                                     _currentStep = _matchedVideos.indexOf(video).clamp(0, _matchedVideos.length - 1);
+                                     _isPlaying = false;
+                                   });
+                                   if (_supportsEmbeddedVideo && selected) {
+                                     await _initVideoController();
+                                   }
+                                 },
                               );
                             }).toList(),
                           ),
@@ -257,46 +537,95 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          IconButton(
-                            onPressed: steps.isNotEmpty ? () {
-                              if (_currentStep > 0) {
-                                setState(() => _currentStep--);
-                              }
-                            } : null,
-                            icon: const Icon(Icons.skip_previous, size: 36),
-                            color: Colors.blue,
-                          ),
-                          const SizedBox(width: 16),
-                           _isMobileDevice
-                               ? ElevatedButton.icon(
-                                   onPressed: _togglePlayPause,
-                                   icon: Icon(
-                                     _isPlaying
-                                         ? Icons.pause
-                                         : Icons.play_arrow,
-                                   ),
-                                   label:
-                                       Text(_isPlaying ? '暂停' : '播放'),
-                                 )
-                               : ElevatedButton.icon(
-                                   onPressed: _openVideo,
+                           IconButton(
+                             onPressed: _matchedVideos.isNotEmpty ? () async {
+                               if (_currentStep > 0) {
+                                 setState(() {
+                                   _currentStep--;
+                                   _selectedVideo = _matchedVideos[_currentStep];
+                                   _isPlaying = false;
+                                 });
+                                 await _initVideoController();
+                               }
+                             } : null,
+                             icon: const Icon(Icons.skip_previous, size: 36),
+                             color: Colors.blue,
+                           ),
+                           const SizedBox(width: 16),
+                            _supportsEmbeddedVideo
+                                ? ElevatedButton.icon(
+                                    onPressed: _togglePlayPause,
+                                    icon: Icon(
+                                      _isPlaying
+                                          ? Icons.pause
+                                          : Icons.play_arrow,
+                                    ),
+                                    label:
+                                        Text(_isPlaying ? '暂停' : '顺序播放'),
+                                  )
+                                : ElevatedButton.icon(
+                                    onPressed: _openVideo,
                                    icon: const Icon(Icons.open_in_new),
                                    label: const Text('在浏览器中打开'),
                                  ),
                           const SizedBox(width: 16),
-                          IconButton(
-                            onPressed: steps.isNotEmpty ? () {
-                              if (_currentStep < steps.length - 1) {
-                                setState(() => _currentStep++);
-                              }
-                            } : null,
-                            icon: const Icon(Icons.skip_next, size: 36),
-                            color: Colors.blue,
-                          ),
+                           IconButton(
+                              onPressed: _matchedVideos.isNotEmpty ? () async {
+                                if (_currentStep < _matchedVideos.length - 1) {
+                                  setState(() {
+                                    _currentStep++;
+                                    _selectedVideo = _matchedVideos[_currentStep];
+                                    _isPlaying = false;
+                                  });
+                                  await _initVideoController();
+                                }
+                             } : null,
+                             icon: const Icon(Icons.skip_next, size: 36),
+                             color: Colors.blue,
+                           ),
                         ],
                       ),
                     ),
-                  
+                  if (_selectedVideo != null && steps.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: _recordSaved || _isSavingRecord ? null : _saveExerciseRecord,
+                              icon: _isSavingRecord
+                                  ? const SizedBox(
+                                      height: 16,
+                                      width: 16,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : Icon(_recordSaved ? Icons.check_circle : Icons.task_alt),
+                              label: Text(_recordSaved ? '本次运动已记录' : '完成本次运动并写入健康数据'),
+                            ),
+                          ),
+                          if (_recordSaved) ...[
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              child: OutlinedButton.icon(
+                                onPressed: _isSavingFeedback ? null : _showFeedbackDialog,
+                                icon: _isSavingFeedback
+                                    ? const SizedBox(
+                                        height: 16,
+                                        width: 16,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                      )
+                                    : const Icon(Icons.rate_review_outlined),
+                                label: Text(_feedbackTag == null ? '评价本次推荐' : _feedbackLabel(_feedbackTag!)),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                   
                   // 进度条
                   if (steps.isNotEmpty && _selectedVideo != null)
                     Padding(
@@ -350,12 +679,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                     ),
                                   ),
                                   const SizedBox(width: 12),
-                                  Expanded(
-                                    child: Text(
-                                      steps[_currentStep].toString(),
-                                      style: const TextStyle(fontSize: 16),
-                                    ),
-                                  ),
+                                   Expanded(
+                                     child: Text(
+                                       actions.isNotEmpty
+                                           ? '${actions[_currentStep]['name'] ?? ''}\n做法：${actions[_currentStep]['instruction'] ?? ''}\n注意：${actions[_currentStep]['warning'] ?? ''}'
+                                           : steps[_currentStep].toString(),
+                                       style: const TextStyle(fontSize: 16),
+                                     ),
+                                   ),
                                 ],
                               ),
                             ),
@@ -376,15 +707,20 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                   isCompleted ? Icons.check_circle : Icons.circle_outlined,
                                   color: isCompleted ? Colors.green : Colors.grey,
                                 ),
-                                title: Text(
-                                  entry.value.toString(),
-                                  style: TextStyle(
-                                    fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
-                                  ),
-                                ),
-                                trailing: isCurrent ? const Icon(Icons.arrow_right, color: Colors.blue) : null,
-                              ),
-                            );
+                                 title: Text(
+                                   actions.isNotEmpty
+                                       ? '${actions[entry.key]['name'] ?? ''}（${actions[entry.key]['seconds'] ?? 20}秒）'
+                                       : entry.value.toString(),
+                                   style: TextStyle(
+                                     fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
+                                   ),
+                                 ),
+                                 subtitle: actions.isNotEmpty
+                                     ? Text(actions[entry.key]['instruction']?.toString() ?? '')
+                                     : null,
+                                 trailing: isCurrent ? const Icon(Icons.arrow_right, color: Colors.blue) : null,
+                               ),
+                             );
                           }),
                         ],
                       ],

@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';  // 添加导入
 import '../services/auth_service.dart';
-import '../services/storage_service.dart';
 import '../models/user_model.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -42,9 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(
               onPressed: () async {
                 await _authService.logout();
-                if (mounted) {
-                  context.go('/login');  // 使用GoRouter的导航方式
-                }
+                if (!context.mounted) return;
+                context.go('/login');  // 使用GoRouter的导航方式
               },
               icon: const Icon(Icons.logout),
             ),
@@ -85,11 +83,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: const Text('开始运动'),
                 )
               else
-                ElevatedButton(
-                  onPressed: () {
-                    context.go('/login');  // 使用GoRouter的导航方式
-                  },
-                  child: const Text('前往登录'),
+                Column(
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        context.go('/login');  // 使用GoRouter的导航方式
+                      },
+                      child: const Text('前往登录'),
+                    ),
+                    const SizedBox(height: 12),
+                    OutlinedButton.icon(
+                      onPressed: () {
+                        context.push('/preview/body_model');
+                      },
+                      icon: const Icon(Icons.view_in_ar_outlined),
+                      label: const Text('免登录测试 3D 身体模型'),
+                    ),
+                  ],
                 ),
             ],
           ),

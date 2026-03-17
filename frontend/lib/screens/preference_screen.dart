@@ -14,11 +14,7 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
   final ApiService _apiService = ApiService();
   bool _isLoading = true;
   bool _isSaving = false;
-<<<<<<< Updated upstream
-  
-=======
 
->>>>>>> Stashed changes
   // 身体部位偏好
   final List<String> bodyParts = ['头部', '颈部','左肩', '右肩', '胸背', '腰部', '胯部', '左手臂','右手臂','左手', '右手', '左腿', '右腿', '左膝盖','右膝盖','左脚踝','右脚踝'];
   List<String> selectedBodyParts = [];
@@ -320,11 +316,7 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
       }
 
       final response = await _apiService.get('/user/preferences', params: {'userId': userId});
-<<<<<<< Updated upstream
-      
-=======
 
->>>>>>> Stashed changes
       if (response != null && response['code'] == 200) {
         final List<dynamic> preferences = response['data'];
 

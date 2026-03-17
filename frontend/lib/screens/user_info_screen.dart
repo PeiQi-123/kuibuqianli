@@ -63,11 +63,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       // 注意：user?.remindEnabled 已经是布尔值（来自UserModel.fromJson的解析）
       _remindEnabled = user?.remindEnabled ?? true;
       _remindInterval = user?.remindInterval ?? 30;
-<<<<<<< Updated upstream
-      
-=======
 
->>>>>>> Stashed changes
       // 初始化免打扰时间段
       if (user?.remindAvoidTime != null && user!.remindAvoidTime!.isNotEmpty) {
         _avoidTimes = List.from(user.remindAvoidTime!);
@@ -121,11 +117,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         if (success) {
           // 保存成功，重新加载用户数据
           await _loadCurrentUser();
-<<<<<<< Updated upstream
-          
-=======
 
->>>>>>> Stashed changes
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('用户信息已保存成功')),
           );
@@ -285,27 +277,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
 
               const SizedBox(height: 24),
 
-<<<<<<< Updated upstream
-                    // 提醒设置
-                    _buildSectionTitle('提醒设置'),
-                    SwitchListTile(
-                      title: const Text('启用提醒'),
-                      value: _remindEnabled,
-                      onChanged: (value) => setState(() => _remindEnabled = value),
-                    ),
-                    if (_remindEnabled) ...[
-                      const SizedBox(height: 8),
-                      _buildNumberField(
-                        label: '提醒间隔 (分钟)',
-                        value: _remindInterval.toDouble(),
-                        min: 5,
-                        max: 240,
-                        onChanged: (value) => setState(() => _remindInterval = value.toInt()),
-                      ),
-                      const SizedBox(height: 16),
-                      _buildAvoidTimesSection(),
-                    ],
-=======
               // 提醒设置
               _buildSectionTitle('提醒设置'),
               SwitchListTile(
@@ -325,7 +296,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
                 const SizedBox(height: 16),
                 _buildAvoidTimesSection(),
               ],
->>>>>>> Stashed changes
 
               const SizedBox(height: 32),
 
