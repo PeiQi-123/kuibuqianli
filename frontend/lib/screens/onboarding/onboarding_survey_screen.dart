@@ -68,58 +68,88 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: const Text('欢迎使用跬步千里'),
+        backgroundColor: Colors.white.withOpacity(0.8),
+        elevation: 0,
+        foregroundColor: Colors.black87,
         automaticallyImplyLeading: false, // 禁用返回按钮
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 欢迎信息
-              const Padding(
-                padding: EdgeInsets.only(bottom: 16.0),
-                child: Text(
-                  '为了给您提供个性化的运动建议，请先完成以下基本信息调查',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            constraints: const BoxConstraints(maxWidth: 600),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.95),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 欢迎信息
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 16.0),
+                      child: Text(
+                        '为了给您提供个性化的运动建议，请先完成以下基本信息调查',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ),
+
+                    // 基本信息部分
+                    _buildSectionTitle('基本信息'),
+                    _buildBasicInfoSection(),
+
+                    const SizedBox(height: 24),
+
+                    // 特殊健康状况部分
+                    _buildSectionTitle('特殊健康状况（可选）'),
+                    _buildSpecialConditionsSection(),
+
+                    const SizedBox(height: 24),
+
+                    // 提醒设置部分
+                    _buildSectionTitle('久坐提醒设置'),
+                    _buildReminderSection(),
+
+                    const SizedBox(height: 24),
+
+                    // 运动偏好部分（可选）
+                    _buildSectionTitle('运动偏好（可选）'),
+                    _buildPreferencesSection(),
+
+                    const SizedBox(height: 32),
+
+                    // 提交按钮
+                    _isLoading
+                        ? const Center(child: CircularProgressIndicator())
+                        : CustomButton(
+                      text: '完成并开始使用',
+                      onPressed: _submitSurvey,
+                    ),
+                    const SizedBox(height: 20),
+                  ],
                 ),
               ),
-
-              // 基本信息部分
-              _buildSectionTitle('基本信息'),
-              _buildBasicInfoSection(),
-
-              const SizedBox(height: 24),
-
-              // 特殊健康状况部分
-              _buildSectionTitle('特殊健康状况（可选）'),
-              _buildSpecialConditionsSection(),
-
-              const SizedBox(height: 24),
-
-              // 提醒设置部分
-              _buildSectionTitle('久坐提醒设置'),
-              _buildReminderSection(),
-
-              const SizedBox(height: 24),
-
-              // 运动偏好部分（可选）
-              _buildSectionTitle('运动偏好（可选）'),
-              _buildPreferencesSection(),
-
-              const SizedBox(height: 32),
-
-              // 提交按钮
-              _isLoading
-                  ? const Center(child: CircularProgressIndicator())
-                  : CustomButton(
-                text: '完成并开始使用',
-                onPressed: _submitSurvey,
-              ),
-            ],
+            ),
           ),
         ),
       ),

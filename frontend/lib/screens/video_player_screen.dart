@@ -4,10 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import '../services/api_service.dart';
-<<<<<<< HEAD
 import '../services/sedentary_reminder_service.dart';
-=======
->>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
 import '../services/storage_service.dart';
 
 class VideoPlayerScreen extends StatefulWidget {
@@ -29,30 +26,23 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   bool _isPlaying = false;
   bool _isSavingRecord = false;
   bool _recordSaved = false;
-<<<<<<< HEAD
   int? _savedRecordId;
   bool _isSavingFeedback = false;
   String? _feedbackTag;
-=======
->>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
 
   VideoPlayerController? _controller;
   bool _isControllerInitialized = false;
   bool _isAdvancingVideo = false;
 
   bool get _supportsEmbeddedVideo {
-    if (kIsWeb) return true;
-    return defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.windows ||
-        defaultTargetPlatform == TargetPlatform.macOS ||
-        defaultTargetPlatform == TargetPlatform.linux;
+    // media_kit支持所有平台，但暂时先用url_launcher方案
+    return false;
   }
 
   @override
   void initState() {
     super.initState();
-    _loadVideos();
+    _generateOrLoadVideos();
   }
 
   @override
@@ -62,24 +52,87 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     super.dispose();
   }
 
+  Future<void> _generateOrLoadVideos() async {
+    setState(() => _isLoading = true);
+    
+    final steps = widget.motionData?['steps'] as List<dynamic>? ?? [];
+    final motionId = widget.motionData?['motion_id']?.toString() ?? 'motion';
+    
+    if (steps.isNotEmpty) {
+      try {
+        final stepStrings = steps.map((s) => s.toString()).toList();
+        final response = await _apiService.post('/video/find-or-generate', {
+          'steps': stepStrings,
+          'motionId': motionId,
+        });
+        
+        if (response != null && response['code'] == 200) {
+          final videoData = response['data'] as Map<String, dynamic>?;
+          if (videoData != null) {
+            final videoPath = videoData['fileName']?.toString();
+            if (videoPath != null && videoPath.isNotEmpty) {
+              setState(() {
+                _matchedVideos = [videoPath];
+                _selectedVideo = videoPath;
+              });
+              if (_supportsEmbeddedVideo) {
+                await _initVideoController(autoPlay: true);
+              }
+              setState(() => _isLoading = false);
+              return;
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint('生成/查找视频失败: $e');
+      }
+    }
+    
+    await _loadVideos();
+  }
+
   Future<void> _openVideo() async {
     if (_selectedVideo == null) return;
 
-    // 后端播放接口 URL
-    final encodedName = Uri.encodeComponent(_selectedVideo!);
-    final url = Uri.parse(
-      '${ApiService.baseUrl}/video/play?filename=$encodedName',
-    );
-
-    if (!await canLaunchUrl(url)) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('无法打开视频链接')),
+    try {
+      setState(() => _isLoading = true);
+      
+      final response = await _apiService.post(
+        '/video/play',
+        {'filename': _selectedVideo},
       );
-      return;
+      
+      if (response != null && response['code'] == 200) {
+        final videoUrl = response['data']?['url'];
+        if (videoUrl != null) {
+          final url = Uri.parse('${ApiService.baseUrl}$videoUrl');
+          debugPrint('播放URL: $url');
+          
+          if (await canLaunchUrl(url)) {
+            await launchUrl(url, mode: LaunchMode.platformDefault);
+          } else {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('无法打开视频播放器')),
+            );
+          }
+        }
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response?['message'] ?? '获取视频失败')),
+        );
+      }
+    } catch (e) {
+      debugPrint('获取视频URL失败: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('无法播放视频: $e')),
+        );
+      }
+    } finally {
+      setState(() => _isLoading = false);
     }
-
-    await launchUrl(url, mode: LaunchMode.platformDefault);
   }
 
   Future<void> _loadVideos() async {
@@ -141,13 +194,10 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
       if (!mounted) return;
       if (response != null && response['code'] == 200) {
-<<<<<<< HEAD
         final data = response['data'] as Map<String, dynamic>?;
         _savedRecordId = data?['recordId'] as int?;
         await SedentaryReminderService.instance.markExerciseCompleted();
         if (!mounted) return;
-=======
->>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
         setState(() {
           _recordSaved = true;
           _isSavingRecord = false;
@@ -155,10 +205,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('已记录到健康数据')), 
         );
-<<<<<<< HEAD
         await _showFeedbackDialog();
-=======
->>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
       } else {
         setState(() => _isSavingRecord = false);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -174,7 +221,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     }
   }
 
-<<<<<<< HEAD
   Future<void> _showFeedbackDialog() async {
     if (_savedRecordId == null || !mounted) return;
 
@@ -263,8 +309,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     }
   }
 
-=======
->>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
   int _estimatedDurationSeconds() {
     final durationFromMotion = widget.motionData?['duration'];
     if (durationFromMotion is int && durationFromMotion > 0) {
@@ -604,7 +648,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                   if (_selectedVideo != null && steps.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-<<<<<<< HEAD
                       child: Column(
                         children: [
                           SizedBox(
@@ -639,21 +682,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                             ),
                           ],
                         ],
-=======
-                      child: SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: _recordSaved || _isSavingRecord ? null : _saveExerciseRecord,
-                          icon: _isSavingRecord
-                              ? const SizedBox(
-                                  height: 16,
-                                  width: 16,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                )
-                              : Icon(_recordSaved ? Icons.check_circle : Icons.task_alt),
-                          label: Text(_recordSaved ? '本次运动已记录' : '完成本次运动并写入健康数据'),
-                        ),
->>>>>>> af9d9ebdd9cf36a76eafd94a09252cfabb2267f5
                       ),
                     ),
                    

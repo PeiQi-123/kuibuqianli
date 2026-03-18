@@ -51,6 +51,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 "/video/list",
                 "/video/search",
                 "/video/play",
+                "/video/stream",
+                "/video/files",
+                "/video/find-or-generate",
+                "/video/generate",
+                "/video/concatenate",
+                "/video/concatenate-by-steps",
                 "/test-micro/ping"
         );
 

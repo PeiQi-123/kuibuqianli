@@ -36,4 +36,5 @@ flutter:
     - assets/models/human_body.glb
     - assets/models/human_body_clean.glb
     - assets/models/human_body_blue_clean.glb
+    - images/background.png
 

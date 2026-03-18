@@ -26,48 +26,107 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('登录')),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              CustomTextField(
-                controller: _usernameController,
-                labelText: '用户名',
-                validator: Validators.validateUsername,
+      backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        title: const Text('登录'),
+        backgroundColor: Colors.white.withOpacity(0.8),
+        elevation: 0,
+        foregroundColor: Colors.black87,
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.95),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(24),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        '欢迎回来',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w300,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        '登录您的账号',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey,
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      CustomTextField(
+                        controller: _usernameController,
+                        labelText: '用户名',
+                        validator: Validators.validateUsername,
+                      ),
+                      const SizedBox(height: 16),
+                      CustomTextField(
+                        controller: _passwordController,
+                        labelText: '密码',
+                        obscureText: true,
+                        validator: Validators.validatePassword,
+                      ),
+                      const SizedBox(height: 24),
+                      _isLoading
+                          ? const CircularProgressIndicator()
+                          : CustomButton(
+                        text: '登录',
+                        onPressed: _handleLogin,
+                      ),
+                      const SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () {
+                          context.go('/register');
+                        },
+                        child: const Text('还没有账号？点击注册'),
+                      ),
+                      const SizedBox(height: 8),
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          context.push('/preview/body_model');
+                        },
+                        icon: const Icon(Icons.view_in_ar_outlined, size: 18),
+                        label: const Text('免登录测试 3D 身体模型'),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 12,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              const SizedBox(height: 16),
-              CustomTextField(
-                controller: _passwordController,
-                labelText: '密码',
-                obscureText: true,
-                validator: Validators.validatePassword,
-              ),
-              const SizedBox(height: 24),
-              _isLoading
-                  ? const CircularProgressIndicator()
-                  : CustomButton(
-                text: '登录',
-                onPressed: _handleLogin,
-              ),
-              const SizedBox(height: 16),
-              TextButton(
-                onPressed: () {
-                  context.go('/register');
-                },
-                child: const Text('还没有账号？点击注册'),
-              ),
-              const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed: () {
-                  context.push('/preview/body_model');
-                },
-                icon: const Icon(Icons.view_in_ar_outlined),
-                label: const Text('免登录测试 3D 身体模型'),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -81,27 +140,16 @@ class _LoginScreenState extends State<LoginScreen> {
       });
 
       try {
-        // 登录并获取完整的用户模型
         final userModel = await _authService.login(
           _usernameController.text.trim(),
           _passwordController.text,
         );
 
         if (userModel != null && mounted) {
-          // 判断用户是否已填写问卷
-          // 根据返回的UserModel判断：如果有身高、体重、年龄等基本信息，说明已填写问卷
           bool hasCompletedSurvey =
               userModel.height != null &&
                   userModel.weight != null &&
                   userModel.age != null;
-
-          // 或者更严格的条件：检查是否有完整的用户信息
-          // bool hasCompletedSurvey =
-          //     userModel.height != null &&
-          //     userModel.weight != null &&
-          //     userModel.age != null &&
-          //     userModel.gender != null;
-
           print('=== 用户问卷状态检查 ===');
           print('用户ID: ${userModel.id}');
           print('用户名: ${userModel.username}');

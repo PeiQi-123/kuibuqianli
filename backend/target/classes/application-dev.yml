@@ -77,6 +77,16 @@ ai:
   video-api-url: http://localhost:8001/video
   api-key: your_ai_api_key
 
+# 阿里云百炼视频生成配置
+aliyun:
+  video-api-url: https://dashscope.aliyuncs.com/api/v1/services/aigc/text2video/generation
+  api-key: sk-f2e88757a27e4355a863b94b81708917
+
+# 视频目录配置
+video:
+  directory: C:/Users/lying/Desktop/kuibuqianli/backend/video
+  output-directory: C:/Users/lying/Desktop/kuibuqianli/backend/video/output
+
 # ========== 新增：DeepSeek API配置 ==========
 deepseek:
   api:
