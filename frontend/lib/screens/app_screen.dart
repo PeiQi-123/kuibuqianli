@@ -33,20 +33,6 @@ class _AppScreenState extends State<AppScreen> {
       // 功能首页
       Scaffold(
         backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          title: const Text(
-            '跬步千里',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.w300,
-              letterSpacing: 2,
-            ),
-          ),
-          backgroundColor: Colors.white.withOpacity(0.8),
-          elevation: 0,
-          foregroundColor: Colors.black87,
-          centerTitle: true,
-        ),
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
