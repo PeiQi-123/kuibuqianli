@@ -26,5 +26,6 @@ public class UserDTO {
     private List<Map<String, String>> remindAvoidTime;
     private Boolean isActive;
     private String password;
+    private String avatarUrl;
 }
 // 用户数据传输对象

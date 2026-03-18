@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 @MapperScan("com.kuibuqianli.dao.mapper")
 @ComponentScan(basePackages = {"com.kuibuqianli"})  // 显式指定扫描包
 public class KuibuQianliApplication {
+
     public static void main(String[] args) {
         SpringApplication.run(KuibuQianliApplication.class, args);
     }

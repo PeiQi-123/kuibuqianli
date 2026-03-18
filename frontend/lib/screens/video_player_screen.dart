@@ -35,18 +35,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   bool _isAdvancingVideo = false;
 
   bool get _supportsEmbeddedVideo {
-    if (kIsWeb) return true;
-    return defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.windows ||
-        defaultTargetPlatform == TargetPlatform.macOS ||
-        defaultTargetPlatform == TargetPlatform.linux;
+    // media_kit支持所有平台，但暂时先用url_launcher方案
+    return false;
   }
 
   @override
   void initState() {
     super.initState();
-    _loadVideos();
+    _generateOrLoadVideos();
   }
 
   @override
@@ -56,24 +52,90 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     super.dispose();
   }
 
+  Future<void> _generateOrLoadVideos() async {
+    setState(() => _isLoading = true);
+    
+    final actions = (widget.motionData?['actions'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .toList();
+    final motionId = widget.motionData?['motion_id']?.toString() ?? 'motion';
+    
+    if (actions.isNotEmpty) {
+      try {
+        final response = await _apiService.post('/video/find-or-generate-steps', {
+          'steps': actions,
+          'motionId': motionId,
+        });
+        
+        if (response != null && response['code'] == 200) {
+          final stepVideos = response['data'] as List<dynamic>? ?? [];
+          if (stepVideos.isNotEmpty) {
+            final validVideos = stepVideos
+                .where((v) => v['videoFileName'] != null && v['videoFileName'].toString().isNotEmpty)
+                .map((v) => v['videoFileName'].toString())
+                .toList();
+            
+            if (validVideos.isNotEmpty) {
+              setState(() {
+                _matchedVideos = validVideos;
+                _selectedVideo = validVideos.first;
+                _currentStep = 0;
+              });
+              setState(() => _isLoading = false);
+              return;
+            }
+          }
+        }
+      } catch (e) {
+        debugPrint('生成/查找视频失败: $e');
+      }
+    }
+    
+    await _loadVideos();
+  }
+
   Future<void> _openVideo() async {
     if (_selectedVideo == null) return;
 
-    // 后端播放接口 URL
-    final encodedName = Uri.encodeComponent(_selectedVideo!);
-    final url = Uri.parse(
-      '${ApiService.baseUrl}/video/play?filename=$encodedName',
-    );
-
-    if (!await canLaunchUrl(url)) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('无法打开视频链接')),
+    try {
+      setState(() => _isLoading = true);
+      
+      final response = await _apiService.post(
+        '/video/play',
+        {'filename': _selectedVideo},
       );
-      return;
+      
+      if (response != null && response['code'] == 200) {
+        final videoUrl = response['data']?['url'];
+        if (videoUrl != null) {
+          final url = Uri.parse('${ApiService.baseUrl}$videoUrl');
+          debugPrint('播放URL: $url');
+          
+          if (await canLaunchUrl(url)) {
+            await launchUrl(url, mode: LaunchMode.platformDefault);
+          } else {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('无法打开视频播放器')),
+            );
+          }
+        }
+      } else {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(response?['message'] ?? '获取视频失败')),
+        );
+      }
+    } catch (e) {
+      debugPrint('获取视频URL失败: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('无法播放视频: $e')),
+        );
+      }
+    } finally {
+      setState(() => _isLoading = false);
     }
-
-    await launchUrl(url, mode: LaunchMode.platformDefault);
   }
 
   Future<void> _loadVideos() async {

@@ -34,4 +34,22 @@ class StorageService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_userIdKey);
   }
+
+  // 调查问卷完成状态
+  static const String _onboardingCompletedKey = 'onboarding_completed';
+
+  static Future<void> markOnboardingCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(_onboardingCompletedKey, true);
+  }
+
+  static Future<bool> isOnboardingCompleted() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getBool(_onboardingCompletedKey) ?? false;
+  }
+
+  static Future<void> clearOnboardingStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_onboardingCompletedKey);
+  }
 }

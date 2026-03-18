@@ -261,7 +261,6 @@ model-viewer#body-model-viewer {
   });
 })();
 ''';
-
   bool get _supportsReal3D {
     if (kIsWeb) {
       return true;

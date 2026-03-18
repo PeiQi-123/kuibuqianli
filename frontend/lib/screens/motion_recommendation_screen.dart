@@ -17,12 +17,11 @@ class MotionRecommendationScreen extends StatefulWidget {
 class _MotionRecommendationScreenState extends State<MotionRecommendationScreen> {
   final ApiService _apiService = ApiService();
   final AuthService _authService = AuthService();
-  
   late String _selectedBodyPart;
   String _selectedActivity = '久坐';
   int _selectedDuration = 5;
   String _selectedIntensity = 'low';
-  
+
   Map<String, dynamic>? _motionResult;
   Map<String, dynamic>? _learningInsights;
   bool _isLoading = false;
@@ -106,137 +105,252 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text('微运动推荐'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: const Text(
+          '微运动推荐',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w300,
+            letterSpacing: 1,
+          ),
+        ),
+        backgroundColor: Colors.white.withOpacity(0.8),
+        elevation: 0,
+        foregroundColor: Colors.black87,
+        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-            const Text(
-              '选择目标部位',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _bodyParts.map((bodyPart) {
-                final isSelected = _selectedBodyPart == bodyPart;
-                return ChoiceChip(
-                  label: Text(bodyPart),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() => _selectedBodyPart = bodyPart);
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              '选择您的活动类型',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: _activityTypes.map((activity) {
-                final isSelected = _selectedActivity == activity['value'];
-                return ChoiceChip(
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(activity['icon'], size: 18),
-                      const SizedBox(width: 4),
-                      Text(activity['label']),
-                    ],
-                  ),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() => _selectedActivity = activity['value']);
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              '选择运动时长',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              children: _durations.map((duration) {
-                final isSelected = _selectedDuration == duration;
-                return ChoiceChip(
-                  label: Text('$duration 分钟'),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() => _selectedDuration = duration);
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              '选择运动强度',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              children: _intensities.map((intensity) {
-                final isSelected = _selectedIntensity == intensity['value'];
-                return ChoiceChip(
-                  label: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(intensity['icon'], size: 18),
-                      const SizedBox(width: 4),
-                      Text(intensity['label']),
-                    ],
-                  ),
-                  selected: isSelected,
-                  onSelected: (selected) {
-                    if (selected) {
-                      setState(() => _selectedIntensity = intensity['value']);
-                    }
-                  },
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 32),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: _isLoading ? null : _generateMotion,
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: Center(
+          child: Container(
+            margin: const EdgeInsets.all(16),
+            constraints: const BoxConstraints(maxWidth: 600),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.95),
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 4),
                 ),
-                child: _isLoading
-                    ? const SizedBox(
+              ],
+            ),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // 页面说明
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.lightbulb_outline, color: Colors.blue.shade700),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            '根据您的选择，小跬将为您生成个性化的微运动方案',
+                            style: TextStyle(color: Colors.blue.shade700),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // 选择目标部位
+                  _buildSectionTitle('选择目标部位', Icons.psychology_outlined),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _bodyParts.map((bodyPart) {
+                      final isSelected = _selectedBodyPart == bodyPart;
+                      return ChoiceChip(
+                        label: Text(bodyPart),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setState(() => _selectedBodyPart = bodyPart);
+                          }
+                        },
+                        selectedColor: Colors.blue.shade100,
+                        backgroundColor: Colors.grey.shade50,
+                        labelStyle: TextStyle(
+                          color: isSelected ? Colors.blue.shade700 : Colors.grey.shade700,
+                          fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // 选择活动类型
+                  _buildSectionTitle('选择您的活动类型', Icons.accessibility_new_outlined),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: _activityTypes.map((activity) {
+                      final isSelected = _selectedActivity == activity['value'];
+                      return ChoiceChip(
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(activity['icon'], size: 18, color: isSelected ? Colors.blue.shade700 : Colors.grey.shade600),
+                            const SizedBox(width: 4),
+                            Text(activity['label']),
+                          ],
+                        ),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setState(() => _selectedActivity = activity['value']);
+                          }
+                        },
+                        selectedColor: Colors.blue.shade100,
+                        backgroundColor: Colors.grey.shade50,
+                        labelStyle: TextStyle(
+                          color: isSelected ? Colors.blue.shade700 : Colors.grey.shade700,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // 选择运动时长
+                  _buildSectionTitle('选择运动时长', Icons.timer_outlined),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    children: _durations.map((duration) {
+                      final isSelected = _selectedDuration == duration;
+                      return ChoiceChip(
+                        label: Text('$duration 分钟'),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setState(() => _selectedDuration = duration);
+                          }
+                        },
+                        selectedColor: Colors.blue.shade100,
+                        backgroundColor: Colors.grey.shade50,
+                        labelStyle: TextStyle(
+                          color: isSelected ? Colors.blue.shade700 : Colors.grey.shade700,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // 选择运动强度
+                  _buildSectionTitle('选择运动强度', Icons.speed_outlined),
+                  const SizedBox(height: 12),
+                  Wrap(
+                    spacing: 8,
+                    children: _intensities.map((intensity) {
+                      final isSelected = _selectedIntensity == intensity['value'];
+                      return ChoiceChip(
+                        label: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(intensity['icon'], size: 18, color: isSelected ? Colors.blue.shade700 : Colors.grey.shade600),
+                            const SizedBox(width: 4),
+                            Text(intensity['label']),
+                          ],
+                        ),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setState(() => _selectedIntensity = intensity['value']);
+                          }
+                        },
+                        selectedColor: Colors.blue.shade100,
+                        backgroundColor: Colors.grey.shade50,
+                        labelStyle: TextStyle(
+                          color: isSelected ? Colors.blue.shade700 : Colors.grey.shade700,
+                        ),
+                      );
+                    }).toList(),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // 生成按钮
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _isLoading ? null : _generateMotion,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 2,
+                      ),
+                      child: _isLoading
+                          ? const SizedBox(
                         height: 20,
                         width: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
                       )
-                    : const Text('生成微运动方案'),
+                          : const Text(
+                        '生成微运动方案',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 24),
+
+                  // 生成结果
+                  if (_motionResult != null) _buildMotionResult(),
+                ],
               ),
             ),
-            const SizedBox(height: 24),
-            if (_motionResult != null) _buildMotionResult(),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Row(
+      children: [
+        Icon(icon, size: 20, color: Colors.blue.shade600),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+      ],
     );
   }
 
@@ -257,18 +371,37 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
       'steps': actions.map((action) => action['name']?.toString() ?? '').where((name) => name.isNotEmpty).toList(),
       'tip': motion['tip'],
     };
-    
-    return Card(
-      elevation: 4,
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.blue.shade100),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blue.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 方案标题
             Row(
               children: [
-                const Icon(Icons.fitness_center, color: Colors.blue, size: 28),
-                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(Icons.fitness_center, color: Colors.blue, size: 24),
+                ),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     motion['title']?.toString() ?? '$_selectedBodyPart AI 微运动方案',
@@ -277,33 +410,59 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+
+            const SizedBox(height: 12),
+
+            // 方案概述
             Text(
               motion['overview']?.toString() ?? '基于真实 AI 接口生成的个性化建议',
-              style: TextStyle(color: Colors.grey[600]),
+              style: TextStyle(color: Colors.grey[600], height: 1.5),
             ),
-            const SizedBox(height: 8),
+
+            const SizedBox(height: 12),
+
+            // 方案标签
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  _buildInfoChip(Icons.timer, '时长', '${duration ?? 0} 秒'),
+                  Container(width: 1, height: 20, color: Colors.grey.shade300),
+                  _buildInfoChip(Icons.tune, '强度', difficulty),
+                ],
+              ),
+            ),
+
+            const Divider(height: 24),
+
+            // 推荐动作标题
             Row(
               children: [
-                Icon(Icons.timer, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 4),
-                Text('${duration ?? 0} 秒', style: TextStyle(color: Colors.grey[600])),
-                const SizedBox(width: 16),
-                Icon(Icons.tune, size: 16, color: Colors.grey[600]),
-                const SizedBox(width: 4),
-                Text(difficulty, style: TextStyle(color: Colors.grey[600])),
+                Icon(Icons.list_alt, size: 20, color: Colors.blue.shade600),
+                const SizedBox(width: 8),
+                const Text(
+                  '推荐动作',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
               ],
             ),
-            const Divider(height: 24),
-            const Text(
-              '推荐动作',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 8),
+
+            const SizedBox(height: 12),
+
+            // 动作列表
             ...actions.asMap().entries.map((entry) {
               final action = entry.value;
-              return Card(
-                margin: const EdgeInsets.only(bottom: 10),
+              return Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.grey.shade200),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: Column(
@@ -311,59 +470,114 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 12,
-                            backgroundColor: Colors.blue,
-                            child: Text(
-                              '${entry.key + 1}',
-                              style: const TextStyle(color: Colors.white, fontSize: 12),
+                          Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(
+                              child: Text(
+                                '${entry.key + 1}',
+                                style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               action['name']?.toString() ?? '未命名动作',
-                              style: const TextStyle(fontWeight: FontWeight.bold),
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                             ),
                           ),
-                          Text('${action['seconds'] ?? 20} 秒'),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade100,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              '${action['seconds'] ?? 20} 秒',
+                              style: TextStyle(color: Colors.blue.shade700, fontSize: 12),
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 8),
-                      Text('做法：${action['instruction'] ?? '请跟随视频指导完成动作。'}'),
-                      const SizedBox(height: 6),
                       Text(
-                        '注意：${action['warning'] ?? '如有不适请立即停止。'}',
-                        style: TextStyle(color: Colors.grey[700]),
+                        '做法：${action['instruction'] ?? '请跟随视频指导完成动作。'}',
+                        style: const TextStyle(height: 1.5),
+                      ),
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(Icons.warning_amber_rounded, size: 16, color: Colors.orange.shade700),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              '注意：${action['warning'] ?? '如有不适请立即停止。'}',
+                              style: TextStyle(color: Colors.grey[700], fontSize: 13),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               );
             }),
+
+            // 提示
             if ((motion['tip']?.toString() ?? '').isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Text(
-                '提示：${motion['tip']}',
-                style: TextStyle(color: Colors.grey[700]),
+              const SizedBox(height: 12),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.tips_and_updates, color: Colors.green.shade700, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '提示：${motion['tip']}',
+                        style: TextStyle(color: Colors.green.shade700),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
+            // 学习洞察
             if (_learningInsights != null) ...[
               const SizedBox(height: 12),
               Container(
-                width: double.infinity,
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                child: Text(
-                  '动态学习：${_learningInsights!['summary'] ?? '已结合近期训练记录优化推荐结果'}',
-                  style: TextStyle(color: Colors.blue.shade900),
+                child: Row(
+                  children: [
+                    Icon(Icons.psychology, color: Colors.blue.shade700, size: 20),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        '动态学习：${_learningInsights!['summary'] ?? '已结合近期训练记录优化推荐结果'}',
+                        style: TextStyle(color: Colors.blue.shade700),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],
-            const SizedBox(height: 16),
+
+            const SizedBox(height: 20),
+
+            // 操作按钮
             Row(
               children: [
                 Expanded(
@@ -371,8 +585,15 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                     onPressed: () {
                       context.push('/video_player', extra: motionData);
                     },
-                    icon: const Icon(Icons.play_circle_outline),
+                    icon: const Icon(Icons.play_circle_outline, size: 18),
                     label: const Text('查看视频指导'),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      side: BorderSide(color: Colors.blue.shade200),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -381,14 +602,42 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                     onPressed: () {
                       context.push('/posture_detection');
                     },
-                    icon: const Icon(Icons.camera_alt),
+                    icon: const Icon(Icons.camera_alt, size: 18),
                     label: const Text('开始检测'),
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoChip(IconData icon, String label, String value) {
+    return Expanded(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 14, color: Colors.grey[600]),
+          const SizedBox(width: 4),
+          Text(
+            '$label: ',
+            style: TextStyle(color: Colors.grey[600], fontSize: 12),
+          ),
+          Text(
+            value,
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+          ),
+        ],
       ),
     );
   }

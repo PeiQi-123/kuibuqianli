@@ -38,9 +38,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
 
         String path = request.getServletPath();
-        System.out.println("=== DEBUG JWT Filter: Path = " + path);
+        String fullPath = request.getRequestURI();
+        System.out.println("=== DEBUG JWT Filter: ServletPath = " + path + ", FullPath = " + fullPath);
 
-        // 定义不需要认证的路径列表（注意路径格式）
+        // 特殊处理 /file/avatar/* 和 /file/avatar 路径 - 必须放在最前面
+        // 同时处理带context path和不带的情况
+        if (path.startsWith("/file/avatar") || fullPath.contains("/file/avatar")) {
+            System.out.println("=== DEBUG: Skipping JWT filter for avatar path: " + path);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 定义不需要认证的路径列表
         List<String> permitAllPaths = Arrays.asList(
                 "/user/login",
                 "/user/register",
@@ -51,13 +60,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 "/video/list",
                 "/video/search",
                 "/video/play",
+                "/video/stream",
+                "/video/files",
+                "/video/find-or-generate",
+                "/video/find-or-generate-steps",
+                "/video/generate",
+                "/video/concatenate",
+                "/video/concatenate-by-steps",
                 "/test-micro/ping"
         );
 
         // 检查当前路径是否需要跳过认证
         for (String permitPath : permitAllPaths) {
-            // 注意：path 是 "/micro-motion/health"，permitPath 也是 "/micro-motion/health"
-            if (path.equals(permitPath) || path.startsWith(permitPath)) {
+            if (path.equals(permitPath) || path.startsWith(permitPath + "/")) {
                 System.out.println("=== DEBUG: Skipping JWT filter for permit path: " + path);
                 filterChain.doFilter(request, response);
                 return;

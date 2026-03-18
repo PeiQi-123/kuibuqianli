@@ -53,8 +53,9 @@ class AuthService {
 
   Future<bool> register(String username, String email, String password) async {
     try {
-      // 注册时也不应该带token
+      // 注册时清除所有旧数据
       await StorageService.removeToken();
+      await StorageService.clearOnboardingStatus();
 
       final response = await _apiService.postForLogin('/user/register', {
         'username': username,
@@ -82,6 +83,7 @@ class AuthService {
   Future<void> logout() async {
     await StorageService.removeToken();
     await StorageService.removeUserId();
+    await StorageService.clearOnboardingStatus();
   }
 
   // 更新用户信息
@@ -117,7 +119,7 @@ class AuthService {
       if (weight != null) updateData['weight'] = weight;
       if (age != null) updateData['age'] = age;
       if (gender != null) updateData['gender'] = gender;
-      if (remindEnabled != null) updateData['remindEnabled'] = remindEnabled;
+      if (remindEnabled != null) updateData['remindEnabled'] = remindEnabled ? 1 : 0;
       if (remindInterval != null) updateData['remindInterval'] = remindInterval;
       if (remindMaxTimes != null) updateData['remindMaxTimes'] = remindMaxTimes;
       if (remindAvoidTime != null) updateData['remindAvoidTime'] = remindAvoidTime;

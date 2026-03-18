@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
 import '../services/api_service.dart';
 import '../services/storage_service.dart';
-
+import 'package:go_router/go_router.dart';
 class HealthDataScreen extends StatefulWidget {
   const HealthDataScreen({super.key});
 
@@ -50,60 +49,163 @@ class _HealthDataScreenState extends State<HealthDataScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: const Text('健康数据'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        title: const Text(
+          '健康数据',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w300,
+            letterSpacing: 1,
+          ),
+        ),
+        backgroundColor: Colors.white.withOpacity(0.8),
+        elevation: 0,
+        foregroundColor: Colors.black87,
+        centerTitle: true,
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _healthData == null
-              ? _buildEmptyState()
-              : RefreshIndicator(
-                  onRefresh: _loadHealthData,
-                  child: ListView(
-                    padding: const EdgeInsets.all(16),
-                    children: [
-                      _buildProfileSummary(),
-                      const SizedBox(height: 16),
-                      _buildStatGrid(),
-                      const SizedBox(height: 16),
-                      _buildBmiCard(),
-                      const SizedBox(height: 16),
-                      _buildRecentRecordsCard(),
-                    ],
-                  ),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('images/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: _isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : _healthData == null
+            ? _buildEmptyState()
+            : RefreshIndicator(
+          onRefresh: _loadHealthData,
+          color: Colors.blue,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Center(
+              child: Container(
+                constraints: const BoxConstraints(maxWidth: 600),
+                child: Column(
+                  children: [
+                    _buildProfileSummary(),
+                    const SizedBox(height: 16),
+                    _buildStatGrid(),
+                    const SizedBox(height: 16),
+                    _buildBmiCard(),
+                    const SizedBox(height: 16),
+                    _buildRecentRecordsCard(),
+                    const SizedBox(height: 20),
+                  ],
                 ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
   Widget _buildEmptyState() {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.insights_outlined, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            const Text('暂时还没有可展示的健康数据', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 8),
-            Text('先完善用户信息，或完成几次微运动后再回来查看。', style: TextStyle(color: Colors.grey[600]), textAlign: TextAlign.center),
+      child: Container(
+        margin: const EdgeInsets.all(24),
+        constraints: const BoxConstraints(maxWidth: 400),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.95),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
           ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.insights_outlined,
+                  size: 48,
+                  color: Colors.blue.shade400,
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                '暂时还没有可展示的健康数据',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                '先完善用户信息，或完成几次微运动后再回来查看。',
+                style: TextStyle(
+                  color: Colors.grey[600],
+                  fontSize: 14,
+                  height: 1.5,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => context.push('/user_info'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: const Text('完善用户信息'),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildProfileSummary() {
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('身体概览', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(Icons.person_outline, color: Colors.blue.shade600),
+                const SizedBox(width: 8),
+                const Text(
+                  '身体概览',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             Wrap(
               spacing: 12,
               runSpacing: 12,
@@ -128,47 +230,116 @@ class _HealthDataScreenState extends State<HealthDataScreen> {
       ('近7天活跃', '${_healthData!['last7DaysSessions'] ?? 0}次', Icons.calendar_today, Colors.purple),
     ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: stats.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        mainAxisSpacing: 12,
-        crossAxisSpacing: 12,
-        childAspectRatio: 1.5,
-      ),
-      itemBuilder: (context, index) {
-        final item = stats[index];
-        return Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(item.$3, color: item.$4),
-                const SizedBox(height: 10),
-                Text(item.$2, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 4),
-                Text(item.$1, style: TextStyle(color: Colors.grey[600])),
-              ],
-            ),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-        );
-      },
-    );
-  }
-
-  Widget _buildBmiCard() {
-    return Card(
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('BMI 状态', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(Icons.analytics_outlined, color: Colors.blue.shade600),
+                const SizedBox(width: 8),
+                const Text(
+                  '运动统计',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: stats.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 12,
+                crossAxisSpacing: 12,
+                childAspectRatio: 1.5,
+              ),
+              itemBuilder: (context, index) {
+                final item = stats[index];
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            color: item.$4.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(item.$3, color: item.$4, size: 20),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          item.$2,
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          item.$1,
+                          style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBmiCard() {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.monitor_weight_outlined, color: Colors.blue.shade600),
+                const SizedBox(width: 8),
+                const Text(
+                  'BMI 状态',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             Row(
               children: [
                 Expanded(
@@ -177,25 +348,41 @@ class _HealthDataScreenState extends State<HealthDataScreen> {
                     children: [
                       Text(
                         _healthData!['bmi']?.toString() ?? '未生成',
-                        style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 4),
-                      Text(_healthData!['bmiType']?.toString() ?? '请先补全身高体重', style: TextStyle(color: Colors.grey[600])),
+                      Text(
+                        _healthData!['bmiType']?.toString() ?? '请先补全身高体重',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 14),
+                      ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: _bmiColor((_healthData!['bmiType'] ?? '').toString()).withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(999),
+                    color: _bmiColor((_healthData!['bmiType'] ?? '').toString()).withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     '完成率 ${_healthData!['completionRate'] ?? 0}%',
-                    style: TextStyle(color: _bmiColor((_healthData!['bmiType'] ?? '').toString()), fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: _bmiColor((_healthData!['bmiType'] ?? '').toString()),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
               ],
+            ),
+            // BMI 指示器
+            const SizedBox(height: 16),
+            LinearProgressIndicator(
+              value: (_healthData!['bmi'] != null) ? 0.7 : 0, // 示例值，可根据实际BMI计算
+              backgroundColor: Colors.grey.shade200,
+              valueColor: AlwaysStoppedAnimation<Color>(_bmiColor((_healthData!['bmiType'] ?? '').toString())),
+              minHeight: 6,
+              borderRadius: BorderRadius.circular(3),
             ),
           ],
         ),
@@ -205,30 +392,110 @@ class _HealthDataScreenState extends State<HealthDataScreen> {
 
   Widget _buildRecentRecordsCard() {
     final records = (_healthData!['recentRecords'] as List<dynamic>? ?? []);
-    return Card(
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('最近运动记录', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(Icons.history_outlined, color: Colors.blue.shade600),
+                const SizedBox(width: 8),
+                const Text(
+                  '最近运动记录',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
             if (records.isEmpty)
-              Text('还没有运动记录，完成一次微运动后这里会自动出现。', style: TextStyle(color: Colors.grey[600]))
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Icon(Icons.sports_gymnastics, size: 40, color: Colors.grey[400]),
+                    const SizedBox(height: 8),
+                    Text(
+                      '还没有运动记录',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '完成一次微运动后这里会自动出现',
+                      style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                    ),
+                  ],
+                ),
+              )
             else
-              ...records.map((item) {
-                final record = item as Map<String, dynamic>;
-                return ListTile(
-                  contentPadding: EdgeInsets.zero,
-                  leading: CircleAvatar(
-                    backgroundColor: (record['completed'] == true ? Colors.green : Colors.orange).withValues(alpha: 0.15),
-                    child: Icon(record['completed'] == true ? Icons.check : Icons.schedule, color: record['completed'] == true ? Colors.green : Colors.orange),
-                  ),
-                  title: Text(record['motionName']?.toString().isNotEmpty == true ? record['motionName'].toString() : '未命名微运动'),
-                  subtitle: Text('${record['createdAt'] ?? '--'} · ${record['duration'] ?? 0}秒'),
-                  trailing: Text(record['completed'] == true ? '已完成' : '未完成'),
-                );
-              }),
+              Column(
+                children: records.map((item) {
+                  final record = item as Map<String, dynamic>;
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                      leading: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: (record['completed'] == true ? Colors.green : Colors.orange).withOpacity(0.1),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          record['completed'] == true ? Icons.check : Icons.schedule,
+                          color: record['completed'] == true ? Colors.green : Colors.orange,
+                          size: 20,
+                        ),
+                      ),
+                      title: Text(
+                        record['motionName']?.toString().isNotEmpty == true
+                            ? record['motionName'].toString()
+                            : '未命名微运动',
+                        style: const TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      subtitle: Text(
+                        '${record['createdAt'] ?? '--'} · ${record['duration'] ?? 0}秒',
+                        style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                      ),
+                      trailing: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: (record['completed'] == true ? Colors.green : Colors.orange).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Text(
+                          record['completed'] == true ? '已完成' : '未完成',
+                          style: TextStyle(
+                            color: record['completed'] == true ? Colors.green : Colors.orange,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
           ],
         ),
       ),
@@ -237,17 +504,24 @@ class _HealthDataScreenState extends State<HealthDataScreen> {
 
   Widget _buildInfoChip(String label, String value) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey.shade200),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
-          const SizedBox(height: 4),
-          Text(value, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+          Text(
+            label,
+            style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            value,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          ),
         ],
       ),
     );
