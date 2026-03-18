@@ -2,6 +2,9 @@ C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\Use
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\service\DeepSeekService.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\service\SemanticAnalysisService.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\controller\HealthController.java
+C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\service\impl\ExerciseRecordServiceImpl.java
+C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\service\HealthDataService.java
+C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\HealthDataDTO.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dao\mapper\UserPreferenceMapper.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\LoginResponseDTO.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\KuibuQianliApplication.java
@@ -10,6 +13,7 @@ C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\common\
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\DeepSeekRequest.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\security\JwtAuthenticationFilter.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\UserDTO.java
+C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\controller\FileUploadController.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\PromptRequest.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\config\SwaggerConfig.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\controller\DeviceController.java
@@ -23,10 +27,12 @@ C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\service
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\RegisterDTO.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\security\CustomUserDetailsService.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\common\exception\BusinessException.java
+C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\service\ExerciseRecordService.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dao\mapper\UserMapper.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\LoginDTO.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\common\constants\ResponseConstants.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\UserPreferenceDTO.java
+C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\ExerciseRecordCreateDTO.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\PromptResponse.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\service\VideoService.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\config\CorsConfig.java
@@ -35,6 +41,7 @@ C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\control
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\controller\VideoController.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\config\MyBatisPlusConfig.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dao\entity\UserPreference.java
+C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\service\impl\HealthDataServiceImpl.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\controller\MicroMotionController.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\dto\DeepSeekResponse.java
 C:\Users\lying\Desktop\kuibuqianli\backend\src\main\java\com\kuibuqianli\common\constants\ErrorCode.java

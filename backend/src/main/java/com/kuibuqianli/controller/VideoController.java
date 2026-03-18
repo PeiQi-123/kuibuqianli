@@ -76,6 +76,24 @@ public class VideoController {
         return Result.error("无法生成或找到视频");
     }
 
+    @Operation(summary = "为每个步骤生成或查找视频")
+    @PostMapping("/find-or-generate-steps")
+    public Result<List<Map<String, Object>>> findOrGenerateVideosForSteps(@RequestBody Map<String, Object> request) {
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> steps = (List<Map<String, Object>>) request.get("steps");
+        String motionId = (String) request.getOrDefault("motionId", "motion");
+        
+        if (steps == null || steps.isEmpty()) {
+            return Result.error("steps不能为空");
+        }
+        
+        System.out.println("DEBUG: 为 " + steps.size() + " 个步骤生成视频");
+        
+        List<Map<String, Object>> result = videoService.findOrGenerateVideosForSteps(steps, motionId);
+        
+        return Result.success(result);
+    }
+
     @Operation(summary = "调用AI生成视频")
     @PostMapping("/generate")
     public Result<String> generateVideo(@RequestBody Map<String, Object> request) {

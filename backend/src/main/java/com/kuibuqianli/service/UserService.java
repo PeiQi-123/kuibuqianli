@@ -53,5 +53,10 @@ public interface UserService {
      * 保存用户偏好
      */
     boolean saveUserPreferences(Long userId, UserPreferencesUpdateDTO preferencesDTO);
+
+    /**
+     * 更新用户头像
+     */
+    boolean updateAvatar(Long userId, String avatarUrl);
 }
 // 用户服务接口

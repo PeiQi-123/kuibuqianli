@@ -18,6 +18,7 @@ import com.kuibuqianli.dto.LoginResponseDTO;
 import com.kuibuqianli.common.exception.BusinessException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户控制器：处理注册、登录、用户信息
@@ -96,6 +97,21 @@ public class UserController {
     @GetMapping("/health-data")
     public Result<HealthDataDTO> getUserHealthData(@RequestParam Long userId) {
         return Result.success(healthDataService.getUserHealthData(userId));
+    }
+
+    @Operation(summary = "更新用户头像")
+    @PostMapping("/avatar")
+    public Result<String> updateAvatar(@RequestParam Long userId, @RequestBody Map<String, String> body) {
+        String avatarUrl = body.get("avatarUrl");
+        if (avatarUrl == null || avatarUrl.isEmpty()) {
+            return Result.error("头像URL不能为空");
+        }
+        boolean success = userService.updateAvatar(userId, avatarUrl);
+        if (success) {
+            return Result.success(avatarUrl);
+        } else {
+            return Result.error("头像更新失败");
+        }
     }
 }
 // 用户控制器：处理注册、登录、用户信息

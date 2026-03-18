@@ -360,5 +360,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
     }
 
+    @Override
+    public boolean updateAvatar(Long userId, String avatarUrl) {
+        try {
+            User user = userMapper.selectById(userId);
+            if (user == null) {
+                throw new BusinessException("用户不存在");
+            }
+            user.setAvatarUrl(avatarUrl);
+            user.setUpdatedAt(LocalDateTime.now());
+            int result = userMapper.updateById(user);
+            return result > 0;
+        } catch (BusinessException e) {
+            throw e;
+        } catch (Exception e) {
+            System.err.println("Update avatar error: " + e.getMessage());
+            return false;
+        }
+    }
+
 }
 // 用户服务实现类

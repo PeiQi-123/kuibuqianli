@@ -110,7 +110,7 @@ public class VideoService {
                 }
             }
             
-            if (bestMatchRate >= 0.30) {
+            if (bestMatchRate >= 0.40) {
                 return bestMatchPath;
             }
             return null;
@@ -183,6 +183,64 @@ public class VideoService {
     }
     
     /**
+     * 为每个步骤单独查找或生成视频
+     * @param steps 运动步骤列表（每个元素包含步骤名称和描述）
+     * @param motionId 运动ID
+     * @return 每个步骤对应的视频列表
+     */
+    public List<Map<String, Object>> findOrGenerateVideosForSteps(List<Map<String, Object>> steps, String motionId) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        
+        if (steps == null || steps.isEmpty()) {
+            return result;
+        }
+        
+        for (int i = 0; i < steps.size(); i++) {
+            Map<String, Object> step = steps.get(i);
+            String stepName = step.get("name") != null ? step.get("name").toString() : "步骤" + (i + 1);
+            String instruction = step.get("instruction") != null ? step.get("instruction").toString() : "";
+            String stepText = stepName + "，" + instruction;
+            
+            System.out.println("DEBUG: 处理步骤 " + (i + 1) + ": " + stepName);
+            
+            String videoPath = findOrGenerateVideoForSingleStep(stepText, stepName);
+            
+            Map<String, Object> stepVideo = new HashMap<>();
+            stepVideo.put("stepIndex", i + 1);
+            stepVideo.put("stepName", stepName);
+            stepVideo.put("videoPath", videoPath);
+            stepVideo.put("videoFileName", videoPath != null ? extractFileName(videoPath) : null);
+            
+            result.add(stepVideo);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * 从路径中提取文件名
+     */
+    private String extractFileName(String path) {
+        if (path == null) return null;
+        int lastSlash = Math.max(path.lastIndexOf('/'), path.lastIndexOf('\\'));
+        return lastSlash >= 0 ? path.substring(lastSlash + 1) : path;
+    }
+    
+    /**
+     * 为单个步骤查找或生成视频
+     */
+    private String findOrGenerateVideoForSingleStep(String stepText, String stepId) {
+        String existingVideo = fuzzyFindVideoByMatchRate(stepText);
+        if (existingVideo != null) {
+            System.out.println("DEBUG: 步骤 " + stepId + " 找到匹配视频: " + existingVideo);
+            return existingVideo;
+        }
+        
+        System.out.println("DEBUG: 步骤 " + stepId + " 未找到匹配视频，调用API生成...");
+        return generateVideoFromSingleStep(stepText, stepId);
+    }
+    
+    /**
      * 调用阿里云百炼API生成视频
      * @param steps 运动步骤
      * @param motionId 运动ID
@@ -225,66 +283,261 @@ public class VideoService {
     }
     
     /**
+     * 为单个步骤调用阿里云API生成视频
+     * @param stepText 步骤文本（包含名称和描述）
+     * @param stepName 步骤名称（用于视频文件名）
+     */
+    private String generateVideoFromSingleStep(String stepText, String stepName) {
+        try {
+            System.out.println("DEBUG: 为步骤生成视频: " + stepName);
+            
+            String videoUrl = callAliyunVideoApi(stepText);
+            
+            if (videoUrl != null && !videoUrl.isEmpty()) {
+                String fileName = stepName + ".mp4";
+                String savePath = videoDir + "/" + fileName;
+                
+                System.out.println("DEBUG: 下载视频到: " + savePath);
+                
+                boolean saved = downloadVideo(videoUrl, savePath);
+                if (saved) {
+                    System.out.println("DEBUG: 步骤 " + stepName + " 视频生成并保存成功");
+                    return savePath;
+                }
+            }
+            
+            System.out.println("DEBUG: 步骤 " + stepName + " 视频生成失败，返回null");
+            return null;
+            
+        } catch (Exception e) {
+            System.err.println("步骤 " + stepName + " 视频生成失败: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
+    /**
      * 调用阿里云百炼视频生成API
      * @param description 视频描述
      * @return 生成的视频URL
      */
     private String callAliyunVideoApi(String description) {
         try {
-            URL url = new URL(aliyunVideoApiUrl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setRequestProperty("Authorization", "Bearer " + aliyunApiKey);
-            conn.setDoOutput(true);
+            System.out.println("DEBUG: 调用阿里云API，描述: " + description);
             
-            String requestBody = String.format(
-                "{\"model\": \"i2v-gen-2\", \"input\": {\"prompt\": \"%s\"}, \"parameters\": {\"size\": \"1280x720\", \"fps\": 24, \"duration\": 5}}",
-                description.replace("\"", "\\\"")
-            );
+            // 尝试多个API地址
+            String[] apiUrls = {
+                "https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis",
+                "https://dashscope-us.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis"
+            };
             
-            try (OutputStream os = conn.getOutputStream()) {
-                byte[] input = requestBody.getBytes("utf-8");
-                os.write(input, 0, input.length);
-            }
-            
-            int responseCode = conn.getResponseCode();
-            if (responseCode == 200) {
-                try (BufferedReader br = new BufferedReader(
-                        new InputStreamReader(conn.getInputStream(), "utf-8"))) {
-                    StringBuilder response = new StringBuilder();
-                    String responseLine;
-                    while ((responseLine = br.readLine()) != null) {
-                        response.append(responseLine.trim());
+            String lastError = "";
+            for (String apiUrl : apiUrls) {
+                try {
+                    URL url = new URL(apiUrl);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json");
+                    conn.setRequestProperty("Authorization", "Bearer " + aliyunApiKey);
+                    conn.setRequestProperty("X-DashScope-Async", "enable");
+                    conn.setConnectTimeout(30000);
+                    conn.setReadTimeout(60000);
+                    conn.setDoOutput(true);
+                    
+                    String requestBody = String.format(
+                        "{\"model\": \"wan2.6-t2v\", \"input\": {\"prompt\": \"%s\"}, \"parameters\": {\"size\": \"1280*720\", \"duration\": 5}}",
+                        description.replace("\"", "\\\"")
+                    );
+                    
+                    System.out.println("DEBUG: 尝试API地址: " + apiUrl);
+                    System.out.println("DEBUG: 请求体: " + requestBody);
+                    
+                    try (OutputStream os = conn.getOutputStream()) {
+                        byte[] input = requestBody.getBytes("utf-8");
+                        os.write(input, 0, input.length);
                     }
                     
-                    String responseStr = response.toString();
-                    if (responseStr.contains("video_url")) {
-                        int start = responseStr.indexOf("video_url") + 12;
-                        int end = responseStr.indexOf("\"", start);
-                        if (end > start) {
-                            return responseStr.substring(start, end);
-                        }
-                    }
+                    int responseCode = conn.getResponseCode();
+                    System.out.println("DEBUG: API响应码: " + responseCode);
                     
-                    if (responseStr.contains("output")) {
-                        int start = responseStr.indexOf("\"url\"") > 0 ? 
-                            responseStr.indexOf("\"url\"") + 7 : 
-                            responseStr.indexOf("\"video\"") + 10;
-                        int end = responseStr.indexOf("\"", start);
-                        if (end > start) {
-                            return responseStr.substring(start, end);
+                    if (responseCode == 200 || responseCode == 201) {
+                        try (BufferedReader br = new BufferedReader(
+                                new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                            StringBuilder response = new StringBuilder();
+                            String responseLine;
+                            while ((responseLine = br.readLine()) != null) {
+                                response.append(responseLine.trim());
+                            }
+                            
+                            String responseStr = response.toString();
+                            System.out.println("DEBUG: API响应: " + responseStr);
+                            
+                            if (responseStr.contains("task_id")) {
+                                int start = responseStr.indexOf("task_id") + 10;
+                                int end = responseStr.indexOf("\"", start);
+                                if (end > start) {
+                                    String taskId = responseStr.substring(start, end);
+                                    System.out.println("DEBUG: 获取到任务ID: " + taskId);
+                                    return pollVideoResult(taskId, apiUrl);
+                                }
+                            }
+                            
+                            if (responseStr.contains("video_url")) {
+                                int start = responseStr.indexOf("video_url") + 12;
+                                int end = responseStr.indexOf("\"", start);
+                                if (end > start) {
+                                    return responseStr.substring(start, end);
+                                }
+                            }
+                        }
+                    } else {
+                        try (BufferedReader br = new BufferedReader(
+                                new InputStreamReader(conn.getErrorStream(), "utf-8"))) {
+                            StringBuilder errorResponse = new StringBuilder();
+                            String responseLine;
+                            while ((responseLine = br.readLine()) != null) {
+                                errorResponse.append(responseLine.trim());
+                            }
+                            lastError = errorResponse.toString();
+                            System.err.println("API错误响应: " + lastError);
                         }
                     }
+                } catch (Exception e) {
+                    lastError = e.getMessage();
+                    System.err.println("API调用失败: " + e.getMessage());
                 }
-            } else {
-                System.err.println("阿里云API响应码: " + responseCode);
             }
+            
+            System.err.println("所有API地址均失败，最后错误: " + lastError);
             
         } catch (Exception e) {
             System.err.println("调用阿里云视频API失败: " + e.getMessage());
+            e.printStackTrace();
         }
         return null;
+    }
+    
+    /**
+     * 轮询阿里云视频生成结果
+     */
+    private String pollVideoResult(String taskId, String baseApiUrl) {
+        try {
+            // 根据baseApiUrl确定查询API地址
+            String queryUrl = baseApiUrl.replace("/video-synthesis", "/query");
+            URL url = new URL(queryUrl);
+            int maxRetries = 180;
+            int retryCount = 0;
+            
+            System.out.println("DEBUG: 开始轮询任务ID: " + taskId);
+            System.out.println("DEBUG: 查询URL: " + queryUrl);
+            
+            while (retryCount < maxRetries) {
+                Thread.sleep(3000);
+                
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setRequestProperty("Authorization", "Bearer " + aliyunApiKey);
+                conn.setConnectTimeout(10000);
+                conn.setReadTimeout(30000);
+                
+                int responseCode = conn.getResponseCode();
+                System.out.println("DEBUG: 查询响应码: " + responseCode);
+                
+                if (responseCode == 200) {
+                    try (BufferedReader br = new BufferedReader(
+                            new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                        StringBuilder response = new StringBuilder();
+                        String responseLine;
+                        while ((responseLine = br.readLine()) != null) {
+                            response.append(responseLine.trim());
+                        }
+                        
+                        String responseStr = response.toString();
+                        System.out.println("DEBUG: 轮询响应: " + responseStr);
+                        
+                        // 解析task_status
+                        String taskStatus = extractTaskStatus(responseStr);
+                        System.out.println("DEBUG: 当前任务状态: " + taskStatus);
+                        
+                        if ("SUCCEEDED".equals(taskStatus)) {
+                            // 提取视频URL - 从 results 数组中提取 url
+                            String videoUrl = extractVideoUrlFromResults(responseStr);
+                            if (videoUrl != null) {
+                                System.out.println("DEBUG: 提取到视频URL: " + videoUrl);
+                                return videoUrl;
+                            }
+                        } else if ("FAILED".equals(taskStatus)) {
+                            System.err.println("视频生成任务失败");
+                            return null;
+                        }
+                    }
+                } else {
+                    System.err.println("查询API返回错误码: " + responseCode);
+                    try (BufferedReader br = new BufferedReader(
+                            new InputStreamReader(conn.getErrorStream(), "utf-8"))) {
+                        StringBuilder errorResponse = new StringBuilder();
+                        String responseLine;
+                        while ((responseLine = br.readLine()) != null) {
+                            errorResponse.append(responseLine.trim());
+                        }
+                        System.err.println("错误详情: " + errorResponse.toString());
+                    }
+                }
+                
+                retryCount++;
+                System.out.println("DEBUG: 等待视频生成... (" + retryCount + "/" + maxRetries + ")");
+            }
+        } catch (Exception e) {
+            System.err.println("轮询视频结果失败: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    private String extractVideoUrlFromResults(String response) {
+        if (response == null) return null;
+        try {
+            // 查找 results 数组中的 url 字段
+            int resultsIdx = response.indexOf("results");
+            if (resultsIdx >= 0) {
+                int urlIdx = response.indexOf("\"url\"", resultsIdx);
+                if (urlIdx >= 0) {
+                    int start = urlIdx + 7;
+                    int end = response.indexOf("\"", start);
+                    if (end > start) {
+                        return response.substring(start, end);
+                    }
+                }
+            }
+            // 备选：直接查找 video_url
+            if (response.contains("video_url")) {
+                int start = response.indexOf("video_url") + 12;
+                int end = response.indexOf("\"", start);
+                if (end > start) {
+                    return response.substring(start, end);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("提取video_url失败: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    private String extractTaskStatus(String response) {
+        if (response == null) return "UNKNOWN";
+        try {
+            int idx = response.indexOf("task_status");
+            if (idx >= 0) {
+                int start = response.indexOf("\"", idx) + 1;
+                int end = response.indexOf("\"", start);
+                if (end > start) {
+                    return response.substring(start, end);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("解析task_status失败: " + e.getMessage());
+        }
+        return "UNKNOWN";
     }
     
     /**

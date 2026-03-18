@@ -1,8 +1,14 @@
 // 用户中心页面
+import 'dart:convert';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
 import '../services/auth_service.dart';
 import '../models/user_model.dart';
+import '../services/api_service.dart';
 
 class UserCenterScreen extends StatefulWidget {
   const UserCenterScreen({super.key});
@@ -13,9 +19,12 @@ class UserCenterScreen extends StatefulWidget {
 
 class _UserCenterScreenState extends State<UserCenterScreen> with SingleTickerProviderStateMixin {
   final AuthService _authService = AuthService();
+  final ApiService _apiService = ApiService();
+  final ImagePicker _picker = ImagePicker();
   UserModel? _currentUser;
   late TabController _tabController;
-  int _selectedTabIndex = -1; // 使用单独的变量跟踪选中状态
+  int _selectedTabIndex = -1;
+  bool _isUploading = false;
 
   @override
   void initState() {
@@ -33,7 +42,6 @@ class _UserCenterScreenState extends State<UserCenterScreen> with SingleTickerPr
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // 当页面重新显示时，重置选项卡选中状态
     setState(() {
       _selectedTabIndex = -1;
     });
@@ -48,8 +56,131 @@ class _UserCenterScreenState extends State<UserCenterScreen> with SingleTickerPr
     }
   }
 
+  Future<void> _pickAndUploadAvatar() async {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: ImageSource.gallery,
+        maxWidth: 500,
+        maxHeight: 500,
+        imageQuality: 80,
+      );
+
+      if (image == null) return;
+
+      setState(() => _isUploading = true);
+
+      String uploadUrl = '${ApiService.baseUrl}/file/avatar';
+      var request = http.MultipartRequest('POST', Uri.parse(uploadUrl));
+      
+      final mimeType = _getMimeType(image.path);
+      final bytes = await image.readAsBytes();
+      
+      request.files.add(http.MultipartFile.fromBytes(
+        'file',
+        bytes,
+        filename: image.name,
+        contentType: MediaType.parse(mimeType),
+      ));
+
+      var streamedResponse = await request.send();
+      var response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        if (data['code'] == 200) {
+          String avatarUrl = data['data'];
+
+          final userId = _currentUser?.id;
+          if (userId != null) {
+            final updateResponse = await _apiService.post(
+              '/user/avatar?userId=$userId',
+              {'avatarUrl': avatarUrl},
+            );
+
+            if (updateResponse != null && updateResponse['code'] == 200) {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('头像上传成功')),
+                );
+              }
+              await _loadCurrentUser();
+            } else {
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('头像保存失败')),
+                );
+              }
+            }
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(data['message'] ?? '上传失败')),
+            );
+          }
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('头像上传失败')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('上传失败: $e')),
+        );
+      }
+    } finally {
+      setState(() => _isUploading = false);
+    }
+  }
+
+  String _getMimeType(String path) {
+    final ext = path.split('.').last.toLowerCase();
+    switch (ext) {
+      case 'png':
+        return 'image/png';
+      case 'jpg':
+      case 'jpeg':
+        return 'image/jpeg';
+      case 'gif':
+        return 'image/gif';
+      case 'webp':
+        return 'image/webp';
+      default:
+        return 'image/jpeg';
+    }
+  }
+
+  String _getAvatarUrl() {
+    final avatarUrl = _currentUser?.avatarUrl;
+    if (avatarUrl != null && avatarUrl.isNotEmpty) {
+      if (avatarUrl.startsWith('http')) {
+        return avatarUrl;
+      }
+      // 处理各种格式的URL
+      String path = avatarUrl;
+      // 移除开头的 /api/ 或 /api 前缀
+      if (path.startsWith('/api/')) {
+        path = path.substring(4);
+      } else if (path.startsWith('/api')) {
+        path = path.substring(4);
+      }
+      // 确保以 / 开头
+      if (!path.startsWith('/')) {
+        path = '/' + path;
+      }
+      return 'http://localhost:8080/api$path';
+    }
+    return '';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final avatarUrl = _getAvatarUrl();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('用户中心'),
@@ -58,20 +189,62 @@ class _UserCenterScreenState extends State<UserCenterScreen> with SingleTickerPr
       ),
       body: Column(
         children: [
-          // 用户信息卡片
           Container(
             width: double.infinity,
             color: Colors.blue.shade50,
             padding: const EdgeInsets.all(20),
             child: Column(
               children: [
-                CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Colors.blue.shade100,
-                  child: Icon(
-                    Icons.person,
-                    size: 60,
-                    color: Colors.blue.shade600,
+                GestureDetector(
+                  onTap: _isUploading ? null : _pickAndUploadAvatar,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundColor: Colors.blue.shade100,
+                        backgroundImage: avatarUrl.isNotEmpty 
+                            ? NetworkImage(avatarUrl) 
+                            : null,
+                        child: avatarUrl.isEmpty
+                            ? Icon(
+                                Icons.person,
+                                size: 60,
+                                color: Colors.blue.shade600,
+                              )
+                            : null,
+                      ),
+                      if (_isUploading)
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.black45,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: Colors.white, width: 2),
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 16),

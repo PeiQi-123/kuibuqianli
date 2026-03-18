@@ -55,29 +55,32 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   Future<void> _generateOrLoadVideos() async {
     setState(() => _isLoading = true);
     
-    final steps = widget.motionData?['steps'] as List<dynamic>? ?? [];
+    final actions = (widget.motionData?['actions'] as List<dynamic>? ?? [])
+        .whereType<Map<String, dynamic>>()
+        .toList();
     final motionId = widget.motionData?['motion_id']?.toString() ?? 'motion';
     
-    if (steps.isNotEmpty) {
+    if (actions.isNotEmpty) {
       try {
-        final stepStrings = steps.map((s) => s.toString()).toList();
-        final response = await _apiService.post('/video/find-or-generate', {
-          'steps': stepStrings,
+        final response = await _apiService.post('/video/find-or-generate-steps', {
+          'steps': actions,
           'motionId': motionId,
         });
         
         if (response != null && response['code'] == 200) {
-          final videoData = response['data'] as Map<String, dynamic>?;
-          if (videoData != null) {
-            final videoPath = videoData['fileName']?.toString();
-            if (videoPath != null && videoPath.isNotEmpty) {
+          final stepVideos = response['data'] as List<dynamic>? ?? [];
+          if (stepVideos.isNotEmpty) {
+            final validVideos = stepVideos
+                .where((v) => v['videoFileName'] != null && v['videoFileName'].toString().isNotEmpty)
+                .map((v) => v['videoFileName'].toString())
+                .toList();
+            
+            if (validVideos.isNotEmpty) {
               setState(() {
-                _matchedVideos = [videoPath];
-                _selectedVideo = videoPath;
+                _matchedVideos = validVideos;
+                _selectedVideo = validVideos.first;
+                _currentStep = 0;
               });
-              if (_supportsEmbeddedVideo) {
-                await _initVideoController(autoPlay: true);
-              }
               setState(() => _isLoading = false);
               return;
             }

@@ -68,5 +68,8 @@ public class User {
 
     @TableField("is_active")
     private Boolean isActive;
+    
+    @TableField("avatar_url")
+    private String avatarUrl;
 }
 // 用户实体类

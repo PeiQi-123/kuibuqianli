@@ -17,6 +17,7 @@ class UserModel {
   final int? remindInterval;
   final int? remindMaxTimes;
   final List<Map<String, String>>? remindAvoidTime;
+  final String? avatarUrl;
 
   UserModel({
     this.id,
@@ -34,6 +35,7 @@ class UserModel {
     this.remindInterval,
     this.remindMaxTimes,
     this.remindAvoidTime,
+    this.avatarUrl,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -79,6 +81,7 @@ class UserModel {
       remindInterval: (json['remindInterval'] ?? json['remind_interval']) != null ? int.tryParse((json['remindInterval'] ?? json['remind_interval']).toString()) : null,
       remindMaxTimes: (json['remindMaxTimes'] ?? json['remind_max_times']) != null ? int.tryParse((json['remindMaxTimes'] ?? json['remind_max_times']).toString()) : null,
       remindAvoidTime: avoidTime,
+      avatarUrl: json['avatarUrl'] ?? json['avatar_url'],
     );
   }
 
@@ -99,6 +102,7 @@ class UserModel {
       'remindInterval': remindInterval,
       'remindMaxTimes': remindMaxTimes,
       'remindAvoidTime': remindAvoidTime,
+      'avatarUrl': avatarUrl,
     };
   }
 }
