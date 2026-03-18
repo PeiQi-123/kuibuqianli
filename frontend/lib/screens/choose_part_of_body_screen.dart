@@ -510,7 +510,7 @@ model-viewer#body-model-viewer {
                 : () {
                     context.push(
                       '/motion_recommendation',
-                      extra: {'bodyPart': _selectedPart!.recommendationName},
+                      extra: {'bodyPart': _selectedPart!.displayName},
                     );
                   },
             child: const Text('AI 推荐'),

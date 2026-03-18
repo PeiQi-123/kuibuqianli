@@ -1,6 +1,7 @@
 // 运动偏好设置页面（简化版）
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart'; // 添加这行导入
+import '../constants/body_part_catalog.dart';
 import '../services/api_service.dart';
 import '../services/storage_service.dart';
 
@@ -17,7 +18,9 @@ class _PreferenceScreenSimpleState extends State<PreferenceScreenSimple> {
   bool _isSaving = false;
   Map<String, dynamic>? _learningInsights;
   // 身体部位偏好
-  final List<String> bodyParts = ['头部', '颈部','左肩', '右肩', '胸背', '腰部', '胯部', '左手臂','右手臂','左手', '右手', '左腿', '右腿', '左膝盖','右膝盖','左脚踝','右脚踝'];
+  final List<String> bodyParts = BodyPartCatalog.options
+      .map((option) => option.displayName)
+      .toList(growable: false);
   List<String> selectedBodyParts = [];
 
   // 动作难度偏好（多选）

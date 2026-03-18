@@ -14,10 +14,6 @@ import '../../screens/preference_screen.dart';
 import '../../screens/health_data_screen.dart';
 import '../../screens/onboarding/onboarding_survey_screen.dart';
 import 'package:go_router/go_router.dart';
-import 'package:go_router/go_router.dart';
-final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
-
-
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 final GoRouter router = GoRouter(
@@ -36,7 +32,7 @@ final GoRouter router = GoRouter(
       path: '/register',
       builder: (context, state) => const RegisterScreen(),
     ),
-GoRoute(
+    GoRoute(
       path: '/app_screen',
       builder: (context, state) => const AppScreen(),
     ),

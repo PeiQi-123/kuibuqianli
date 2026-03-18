@@ -238,6 +238,70 @@ class BodyPartCatalog {
       selectionRadius: 0.13,
     ),
     BodyPartOption(
+      id: 'leftHand',
+      displayName: '左手',
+      apiKey: 'left_hand',
+      recommendationName: '手腕',
+      videoKeyword: '手腕',
+      anchorPoints: [_bone('mixamorig:LeftHand')],
+      hotspotOffset: const ModelPoint(0, 0, 0.08),
+      selectionPaths: [
+        BodyPath([
+          _bone('mixamorig:LeftForeArm'),
+          _bone('mixamorig:LeftHand'),
+        ]),
+      ],
+      selectionRadius: 0.09,
+    ),
+    BodyPartOption(
+      id: 'rightHand',
+      displayName: '右手',
+      apiKey: 'right_hand',
+      recommendationName: '手腕',
+      videoKeyword: '手腕',
+      anchorPoints: [_bone('mixamorig:RightHand')],
+      hotspotOffset: const ModelPoint(0, 0, 0.08),
+      selectionPaths: [
+        BodyPath([
+          _bone('mixamorig:RightForeArm'),
+          _bone('mixamorig:RightHand'),
+        ]),
+      ],
+      selectionRadius: 0.09,
+    ),
+    BodyPartOption(
+      id: 'leftLeg',
+      displayName: '左腿',
+      apiKey: 'left_leg',
+      recommendationName: '腿部',
+      videoKeyword: '腿',
+      anchorPoints: [_bone('mixamorig:LeftUpLeg'), _bone('mixamorig:LeftLeg')],
+      hotspotOffset: const ModelPoint(0, 0, 0.1),
+      selectionPaths: [
+        BodyPath([
+          _bone('mixamorig:LeftUpLeg'),
+          _bone('mixamorig:LeftLeg'),
+        ]),
+      ],
+      selectionRadius: 0.12,
+    ),
+    BodyPartOption(
+      id: 'rightLeg',
+      displayName: '右腿',
+      apiKey: 'right_leg',
+      recommendationName: '腿部',
+      videoKeyword: '腿',
+      anchorPoints: [_bone('mixamorig:RightUpLeg'), _bone('mixamorig:RightLeg')],
+      hotspotOffset: const ModelPoint(0, 0, 0.1),
+      selectionPaths: [
+        BodyPath([
+          _bone('mixamorig:RightUpLeg'),
+          _bone('mixamorig:RightLeg'),
+        ]),
+      ],
+      selectionRadius: 0.12,
+    ),
+    BodyPartOption(
       id: 'leftKnee',
       displayName: '左膝盖',
       apiKey: 'left_knee',
@@ -307,14 +371,8 @@ class BodyPartCatalog {
     ),
   ];
 
-  static const List<String> recommendationBodyParts = [
-    '颈部',
-    '肩部',
-    '腰部',
-    '背部',
-    '腿部',
-    '手腕',
-  ];
+  static List<String> get recommendationBodyParts =>
+      options.map((option) => option.displayName).toList(growable: false);
 
   static final Map<String, ModelPoint> _bonePositions = {
     'mixamorig:HeadTop_End': const ModelPoint(0, 1.8197, 0.0598),

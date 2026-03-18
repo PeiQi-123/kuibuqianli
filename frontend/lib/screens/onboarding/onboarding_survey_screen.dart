@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/auth_service.dart';
 import '../../services/api_service.dart';
 import '../../services/storage_service.dart';
+import '../../constants/body_part_catalog.dart';
 import '../../models/user_model.dart';
 import '../../models/preference_model.dart';
 import '../../widgets/custom_button.dart';
@@ -49,9 +50,9 @@ class _OnboardingSurveyScreenState extends State<OnboardingSurveyScreen> {
 
   // 运动偏好（可选）
   final List<String> _preferredBodyParts = [];
-  final List<String> _availableBodyParts = [
-    '头部', '颈部','左肩', '右肩', '胸背', '腰部', '胯部', '左手臂','右手臂','左手', '右手', '左腿', '右腿', '左膝盖','右膝盖','左脚踝','右脚踝'
-  ];
+  final List<String> _availableBodyParts = BodyPartCatalog.options
+      .map((option) => option.displayName)
+      .toList(growable: false);
 
   final List<String> _exerciseScenarios = [];
   final List<String> _availableScenarios = [
