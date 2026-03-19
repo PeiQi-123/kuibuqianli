@@ -2,6 +2,7 @@ package com.kuibuqianli.service.impl;
 
 import com.kuibuqianli.dto.ExerciseRecordCreateDTO;
 import com.kuibuqianli.dto.RecommendationFeedbackDTO;
+import com.kuibuqianli.dto.RecommendationFeedbackResultDTO;
 import com.kuibuqianli.service.ExerciseRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,13 +48,13 @@ public class ExerciseRecordServiceImpl implements ExerciseRecordService {
     }
 
     @Override
-    public boolean saveFeedback(Long userId, RecommendationFeedbackDTO dto) {
+    public RecommendationFeedbackResultDTO saveFeedback(Long userId, RecommendationFeedbackDTO dto) {
         if (dto.getRecordId() == null || dto.getFeedbackTag() == null) {
-            return false;
+            return null;
         }
         String feedbackTag = dto.getFeedbackTag().trim().toLowerCase();
         if (!ALLOWED_FEEDBACK_TAGS.contains(feedbackTag)) {
-            return false;
+            return null;
         }
 
         int feedbackScore = switch (feedbackTag) {
@@ -72,6 +73,34 @@ public class ExerciseRecordServiceImpl implements ExerciseRecordService {
                 dto.getRecordId(),
                 userId
         );
-        return result > 0;
+        if (result <= 0) {
+            return null;
+        }
+
+        RecommendationFeedbackResultDTO response = new RecommendationFeedbackResultDTO();
+        response.setRecordId(dto.getRecordId());
+        response.setFeedbackTag(feedbackTag);
+        response.setFeedbackScore(feedbackScore);
+        response.setLearningDirection(resolveLearningDirection(feedbackTag));
+        response.setLearningMessage(resolveLearningMessage(feedbackTag));
+        return response;
+    }
+
+    private String resolveLearningDirection(String feedbackTag) {
+        return switch (feedbackTag) {
+            case "too_easy" -> "increase_intensity";
+            case "too_hard" -> "decrease_intensity";
+            case "dislike" -> "reduce_similar_content";
+            default -> "keep_current_level";
+        };
+    }
+
+    private String resolveLearningMessage(String feedbackTag) {
+        return switch (feedbackTag) {
+            case "too_easy" -> "已记录你的反馈，后续将提高推荐挑战度。";
+            case "too_hard" -> "已记录你的反馈，后续将降低推荐难度。";
+            case "dislike" -> "已记录你的反馈，后续将减少相似动作类型。";
+            default -> "已记录你的反馈，后续将保持当前推荐强度。";
+        };
     }
 }

@@ -1,6 +1,5 @@
 // 视频指导页面
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player/video_player.dart';
 import '../services/api_service.dart';
@@ -29,6 +28,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   int? _savedRecordId;
   bool _isSavingFeedback = false;
   String? _feedbackTag;
+  String? _feedbackLearningMessage;
+  bool _isRefreshingInsights = false;
+  Map<String, dynamic>? _latestLearningInsights;
 
   VideoPlayerController? _controller;
   bool _isControllerInitialized = false;
@@ -277,13 +279,17 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       });
       if (!mounted) return;
       if (response != null && response['code'] == 200) {
+        final data = response['data'] as Map<String, dynamic>?;
+        final learningMessage = data?['learningMessage']?.toString();
         setState(() {
           _feedbackTag = tag;
+          _feedbackLearningMessage = learningMessage;
           _isSavingFeedback = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(_feedbackLabel(tag))),
+          SnackBar(content: Text(learningMessage ?? _feedbackLabel(tag))),
         );
+        await _refreshPreferenceInsights();
       } else {
         setState(() => _isSavingFeedback = false);
         ScaffoldMessenger.of(context).showSnackBar(
@@ -310,6 +316,41 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       default:
         return '已记录：本次推荐很合适';
     }
+  }
+
+  Future<void> _refreshPreferenceInsights() async {
+    final userId = await StorageService.getUserId();
+    if (userId == null || userId.isEmpty || !mounted) return;
+
+    setState(() => _isRefreshingInsights = true);
+    try {
+      final response = await _apiService.get(
+        '/user/preferences/insights',
+        params: {'userId': userId},
+      );
+
+      if (!mounted) return;
+      if (response != null && response['code'] == 200 && response['data'] is Map<String, dynamic>) {
+        setState(() {
+          _latestLearningInsights = response['data'] as Map<String, dynamic>;
+          _isRefreshingInsights = false;
+        });
+      } else {
+        setState(() => _isRefreshingInsights = false);
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isRefreshingInsights = false);
+      debugPrint('刷新偏好洞察失败: $e');
+    }
+  }
+
+  String _formatCompletionRate(dynamic rateValue) {
+    if (rateValue is num) {
+      final percent = rateValue <= 1 ? rateValue * 100 : rateValue.toDouble();
+      return '${percent.toStringAsFixed(1)}%';
+    }
+    return '--';
   }
 
   int _estimatedDurationSeconds() {
@@ -683,6 +724,66 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                                 label: Text(_feedbackTag == null ? '评价本次推荐' : _feedbackLabel(_feedbackTag!)),
                               ),
                             ),
+                            if (_feedbackLearningMessage != null) ...[
+                              const SizedBox(height: 8),
+                              Text(
+                                _feedbackLearningMessage!,
+                                style: TextStyle(fontSize: 12, color: Colors.grey[700]),
+                              ),
+                            ],
+                            if (_isRefreshingInsights) ...[
+                              const SizedBox(height: 8),
+                              const Row(
+                                children: [
+                                  SizedBox(
+                                    height: 12,
+                                    width: 12,
+                                    child: CircularProgressIndicator(strokeWidth: 2),
+                                  ),
+                                  SizedBox(width: 8),
+                                  Text('正在更新偏好学习洞察...'),
+                                ],
+                              ),
+                            ],
+                            if (_latestLearningInsights != null) ...[
+                              const SizedBox(height: 10),
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[50],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Icon(Icons.psychology, size: 18, color: Colors.blue[700]),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          '偏好学习已更新',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.blue[700],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      _latestLearningInsights!['summary']?.toString() ?? '已结合最新反馈更新推荐偏好。',
+                                      style: TextStyle(fontSize: 12, color: Colors.blue[900]),
+                                    ),
+                                    const SizedBox(height: 6),
+                                    Text(
+                                      '近30天训练 ${_latestLearningInsights!['totalSessions'] ?? 0} 次，完成率 ${_formatCompletionRate(_latestLearningInsights!['completionRate'])}',
+                                      style: TextStyle(fontSize: 12, color: Colors.blue[800]),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ],
                         ],
                       ),

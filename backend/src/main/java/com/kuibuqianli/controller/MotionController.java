@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuibuqianli.common.Result;
 import com.kuibuqianli.dto.ExerciseRecordCreateDTO;
 import com.kuibuqianli.dto.RecommendationFeedbackDTO;
+import com.kuibuqianli.dto.RecommendationFeedbackResultDTO;
 import com.kuibuqianli.service.ExerciseRecordService;
 import com.kuibuqianli.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -140,8 +141,8 @@ public class MotionController {
 
     @Operation(summary = "保存推荐反馈")
     @PostMapping("/feedback")
-    public Result<String> saveRecommendationFeedback(@RequestParam Long userId, @RequestBody RecommendationFeedbackDTO request) {
-        boolean success = exerciseRecordService.saveFeedback(userId, request);
-        return success ? Result.success("推荐反馈保存成功") : Result.error("推荐反馈保存失败");
+    public Result<RecommendationFeedbackResultDTO> saveRecommendationFeedback(@RequestParam Long userId, @RequestBody RecommendationFeedbackDTO request) {
+        RecommendationFeedbackResultDTO data = exerciseRecordService.saveFeedback(userId, request);
+        return data != null ? Result.success("推荐反馈保存成功", data) : Result.error("推荐反馈保存失败");
     }
 }
