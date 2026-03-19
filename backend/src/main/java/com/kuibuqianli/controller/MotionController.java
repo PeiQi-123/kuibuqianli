@@ -2,6 +2,10 @@ package com.kuibuqianli.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuibuqianli.common.Result;
+import com.kuibuqianli.dto.ExerciseRecordCreateDTO;
+import com.kuibuqianli.dto.RecommendationFeedbackDTO;
+import com.kuibuqianli.dto.RecommendationFeedbackResultDTO;
+import com.kuibuqianli.service.ExerciseRecordService;
 import com.kuibuqianli.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +17,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,8 +32,9 @@ public class MotionController {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
     private final VideoService videoService;
+    private final ExerciseRecordService exerciseRecordService;
 
-    public MotionController(VideoService videoService) {
+    public MotionController(VideoService videoService, ExerciseRecordService exerciseRecordService) {
         this.restTemplate = new RestTemplate();
         
         // 配置 UTF-8 编码
@@ -40,6 +46,7 @@ public class MotionController {
         
         this.objectMapper = new ObjectMapper();
         this.videoService = videoService;
+        this.exerciseRecordService = exerciseRecordService;
     }
 
     @Operation(summary = "生成微运动方案")
@@ -118,5 +125,24 @@ public class MotionController {
         } catch (Exception e) {
             return Result.error("调用 AI 服务失败: " + e.getMessage());
         }
+    }
+
+    @Operation(summary = "保存运动记录")
+    @PostMapping("/record")
+    public Result<Map<String, Object>> saveExerciseRecord(@RequestParam Long userId, @RequestBody ExerciseRecordCreateDTO request) {
+        Long recordId = exerciseRecordService.createRecord(userId, request);
+        if (recordId == null) {
+            return Result.error("运动记录保存失败");
+        }
+        Map<String, Object> data = new HashMap<>();
+        data.put("recordId", recordId);
+        return Result.success("运动记录保存成功", data);
+    }
+
+    @Operation(summary = "保存推荐反馈")
+    @PostMapping("/feedback")
+    public Result<RecommendationFeedbackResultDTO> saveRecommendationFeedback(@RequestParam Long userId, @RequestBody RecommendationFeedbackDTO request) {
+        RecommendationFeedbackResultDTO data = exerciseRecordService.saveFeedback(userId, request);
+        return data != null ? Result.success("推荐反馈保存成功", data) : Result.error("推荐反馈保存失败");
     }
 }
