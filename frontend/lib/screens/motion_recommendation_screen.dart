@@ -18,7 +18,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
   final ApiService _apiService = ApiService();
   final AuthService _authService = AuthService();
   late String _selectedBodyPart;
-  String _selectedActivity = '久坐';
+  String _selectedActivity = '静态拉伸';
   int _selectedDuration = 5;
   String _selectedIntensity = 'low';
 
@@ -29,17 +29,22 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
   final List<String> _bodyParts = BodyPartCatalog.recommendationBodyParts;
 
   final List<Map<String, dynamic>> _activityTypes = [
-    {'value': '久坐', 'label': '久坐', 'icon': Icons.computer},
-    {'value': '工作', 'label': '工作', 'icon': Icons.work},
-    {'value': '休息', 'label': '休息', 'icon': Icons.self_improvement},
-    {'value': '学习', 'label': '学习', 'icon': Icons.menu_book},
+    {'value': '静态拉伸', 'label': '静态拉伸', 'icon': Icons.accessibility_new},
+    {'value': '动态拉伸', 'label': '动态拉伸', 'icon': Icons.directions_run},
+    {'value': '有氧运动', 'label': '有氧运动', 'icon': Icons.favorite_border},
+    {'value': '微力量锻炼', 'label': '微力量锻炼', 'icon': Icons.fitness_center},
+    {'value': '关节活动', 'label': '关节活动', 'icon': Icons.rotate_right},
+    {'value': '眼部放松', 'label': '眼部放松', 'icon': Icons.remove_red_eye_outlined},
+    {'value': '按摩放松', 'label': '按摩放松', 'icon': Icons.spa_outlined},
+    {'value': '体态矫正', 'label': '体态矫正', 'icon': Icons.accessibility_outlined},
+    {'value': '深呼吸', 'label': '深呼吸', 'icon': Icons.air},
   ];
 
   final List<int> _durations = [3, 5, 10, 15];
   final List<Map<String, dynamic>> _intensities = [
-    {'value': 'low', 'label': '低强度', 'icon': Icons.directions_walk},
-    {'value': 'medium', 'label': '中强度', 'icon': Icons.directions_run},
-    {'value': 'high', 'label': '高强度', 'icon': Icons.fitness_center},
+    {'value': 'low', 'label': '零基础', 'icon': Icons.self_improvement},
+    {'value': 'medium', 'label': '入门级', 'icon': Icons.directions_walk},
+    {'value': 'high', 'label': '有难度', 'icon': Icons.fitness_center},
   ];
 
   @override
@@ -644,10 +649,15 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
 
   String _buildPostureInfo() {
     final activityDescriptions = {
-      '久坐': '久坐办公，肩颈和腰背容易僵硬',
-      '工作': '长时间工作中，姿势固定，局部肌肉紧张',
-      '休息': '短暂休息阶段，希望快速放松身体',
-      '学习': '长时间学习伏案，肩颈和背部压力较大',
+      '静态拉伸': '希望通过静态停留拉伸来缓解紧张和僵硬',
+      '动态拉伸': '希望通过连续动态动作逐步激活身体状态',
+      '有氧运动': '希望做一点轻量有氧，提高循环和清醒度',
+      '微力量锻炼': '希望加入轻量力量刺激，增强肌肉参与感',
+      '关节活动': '希望多做关节灵活性练习，减少僵硬感',
+      '眼部放松': '希望缓解视疲劳和长时间用眼带来的紧张',
+      '按摩放松': '希望用放松类动作缓解局部酸胀和疲劳',
+      '体态矫正': '希望改善久坐后的姿态问题和身体排列',
+      '深呼吸': '希望通过呼吸调整节奏，放松身心状态',
     };
 
     return '${activityDescriptions[_selectedActivity] ?? _selectedActivity}；期望训练时长约$_selectedDuration分钟；强度偏好为${_intensityLabel(_selectedIntensity)}。';
@@ -677,11 +687,11 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
   String _intensityLabel(String intensity) {
     switch (intensity) {
       case 'high':
-        return '高强度';
+        return '有难度';
       case 'medium':
-        return '中强度';
+        return '入门级';
       default:
-        return '低强度';
+        return '零基础';
     }
   }
 }

@@ -30,9 +30,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
   bool _remindEnabled = true;
   int _remindInterval = 30;
   int _remindMaxTimes = 3;
-  List<Map<String, String>> _avoidTimes = [
-    {'start': '22:00', 'end': '08:00'}
-  ];
+  List<Map<String, String>> _avoidTimes = [];
 
   @override
   void initState() {

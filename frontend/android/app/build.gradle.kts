@@ -42,3 +42,7 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation("com.heytap.health:sdk:2.1.7")
+}

@@ -1,6 +1,7 @@
 // lib/screens/app_screen.dart
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/oppo_health_debug_service.dart';
 import '../services/sedentary_reminder_service.dart';
 import 'user_center_screen.dart';
 
@@ -13,6 +14,8 @@ class AppScreen extends StatefulWidget {
 
 class _AppScreenState extends State<AppScreen> {
   int _selectedIndex = 0;
+  bool _showReminderDebugPanel = false;
+  bool _showOppoDebugPanel = false;
 
   @override
   void initState() {
@@ -40,32 +43,45 @@ class _AppScreenState extends State<AppScreen> {
               fit: BoxFit.cover,
             ),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                // 提醒卡片（保持原状）
-                AnimatedBuilder(
-                  animation: SedentaryReminderService.instance,
-                  builder: (context, _) => Container(
-                    width: double.infinity,
-                    child: _buildReminderCard(context),
-                  ),
-                ),
-                const SizedBox(height: 30),
-                // 菜单网格（卡片已缩小）
-                Expanded(
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 700), // 限制最大宽度
-                      child: GridView.count(
+          child: SafeArea(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 700),
+                  child: Column(
+                    children: [
+                      AnimatedBuilder(
+                        animation: SedentaryReminderService.instance,
+                        builder: (context, _) => SizedBox(
+                          width: double.infinity,
+                          child: _buildReminderCard(context),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      AnimatedBuilder(
+                        animation: SedentaryReminderService.instance,
+                        builder: (context, _) => SizedBox(
+                          width: double.infinity,
+                          child: _buildReminderDebugPanel(),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      AnimatedBuilder(
+                        animation: OppoHealthDebugService.instance,
+                        builder: (context, _) => SizedBox(
+                          width: double.infinity,
+                          child: _buildOppoDebugPanel(),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      GridView.count(
                         crossAxisCount: 2,
                         mainAxisSpacing: 72,
                         crossAxisSpacing: 72,
                         childAspectRatio: 1.5,
-                        shrinkWrap: true, // 添加这个属性
-                        physics: const AlwaysScrollableScrollPhysics(), // 保持可滚动
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.only(bottom: 20),
                         children: [
                           _buildMenuCard(
@@ -102,10 +118,10 @@ class _AppScreenState extends State<AppScreen> {
                           ),
                         ],
                       ),
-                    ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -260,6 +276,23 @@ class _AppScreenState extends State<AppScreen> {
                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                 ),
                 const Spacer(),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _showReminderDebugPanel = !_showReminderDebugPanel;
+                    });
+                  },
+                  icon: Icon(
+                    _showReminderDebugPanel
+                        ? Icons.bug_report
+                        : Icons.bug_report_outlined,
+                    size: 18,
+                    color: Colors.grey[700],
+                  ),
+                  tooltip: '提醒调试',
+                  constraints: const BoxConstraints(),
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                   decoration: BoxDecoration(
@@ -384,6 +417,469 @@ class _AppScreenState extends State<AppScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildReminderDebugPanel() {
+    if (!_showReminderDebugPanel) {
+      return Align(
+        alignment: Alignment.centerRight,
+        child: TextButton.icon(
+          onPressed: () {
+            setState(() {
+              _showReminderDebugPanel = true;
+            });
+          },
+          icon: const Icon(Icons.bug_report_outlined, size: 16),
+          label: const Text('打开提醒调试'),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.black.withOpacity(0.2),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          ),
+        ),
+      );
+    }
+
+    final service = SedentaryReminderService.instance;
+    final debug = service.debugInfo;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.orange.withOpacity(0.35)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.science_outlined, size: 16, color: Colors.orange),
+                const SizedBox(width: 6),
+                const Text(
+                  '提醒调试面板',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _showReminderDebugPanel = false;
+                    });
+                  },
+                  child: const Text('收起'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildDebugChip(
+                  'activityScore',
+                  '${debug.activityScore.toStringAsFixed(1)} / ${debug.activityThreshold.toStringAsFixed(0)}',
+                ),
+                _buildDebugChip(
+                  '持续时间',
+                  '${debug.activeDuration.inSeconds}s / ${debug.requiredDuration.inSeconds}s',
+                ),
+                _buildDebugChip(
+                  '有效活动',
+                  debug.activityQualified ? '是' : '否',
+                  color: debug.activityQualified ? Colors.green : Colors.grey,
+                ),
+                _buildDebugChip(
+                  '会不会提醒',
+                  debug.willRemindNow ? '会' : '不会',
+                  color: debug.willRemindNow ? Colors.red : Colors.blueGrey,
+                ),
+                _buildDebugChip('最近来源', debug.lastActivitySourceLabel),
+                _buildDebugChip('最近信号', debug.lastActivityTypeLabel),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              debug.reminderDecision,
+              style: TextStyle(fontSize: 12, color: Colors.grey[800]),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              debug.sensorActsAsFallbackOnly
+                  ? '当前模式：手环优先，手机传感器仅作兜底记录'
+                  : '当前模式：手机传感器可独立判定有效活动',
+              style: TextStyle(
+                fontSize: 11,
+                color: debug.sensorActsAsFallbackOnly
+                    ? Colors.teal[700]
+                    : Colors.blueGrey[700],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              debug.signalSummary,
+              style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+            ),
+            if (debug.cooldownUntil != null) ...[
+              const SizedBox(height: 4),
+              Text(
+                '自动活动冷却到: ${_formatTime(debug.cooldownUntil!)}',
+                style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+              ),
+            ],
+            const SizedBox(height: 12),
+            const Text(
+              '手机传感器模拟',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton(
+                  onPressed: () => service.debugSimulateActivity(scoreDelta: 1),
+                  child: const Text('+1 活动'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.debugSimulateActivity(
+                    scoreDelta: 4,
+                    activeDuration: const Duration(seconds: 8),
+                  ),
+                  child: const Text('+4 快速累计'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.debugSimulateActivity(
+                    scoreDelta: 0,
+                    activeDuration: const Duration(seconds: 15),
+                  ),
+                  child: const Text('模拟15秒有效活动'),
+                ),
+                OutlinedButton(
+                  onPressed: () =>
+                      service.debugIncreaseSedentaryMinutes(minutes: 10),
+                  child: const Text('+10 分钟久坐'),
+                ),
+                OutlinedButton(
+                  onPressed: () =>
+                      service.debugIncreaseSedentaryMinutes(minutes: 30),
+                  child: const Text('+30 分钟久坐'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.debugDecayActivity(scoreDelta: 1),
+                  child: const Text('-1 衰减'),
+                ),
+                OutlinedButton(
+                  onPressed: service.debugResetActivity,
+                  child: const Text('重置分数'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    await service.debugSimulateReminderReady();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.redAccent,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('模拟可提醒'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    await service.debugTriggerReminderCheck();
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepOrange,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('立即检查提醒'),
+                ),
+                ElevatedButton(
+                  onPressed: service.debugSimulateSnooze,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blueGrey,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('模拟稍后提醒'),
+                ),
+                ElevatedButton(
+                  onPressed: service.debugResetTodayReminderCount,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('重置今日提醒次数'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOppoDebugPanel() {
+    if (!_showOppoDebugPanel) {
+      return Align(
+        alignment: Alignment.centerRight,
+        child: TextButton.icon(
+          onPressed: () {
+            setState(() {
+              _showOppoDebugPanel = true;
+            });
+          },
+          icon: const Icon(Icons.watch_outlined, size: 16),
+          label: const Text('打开 OPPO 调试'),
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.black.withOpacity(0.2),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          ),
+        ),
+      );
+    }
+
+    final service = OppoHealthDebugService.instance;
+    final state = service.state;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.95),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.teal.withOpacity(0.35)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.watch_outlined, size: 16, color: Colors.teal),
+                const SizedBox(width: 6),
+                const Text(
+                  'OPPO 健康调试面板',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: () {
+                    setState(() {
+                      _showOppoDebugPanel = false;
+                    });
+                  },
+                  child: const Text('收起'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildDebugChip(
+                  '模式',
+                  state.mode == OppoHealthMode.mock ? 'Mock' : 'SDK',
+                  color: state.mode == OppoHealthMode.mock
+                      ? Colors.orange
+                      : Colors.teal,
+                ),
+                _buildDebugChip(
+                  'SDK',
+                  state.sdkReachable ? '可用' : '未验证',
+                  color: state.sdkReachable ? Colors.teal : Colors.grey,
+                ),
+                _buildDebugChip(
+                  '授权',
+                  state.authorized ? '已授权' : '未授权',
+                  color: state.authorized ? Colors.green : Colors.grey,
+                ),
+                _buildDebugChip(
+                  '设备',
+                  state.deviceConnected ? '已连接' : '未连接',
+                  color: state.deviceConnected ? Colors.teal : Colors.grey,
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              state.statusText,
+              style: TextStyle(fontSize: 12, color: Colors.grey[800]),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              state.latestDataSummary,
+              style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+            ),
+            if (state.scopes.isNotEmpty) ...[
+              const SizedBox(height: 4),
+              Text(
+                '权限范围: ${state.scopes.join(', ')}',
+                style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+              ),
+            ],
+            const SizedBox(height: 12),
+            const Text(
+              '模式切换',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton(
+                  onPressed: () => service.setMode(OppoHealthMode.mock),
+                  child: const Text('使用 Mock'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.setMode(OppoHealthMode.sdk),
+                  child: const Text('使用 SDK'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'SDK 调试',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton(
+                  onPressed: service.initializeSdk,
+                  child: const Text('初始化 SDK'),
+                ),
+                OutlinedButton(
+                  onPressed: service.requestAuthorization,
+                  child: const Text('请求授权'),
+                ),
+                OutlinedButton(
+                  onPressed: service.validateAuthorization,
+                  child: const Text('校验授权'),
+                ),
+                OutlinedButton(
+                  onPressed: service.queryBoundDevices,
+                  child: const Text('查询设备'),
+                ),
+                ElevatedButton(
+                  onPressed: service.readTodayData,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('读取今日数据'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Mock 调试',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                OutlinedButton(
+                  onPressed: () => service.mockConnectDevice(true),
+                  child: const Text('Mock 连接'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.mockConnectDevice(false),
+                  child: const Text('Mock 断开'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.mockStepDelta(10),
+                  child: const Text('OPPO +10步'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.mockStepDelta(20),
+                  child: const Text('OPPO +20步'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.mockMoveCount(1),
+                  child: const Text('OPPO 活动+1'),
+                ),
+                OutlinedButton(
+                  onPressed: () => service.mockActiveMinutes(3),
+                  child: const Text('OPPO 活动+3m'),
+                ),
+                ElevatedButton(
+                  onPressed: service.mockWorkout,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: const Text('OPPO 运动记录'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildDebugChip('步数信号', '${state.latestStepDelta}'),
+                _buildDebugChip('活动次数', '${state.latestMoveCountDelta}'),
+                _buildDebugChip('活动时长', '${state.latestActiveMinutesDelta}m'),
+                _buildDebugChip(
+                  '运动记录',
+                  state.latestWorkoutDetected ? '有' : '无',
+                  color: state.latestWorkoutDetected ? Colors.teal : Colors.grey,
+                ),
+                _buildDebugChip('设备数', '${state.devices.length}'),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDebugChip(String label, String value, {Color? color}) {
+    final chipColor = color ?? Colors.orange;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: chipColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        '$label: $value',
+        style: TextStyle(
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+          color: chipColor,
+        ),
+      ),
+    );
+  }
+
+  String _formatTime(DateTime value) {
+    final hour = value.hour.toString().padLeft(2, '0');
+    final minute = value.minute.toString().padLeft(2, '0');
+    final second = value.second.toString().padLeft(2, '0');
+    return '$hour:$minute:$second';
   }
 
   Color _warningLevelColor(int warningLevel) {

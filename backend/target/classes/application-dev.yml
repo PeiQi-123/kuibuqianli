@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/kuibuqianli?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: root
-    password: lyz1314kl
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 30000
@@ -76,6 +76,16 @@ ai:
   semantic-api-url: http://localhost:8000/semantic
   video-api-url: http://localhost:8001/video
   api-key: your_ai_api_key
+
+# 阿里云百炼视频生成配置
+aliyun:
+  video-api-url: https://dashscope.aliyuncs.com/api/v1/services/aigc/text2video/generation
+  api-key: sk-f2e88757a27e4355a863b94b81708917
+
+# 视频目录配置
+video:
+  directory: C:/Users/lying/Desktop/kuibuqianli/backend/video
+  output-directory: C:/Users/lying/Desktop/kuibuqianli/backend/video/output
 
 # ========== 新增：DeepSeek API配置 ==========
 deepseek:

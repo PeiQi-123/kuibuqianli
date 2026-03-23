@@ -68,9 +68,9 @@ class PreferenceModel {
   static PreferenceModel get defaultPreferences {
     return PreferenceModel(
       bodyParts: ['全身', '上肢', '核心', '肩部', '腰部'],
-      difficulty: '中级',
+      difficulty: '入门级',
       duration: 20,
-      sportTypes: ['拉伸', '有氧', '平衡', '协调', '爆发力'],
+      sportTypes: ['静态拉伸', '动态拉伸', '有氧运动', '微力量锻炼', '关节活动'],
       scenes: ['居家', '办公室', '户外', '学校'],
       silentMotion: false,
       slowPace: true,
@@ -86,7 +86,7 @@ class PreferenceModel {
   static PreferenceModel get emptyPreferences {
     return PreferenceModel(
       bodyParts: [],
-      difficulty: '中级',
+      difficulty: '入门级',
       duration: 15,
       sportTypes: [],
       scenes: [],
