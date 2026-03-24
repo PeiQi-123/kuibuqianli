@@ -1,5 +1,7 @@
 package com.kuibuqianli.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kuibuqianli.dto.ExerciseRecordCreateDTO;
 import com.kuibuqianli.dto.RecommendationFeedbackDTO;
 import com.kuibuqianli.dto.RecommendationFeedbackResultDTO;
@@ -24,12 +26,15 @@ public class ExerciseRecordServiceImpl implements ExerciseRecordService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Override
     public Long createRecord(Long userId, ExerciseRecordCreateDTO dto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO exercise_record (user_id, motion_id, motion_name, duration, completed) VALUES (?, ?, ?, ?, ?)",
+                    "INSERT INTO exercise_record (user_id, motion_id, motion_name, duration, completed, recommendation_summary, recommendation_matched_items) VALUES (?, ?, ?, ?, ?, ?, ?)",
                     Statement.RETURN_GENERATED_KEYS
             );
             ps.setLong(1, userId);
@@ -41,6 +46,8 @@ public class ExerciseRecordServiceImpl implements ExerciseRecordService {
                 ps.setInt(4, dto.getDuration());
             }
             ps.setBoolean(5, Boolean.TRUE.equals(dto.getCompleted()));
+            ps.setString(6, dto.getRecommendationSummary());
+            ps.setString(7, toJson(dto.getRecommendationMatchedItems()));
             return ps;
         }, keyHolder);
         Number key = keyHolder.getKey();
@@ -102,5 +109,16 @@ public class ExerciseRecordServiceImpl implements ExerciseRecordService {
             case "dislike" -> "已记录你的反馈，后续将减少相似动作类型。";
             default -> "已记录你的反馈，后续将保持当前推荐强度。";
         };
+    }
+
+    private String toJson(Object value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return objectMapper.writeValueAsString(value);
+        } catch (JsonProcessingException e) {
+            return null;
+        }
     }
 }

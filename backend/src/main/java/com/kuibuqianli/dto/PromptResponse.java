@@ -5,6 +5,7 @@ import lombok.Builder;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 微运动提示词生成响应DTO
@@ -60,6 +61,9 @@ public class PromptResponse {
 
     @JsonProperty("tip")
     private String tip;
+
+    @JsonProperty("preference_applied")
+    private Map<String, Object> preferenceApplied;
 
     @Data
     @Builder

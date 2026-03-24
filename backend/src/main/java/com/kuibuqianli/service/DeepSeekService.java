@@ -146,6 +146,9 @@ public class DeepSeekService {
             8. 结合用户的当前姿态给出针对性建议
             9. 动作名称必须严格从系统提供的视频动作库中选择，不能自创、改写、扩写，也不能输出视频库以外的动作
             10. 只返回 JSON，不要返回 markdown，不要写 ```json，不要添加任何解释文字
+            11. 如果用户存在显式偏好或系统学习出的偏好，优先让推荐结果与这些偏好保持一致
+            12. 如果用户最近反馈显示“太难”，优先降低动作复杂度和节奏；如果显示“太简单”，优先适当增加挑战度
+            13. 优先选择与目标部位、偏好运动类型、偏好时长、偏好难度一致的动作组合
             
             【JSON格式】
             {
@@ -181,6 +184,7 @@ public class DeepSeekService {
         if (userInfo != null && !userInfo.isEmpty()) {
             // 提取关键信息并格式化
             extractAndFormatUserInfo(userInfo, prompt);
+            appendPreferenceGuidance(userInfo, prompt);
         } else {
             prompt.append("  - 无特定用户信息\n");
         }
@@ -197,6 +201,31 @@ public class DeepSeekService {
         }
 
         return prompt.toString();
+    }
+
+    private void appendPreferenceGuidance(Map<String, Object> userInfo, StringBuilder prompt) {
+        List<String> preferredBodyParts = extractStringList(userInfo.get("preferred_body_parts"));
+        List<String> preferredSportTypes = extractStringList(userInfo.get("preferred_sport_types"));
+        List<String> preferredDurations = extractStringList(userInfo.get("preferred_durations"));
+        List<String> preferredDifficulty = extractStringList(userInfo.get("preferred_difficulty"));
+        String learningSummary = stringValue(userInfo.get("preference_learning_summary"), "");
+
+        prompt.append("\n【推荐策略约束】\n");
+        if (!preferredBodyParts.isEmpty()) {
+            prompt.append("  - 尽量优先覆盖这些偏好部位: ").append(String.join("、", preferredBodyParts)).append("\n");
+        }
+        if (!preferredSportTypes.isEmpty()) {
+            prompt.append("  - 尽量优先选择这些偏好类型: ").append(String.join("、", preferredSportTypes)).append("\n");
+        }
+        if (!preferredDurations.isEmpty()) {
+            prompt.append("  - 推荐总时长尽量贴近: ").append(String.join("、", preferredDurations)).append("\n");
+        }
+        if (!preferredDifficulty.isEmpty()) {
+            prompt.append("  - 推荐难度尽量贴近: ").append(String.join("、", preferredDifficulty)).append("\n");
+        }
+        if (!learningSummary.isBlank()) {
+            prompt.append("  - 系统动态学习结论: ").append(learningSummary).append("\n");
+        }
     }
 
     private String buildVideoRule(List<String> availableVideos) {
@@ -377,6 +406,13 @@ public class DeepSeekService {
         // 根据BMI和年龄推荐难度
         String difficulty = recommendDifficulty(originalRequest.getUserInfo());
 
+        Map<String, Object> preferenceApplied = buildPreferenceApplied(
+                originalRequest,
+                actions,
+                duration,
+                difficulty
+        );
+
         // 构建API使用情况
         PromptResponse.ApiUsage usage = null;
         if (apiResponse.getUsage() != null) {
@@ -395,9 +431,77 @@ public class DeepSeekService {
                 .difficultyLevel(difficulty)
                 .actions(actions)
                 .tip(tip)
+                .preferenceApplied(preferenceApplied)
                 .apiUsage(usage)
                 .status("success")
                 .build();
+    }
+
+    private Map<String, Object> buildPreferenceApplied(
+            PromptRequest request,
+            List<PromptResponse.ActionItem> actions,
+            Integer duration,
+            String difficulty
+    ) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        Map<String, Object> userInfo = request.getUserInfo();
+        if (userInfo == null || userInfo.isEmpty()) {
+            result.put("matched", false);
+            result.put("summary", "本次推荐主要基于当前选择生成，暂未应用历史偏好。");
+            return result;
+        }
+
+        List<String> matchedItems = new ArrayList<>();
+        List<String> preferredBodyParts = extractStringList(userInfo.get("preferred_body_parts"));
+        List<String> preferredSportTypes = extractStringList(userInfo.get("preferred_sport_types"));
+        List<String> preferredDurations = extractStringList(userInfo.get("preferred_durations"));
+        List<String> preferredDifficulty = extractStringList(userInfo.get("preferred_difficulty"));
+
+        if (!preferredBodyParts.isEmpty() && preferredBodyParts.contains(request.getBodyPart())) {
+            matchedItems.add("目标部位匹配了你的偏好：" + request.getBodyPart());
+        }
+
+        List<String> actionNames = actions.stream().map(PromptResponse.ActionItem::getName).toList();
+        List<String> matchedActionPreferences = preferredSportTypes.stream()
+                .filter(type -> actionNames.stream().anyMatch(action -> matchesAnyPreference(action, List.of(type))))
+                .toList();
+        if (!matchedActionPreferences.isEmpty()) {
+            matchedItems.add("动作类型贴合你的偏好：" + String.join("、", matchedActionPreferences));
+        }
+
+        String durationText = duration == null ? "" : Math.max(1, Math.round(duration / 60f)) + "分钟";
+        if (!durationText.isBlank() && preferredDurations.stream().anyMatch(item -> item.contains(durationText) || durationText.contains(item.replace("约", "")))) {
+            matchedItems.add("推荐时长贴近你的偏好：" + durationText);
+        }
+
+        if (!preferredDifficulty.isEmpty() && preferredDifficulty.stream().anyMatch(item -> difficultyMatches(item, difficulty))) {
+            matchedItems.add("推荐难度贴近你的偏好：" + difficulty);
+        }
+
+        String learningSummary = stringValue(userInfo.get("preference_learning_summary"), "");
+        if (!learningSummary.isBlank()) {
+            matchedItems.add("已参考系统学习结论进行推荐调整");
+        }
+
+        result.put("matched", !matchedItems.isEmpty());
+        result.put("matched_items", matchedItems);
+        result.put("summary", matchedItems.isEmpty()
+                ? "本次推荐主要基于当前选择生成，暂未命中明显的历史偏好。"
+                : "本次推荐已结合你的历史偏好进行调整。");
+        return result;
+    }
+
+    private boolean difficultyMatches(String preferredDifficulty, String currentDifficulty) {
+        String preferred = preferredDifficulty == null ? "" : preferredDifficulty;
+        String current = currentDifficulty == null ? "" : currentDifficulty;
+        if (preferred.contains("零基础") || preferred.contains("入门")) {
+            return current.contains("入门");
+        }
+        if (preferred.contains("有难度") || preferred.contains("进阶")) {
+            return current.contains("进阶");
+        }
+        return normalizeForCompare(preferred).contains(normalizeForCompare(current))
+                || normalizeForCompare(current).contains(normalizeForCompare(preferred));
     }
 
     private String sanitizeAiText(String text) {
@@ -497,21 +601,104 @@ public class DeepSeekService {
     }
 
     private List<String> pickPreferredActions(List<String> allowedActions, String bodyPart, Map<String, Object> userInfo) {
-        List<String> targetTerms = new ArrayList<>();
-        if (bodyPart != null && !bodyPart.isBlank()) {
-            targetTerms.add(bodyPart);
-        }
-        if (userInfo != null && userInfo.get("preferred_body_parts") instanceof List<?> list) {
-            list.stream().map(String::valueOf).filter(value -> !value.isBlank()).forEach(targetTerms::add);
-        }
-        if (targetTerms.isEmpty()) {
+        if (allowedActions.isEmpty()) {
             return allowedActions;
         }
-        List<String> matched = allowedActions.stream()
-                .filter(name -> targetTerms.stream().anyMatch(term -> normalizeForCompare(name).contains(normalizeForCompare(term))))
+        return allowedActions.stream()
+                .sorted((left, right) -> Double.compare(
+                        scoreAction(right, bodyPart, userInfo),
+                        scoreAction(left, bodyPart, userInfo)
+                ))
                 .distinct()
                 .toList();
-        return matched.isEmpty() ? allowedActions : matched;
+    }
+
+    private double scoreAction(String actionName, String bodyPart, Map<String, Object> userInfo) {
+        if (actionName == null || actionName.isBlank()) {
+            return 0D;
+        }
+
+        double score = 1D;
+        List<String> targetBodyParts = new ArrayList<>();
+        if (bodyPart != null && !bodyPart.isBlank()) {
+            targetBodyParts.add(bodyPart);
+        }
+        if (userInfo != null) {
+            targetBodyParts.addAll(extractStringList(userInfo.get("preferred_body_parts")));
+        }
+        if (matchesAnyPreference(actionName, targetBodyParts)) {
+            score += 3D;
+        }
+
+        List<String> sportTypes = userInfo == null ? Collections.emptyList() : extractStringList(userInfo.get("preferred_sport_types"));
+        if (matchesAnyPreference(actionName, sportTypes)) {
+            score += 2D;
+        }
+
+        List<String> difficulty = userInfo == null ? Collections.emptyList() : extractStringList(userInfo.get("preferred_difficulty"));
+        if (!difficulty.isEmpty()) {
+            String difficultyText = String.join("、", difficulty);
+            if (difficultyText.contains("零基础") && containsAnyActionKeyword(actionName, "拉伸", "放松", "呼吸", "按摩")) {
+                score += 1.2D;
+            }
+            if ((difficultyText.contains("有难度") || difficultyText.contains("进阶"))
+                    && containsAnyActionKeyword(actionName, "动态", "旋转", "绕环", "力量", "活动")) {
+                score += 1.2D;
+            }
+        }
+
+        return score;
+    }
+
+    private boolean matchesAnyPreference(String actionName, List<String> preferences) {
+        if (preferences == null || preferences.isEmpty()) {
+            return false;
+        }
+        String normalizedAction = normalizeForCompare(actionName);
+        for (String preference : preferences) {
+            String normalizedPreference = normalizeForCompare(preference);
+            if (normalizedPreference.isBlank()) {
+                continue;
+            }
+            if (normalizedAction.contains(normalizedPreference) || normalizedPreference.contains(normalizedAction)) {
+                return true;
+            }
+            if (containsMappedKeyword(normalizedAction, preference)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsMappedKeyword(String normalizedAction, String preference) {
+        return switch (preference) {
+            case "颈部" -> containsAnyNormalized(normalizedAction, "颈", "脖", "下巴");
+            case "肩部" -> containsAnyNormalized(normalizedAction, "肩", "耸肩");
+            case "腰部" -> containsAnyNormalized(normalizedAction, "腰");
+            case "背部" -> containsAnyNormalized(normalizedAction, "背", "脊");
+            case "腿部" -> containsAnyNormalized(normalizedAction, "腿", "膝", "踝", "臀");
+            case "手腕" -> containsAnyNormalized(normalizedAction, "腕", "手", "指");
+            case "静态拉伸" -> containsAnyNormalized(normalizedAction, "拉伸", "伸展");
+            case "动态拉伸" -> containsAnyNormalized(normalizedAction, "摆", "动态");
+            case "关节活动" -> containsAnyNormalized(normalizedAction, "绕环", "旋转", "活动");
+            case "按摩放松" -> containsAnyNormalized(normalizedAction, "按摩", "按压", "放松");
+            case "体态矫正" -> containsAnyNormalized(normalizedAction, "体态", "收下巴", "矫正");
+            case "深呼吸" -> containsAnyNormalized(normalizedAction, "呼吸");
+            default -> false;
+        };
+    }
+
+    private boolean containsAnyActionKeyword(String actionName, String... keywords) {
+        return containsAnyNormalized(normalizeForCompare(actionName), keywords);
+    }
+
+    private boolean containsAnyNormalized(String source, String... keywords) {
+        for (String keyword : keywords) {
+            if (source.contains(normalizeForCompare(keyword))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String resolveAllowedAction(String currentAction, List<String> allowedActions, List<String> preferredActions, int replacementIndex) {
@@ -685,5 +872,15 @@ public class DeepSeekService {
             }
         }
         return result;
+    }
+
+    private List<String> extractStringList(Object value) {
+        if (!(value instanceof List<?> list)) {
+            return Collections.emptyList();
+        }
+        return list.stream()
+                .map(String::valueOf)
+                .filter(item -> !item.isBlank())
+                .toList();
     }
 }

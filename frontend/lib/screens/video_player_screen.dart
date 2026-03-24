@@ -32,6 +32,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   bool _isRefreshingInsights = false;
   Map<String, dynamic>? _latestLearningInsights;
 
+  Map<String, dynamic>? get _preferenceApplied => widget.motionData?['preference_applied'] as Map<String, dynamic>?;
+
   VideoPlayerController? _controller;
   bool _isControllerInitialized = false;
   bool _isAdvancingVideo = false;
@@ -195,6 +197,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         'motionName': widget.motionData?['motion_name'] ?? '微运动训练',
         'duration': _estimatedDurationSeconds(),
         'completed': true,
+        'recommendationSummary': _preferenceApplied?['summary'],
+        'recommendationMatchedItems': _preferenceMatchedItems(),
       });
 
       if (!mounted) return;
@@ -351,6 +355,13 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       return '${percent.toStringAsFixed(1)}%';
     }
     return '--';
+  }
+
+  List<String> _preferenceMatchedItems() {
+    return (_preferenceApplied?['matched_items'] as List<dynamic>? ?? [])
+        .map((item) => item.toString())
+        .where((item) => item.isNotEmpty)
+        .toList();
   }
 
   int _estimatedDurationSeconds() {
@@ -570,6 +581,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     final actions = (widget.motionData?['actions'] as List<dynamic>? ?? [])
         .whereType<Map<String, dynamic>>()
         .toList();
+    final preferenceSummary = _preferenceApplied?['summary']?.toString();
+    final preferenceMatchedItems = _preferenceMatchedItems();
     final steps = actions.isNotEmpty
         ? actions.map((action) => action['name']?.toString() ?? '').where((name) => name.isNotEmpty).toList()
         : (widget.motionData?['steps'] as List<dynamic>? ?? []);
@@ -815,6 +828,62 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                           description,
                           style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                         ),
+                        if (preferenceSummary != null && preferenceSummary.isNotEmpty) ...[
+                          const SizedBox(height: 16),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: Colors.green[50],
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.green.shade100),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.tune, size: 18, color: Colors.green[700]),
+                                    const SizedBox(width: 6),
+                                    Text(
+                                      '为什么给你推荐这个视频',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.green[800],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  preferenceSummary,
+                                  style: TextStyle(fontSize: 14, color: Colors.green[900], height: 1.5),
+                                ),
+                                if (preferenceMatchedItems.isNotEmpty) ...[
+                                  const SizedBox(height: 8),
+                                  ...preferenceMatchedItems.map(
+                                    (item) => Padding(
+                                      padding: const EdgeInsets.only(bottom: 4),
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('• ', style: TextStyle(color: Colors.green[800])),
+                                          Expanded(
+                                            child: Text(
+                                              item,
+                                              style: TextStyle(fontSize: 13, color: Colors.green[800], height: 1.4),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
                         const SizedBox(height: 16),
                         if (steps.isNotEmpty) ...[
                           Text(

@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS `exercise_record` (
     `motion_name` VARCHAR(100) DEFAULT NULL COMMENT '运动名称',
     `duration` INT DEFAULT NULL COMMENT '运动时长（秒）',
     `completed` TINYINT(1) DEFAULT 0 COMMENT '是否完成',
+    `recommendation_summary` VARCHAR(255) DEFAULT NULL COMMENT '本次推荐的偏好解释摘要',
+    `recommendation_matched_items` JSON DEFAULT NULL COMMENT '本次推荐命中的偏好项',
     `feedback_tag` VARCHAR(20) DEFAULT NULL COMMENT '反馈标签（too_easy, fit, too_hard, dislike）',
     `feedback_score` INT DEFAULT NULL COMMENT '反馈分值（1-4）',
     `feedback_at` DATETIME DEFAULT NULL COMMENT '反馈时间',

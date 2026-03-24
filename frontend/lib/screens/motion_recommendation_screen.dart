@@ -24,6 +24,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
 
   Map<String, dynamic>? _motionResult;
   Map<String, dynamic>? _learningInsights;
+  String? _preferenceAdjustmentText;
   bool _isLoading = false;
 
   final List<String> _bodyParts = BodyPartCatalog.recommendationBodyParts;
@@ -69,6 +70,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
         );
         if (insights != null && insights['code'] == 200 && insights['data'] is Map<String, dynamic>) {
           _learningInsights = insights['data'] as Map<String, dynamic>;
+          _applyPreferenceInsights();
         }
       }
       final response = await _apiService.post('/micro-motion/generate-prompt', {
@@ -174,6 +176,32 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                   ),
 
                   const SizedBox(height: 24),
+
+                  if (_preferenceAdjustmentText != null) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: Colors.green.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.green.shade100),
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Icon(Icons.auto_awesome, color: Colors.green.shade700, size: 20),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              _preferenceAdjustmentText!,
+                              style: TextStyle(color: Colors.green.shade800, height: 1.5),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
 
                   // 选择目标部位
                   _buildSectionTitle('选择目标部位', Icons.psychology_outlined),
@@ -366,6 +394,11 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
         .toList();
     final duration = motion['suggested_duration'];
     final difficulty = motion['difficulty_level']?.toString() ?? '未提供';
+    final preferenceApplied = motion['preference_applied'] as Map<String, dynamic>?;
+    final preferenceMatchedItems = (preferenceApplied?['matched_items'] as List<dynamic>? ?? [])
+        .map((item) => item.toString())
+        .where((item) => item.isNotEmpty)
+        .toList();
     final motionData = {
       'motion_id': '$_selectedBodyPart-${DateTime.now().millisecondsSinceEpoch}',
       'motion_name': motion['title']?.toString() ?? '$_selectedBodyPart AI 微运动方案',
@@ -375,6 +408,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
       'actions': actions,
       'steps': actions.map((action) => action['name']?.toString() ?? '').where((name) => name.isNotEmpty).toList(),
       'tip': motion['tip'],
+      'preference_applied': preferenceApplied,
     };
 
     return Container(
@@ -441,6 +475,62 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                 ],
               ),
             ),
+
+            if (preferenceApplied != null) ...[
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.green.shade100),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.tune, size: 18, color: Colors.green.shade700),
+                        const SizedBox(width: 6),
+                        Text(
+                          '偏好如何影响了本次推荐',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green.shade800,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      preferenceApplied['summary']?.toString() ?? '本次推荐已结合你的历史偏好。',
+                      style: TextStyle(color: Colors.green.shade900, height: 1.5),
+                    ),
+                    if (preferenceMatchedItems.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      ...preferenceMatchedItems.map(
+                        (item) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('• ', style: TextStyle(color: Colors.green.shade800)),
+                              Expanded(
+                                child: Text(
+                                  item,
+                                  style: TextStyle(color: Colors.green.shade800, height: 1.4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+            ],
 
             const Divider(height: 24),
 
@@ -660,7 +750,9 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
       '深呼吸': '希望通过呼吸调整节奏，放松身心状态',
     };
 
-    return '${activityDescriptions[_selectedActivity] ?? _selectedActivity}；期望训练时长约$_selectedDuration分钟；强度偏好为${_intensityLabel(_selectedIntensity)}。';
+    final learnedSummary = _learningInsights?['summary']?.toString();
+    final summaryText = (learnedSummary == null || learnedSummary.isEmpty) ? '' : '；系统学习偏好：$learnedSummary';
+    return '${activityDescriptions[_selectedActivity] ?? _selectedActivity}；期望训练时长约$_selectedDuration分钟；强度偏好为${_intensityLabel(_selectedIntensity)}$summaryText。';
   }
 
   Map<String, dynamic> _buildUserInfo(dynamic currentUser) {
@@ -681,7 +773,83 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
       userInfo['bmi_type'] = currentUser.bmiType;
     }
 
+    userInfo['preferred_activity_request'] = _selectedActivity;
+    userInfo['preferred_duration_request'] = '$_selectedDuration分钟';
+    userInfo['preferred_intensity_request'] = _intensityLabel(_selectedIntensity);
+
+    final mergedPreferences = _learningInsights?['mergedPreferences'];
+    if (mergedPreferences is Map<String, dynamic>) {
+      userInfo['preferred_body_parts'] = mergedPreferences['body_part'] ?? [];
+      userInfo['preferred_sport_types'] = mergedPreferences['sport_type'] ?? [];
+      userInfo['preferred_durations'] = mergedPreferences['duration'] ?? [];
+      userInfo['preferred_difficulty'] = mergedPreferences['difficulty'] ?? [];
+      userInfo['preferred_scenes'] = mergedPreferences['scene'] ?? [];
+    }
+
+    final summary = _learningInsights?['summary']?.toString();
+    if (summary != null && summary.isNotEmpty) {
+      userInfo['preference_learning_summary'] = summary;
+    }
+
     return userInfo;
+  }
+
+  void _applyPreferenceInsights() {
+    final mergedPreferences = _learningInsights?['mergedPreferences'];
+    if (mergedPreferences is! Map<String, dynamic>) {
+      return;
+    }
+
+    final sportTypes = (mergedPreferences['sport_type'] as List<dynamic>? ?? []).map((e) => e.toString()).toList();
+    final durations = (mergedPreferences['duration'] as List<dynamic>? ?? []).map((e) => e.toString()).toList();
+    final difficulty = (mergedPreferences['difficulty'] as List<dynamic>? ?? []).map((e) => e.toString()).toList();
+
+    String? suggestedActivity;
+    for (final value in sportTypes) {
+      if (_activityTypes.any((item) => item['value'] == value)) {
+        suggestedActivity = value;
+        break;
+      }
+    }
+
+    int? suggestedDuration;
+    for (final value in durations) {
+      final match = RegExp(r'(\d+)').firstMatch(value);
+      if (match != null) {
+        final minutes = int.tryParse(match.group(1)!);
+        if (minutes != null && _durations.contains(minutes)) {
+          suggestedDuration = minutes;
+          break;
+        }
+      }
+    }
+
+    String? suggestedIntensity;
+    final difficultyText = difficulty.isEmpty ? '' : difficulty.first;
+    if (difficultyText.contains('有难度')) {
+      suggestedIntensity = 'high';
+    } else if (difficultyText.contains('入门')) {
+      suggestedIntensity = 'medium';
+    } else if (difficultyText.contains('零基础')) {
+      suggestedIntensity = 'low';
+    }
+
+    setState(() {
+      if (suggestedActivity != null) {
+        _selectedActivity = suggestedActivity;
+      }
+      if (suggestedDuration != null) {
+        _selectedDuration = suggestedDuration;
+      }
+      if (suggestedIntensity != null) {
+        _selectedIntensity = suggestedIntensity;
+      }
+      final parts = <String>[];
+      if (suggestedActivity != null) parts.add('类型已调整为$suggestedActivity');
+      if (suggestedDuration != null) parts.add('时长已贴近$suggestedDuration分钟');
+      if (suggestedIntensity != null) parts.add('强度已贴近${_intensityLabel(suggestedIntensity)}');
+      _preferenceAdjustmentText = parts.isEmpty ? null : '已根据你的历史训练偏好自动微调推荐参数：${parts.join('，')}。';
+    });
   }
 
   String _intensityLabel(String intensity) {
