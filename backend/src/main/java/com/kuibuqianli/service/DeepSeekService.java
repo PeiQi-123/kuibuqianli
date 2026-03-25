@@ -68,15 +68,10 @@ public class DeepSeekService {
             request.setUserInfo(enrichUserInfo(request.getUserInfo()));
 
             // 1. 构建系统提示词
-            List<String> availableVideos = videoService.getAvailableVideos();
-            if (availableVideos == null || availableVideos.isEmpty()) {
-                return PromptResponse.error("当前视频库为空，暂时无法生成可播放的微运动方案");
-            }
-
-            String systemPrompt = buildSystemPrompt(availableVideos);
+            String systemPrompt = buildSystemPrompt();
 
             // 2. 构建用户提示词
-            String userPrompt = buildUserPrompt(request, availableVideos);
+            String userPrompt = buildUserPrompt(request);
 
             log.debug("系统提示词: {}", systemPrompt);
             log.debug("用户提示词: {}", userPrompt);
@@ -85,7 +80,7 @@ public class DeepSeekService {
             DeepSeekResponse apiResponse = callDeepSeekAPI(systemPrompt, userPrompt);
 
             // 4. 解析响应并生成返回结果
-            PromptResponse response = parseResponse(apiResponse, request, availableVideos);
+            PromptResponse response = parseResponse(apiResponse, request);
 
             log.info("微运动提示词生成成功 - token使用: {}", response.getApiUsage());
             return response;
@@ -129,9 +124,8 @@ public class DeepSeekService {
     /**
      * 构建系统提示词
      */
-    private String buildSystemPrompt(List<String> availableVideos) {
-        String videoRule = buildVideoRule(availableVideos);
-        return ("""
+    private String buildSystemPrompt() {
+        return """
             你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
             生成简短、实用、安全的微运动建议。
             
@@ -141,10 +135,10 @@ public class DeepSeekService {
             3. 每次建议包含2-3个微运动动作
             4. 每个动作要说明：动作名称、具体做法、持续时间、注意事项
             5. 用友好、鼓励的语气，像私人教练一样
-            6. 返回格式要清晰易读，使用emoji增加可读性
+            6. 返回格式要清晰易读，不要使用 markdown
             7. 如果用户有某些健康禁忌（如腰伤、高血压等），要特别提醒
             8. 结合用户的当前姿态给出针对性建议
-            9. 动作名称必须严格从系统提供的视频动作库中选择，不能自创、改写、扩写，也不能输出视频库以外的动作
+            9. 动作名称应简洁、自然、通用，便于后续检索对应指导视频
             10. 只返回 JSON，不要返回 markdown，不要写 ```json，不要添加任何解释文字
             11. 如果用户存在显式偏好或系统学习出的偏好，优先让推荐结果与这些偏好保持一致
             12. 如果用户最近反馈显示“太难”，优先降低动作复杂度和节奏；如果显示“太简单”，优先适当增加挑战度
@@ -158,7 +152,7 @@ public class DeepSeekService {
               "suggested_duration": 60,
               "actions": [
                 {
-                  "name": "动作名称，必须来自视频动作库",
+                  "name": "简洁明确的标准动作名称",
                   "seconds": 20,
                   "instruction": "一句清晰做法",
                   "warning": "一句注意事项"
@@ -166,13 +160,13 @@ public class DeepSeekService {
               ],
               "tip": "一句个性化提醒"
             }
-            """ + "\n\n" + videoRule);
+            """;
     }
 
     /**
      * 构建用户提示词
      */
-    private String buildUserPrompt(PromptRequest request, List<String> availableVideos) {
+    private String buildUserPrompt(PromptRequest request) {
         StringBuilder prompt = new StringBuilder();
 
         prompt.append("请为以下用户生成微运动建议：\n\n");
@@ -187,17 +181,6 @@ public class DeepSeekService {
             appendPreferenceGuidance(userInfo, prompt);
         } else {
             prompt.append("  - 无特定用户信息\n");
-        }
-
-        prompt.append("\n【可选动作库】\n");
-        List<String> actionNames = toActionNames(availableVideos);
-        if (actionNames.isEmpty()) {
-            prompt.append("  - 当前没有可用视频动作，请返回最基础的通用部位放松建议\n");
-        } else {
-            for (String actionName : actionNames) {
-                prompt.append("  - ").append(actionName).append("\n");
-            }
-            prompt.append("\n请严格只从上面的动作库里选择 2-3 个动作作为推荐动作名称。\n");
         }
 
         return prompt.toString();
@@ -378,7 +361,7 @@ public class DeepSeekService {
     /**
      * 解析API响应
      */
-    private PromptResponse parseResponse(DeepSeekResponse apiResponse, PromptRequest originalRequest, List<String> availableVideos) {
+    private PromptResponse parseResponse(DeepSeekResponse apiResponse, PromptRequest originalRequest) {
         if (apiResponse == null || apiResponse.getChoices() == null || apiResponse.getChoices().isEmpty()) {
             log.error("API返回无效响应: {}", apiResponse);
             throw new RuntimeException("API返回无效响应");
@@ -389,7 +372,6 @@ public class DeepSeekService {
         Map<String, Object> content = parseAiJsonContent(rawContent);
         List<PromptResponse.ActionItem> actions = buildActionItems(
                 content.get("actions"),
-                availableVideos,
                 originalRequest.getBodyPart(),
                 originalRequest.getUserInfo()
         );
@@ -522,53 +504,54 @@ public class DeepSeekService {
             fallback.put("title", "微运动方案");
             fallback.put("overview", cleaned);
             fallback.put("actions", Collections.emptyList());
-            fallback.put("tip", "请结合视频指导安全完成动作。");
+            fallback.put("tip", "请根据自身状态轻柔完成动作，如有不适请立即停止。");
             return fallback;
         }
     }
 
-    private List<PromptResponse.ActionItem> buildActionItems(Object actionsObject, List<String> availableVideos, String bodyPart, Map<String, Object> userInfo) {
-        List<String> allowedActions = toActionNames(availableVideos);
-        List<String> preferredActions = pickPreferredActions(allowedActions, bodyPart, userInfo);
+    private List<PromptResponse.ActionItem> buildActionItems(Object actionsObject, String bodyPart, Map<String, Object> userInfo) {
         List<PromptResponse.ActionItem> result = new ArrayList<>();
 
         if (actionsObject instanceof List<?> actionList) {
-            int replacementIndex = 0;
             for (Object item : actionList) {
                 if (!(item instanceof Map<?, ?> actionMap)) {
                     continue;
                 }
-                String currentAction = stringValue(actionMap.get("name"), "");
-                String resolvedAction = resolveAllowedAction(currentAction, allowedActions, preferredActions, replacementIndex);
-                if (!resolvedAction.isEmpty()) {
-                    replacementIndex++;
-                }
+                String resolvedAction = stringValue(actionMap.get("name"), suggestFallbackActionName(bodyPart, result.size()));
                 result.add(PromptResponse.ActionItem.builder()
                         .name(resolvedAction)
                         .seconds(intValue(actionMap.get("seconds"), 20))
-                        .instruction(stringValue(actionMap.get("instruction"), "请按照视频动作缓慢完成。"))
+                        .instruction(stringValue(actionMap.get("instruction"), "请缓慢完成动作，保持呼吸自然。"))
                         .warning(stringValue(actionMap.get("warning"), "如果感到不适，请立即停止。"))
                         .build());
             }
         }
 
         if (result.isEmpty()) {
-            int index = 0;
-            for (String action : preferredActions.isEmpty() ? allowedActions : preferredActions) {
+            for (int index = 0; index < 3; index++) {
                 result.add(PromptResponse.ActionItem.builder()
-                        .name(action)
+                        .name(suggestFallbackActionName(bodyPart, index))
                         .seconds(20)
-                        .instruction("请跟随视频动作缓慢完成。")
+                        .instruction("请缓慢完成动作，保持身体放松和呼吸稳定。")
                         .warning("动作保持轻柔，出现不适请立即停止。")
                         .build());
-                index++;
-                if (index >= 3) {
-                    break;
-                }
             }
         }
 
         return result;
+    }
+
+    private String suggestFallbackActionName(String bodyPart, int index) {
+        List<String> defaults = switch (bodyPart == null ? "" : bodyPart) {
+            case "颈部", "头部" -> List.of("颈部侧屈拉伸", "颈部缓慢转动", "收下巴放松");
+            case "肩部" -> List.of("肩部环绕", "耸肩放松", "肩颈拉伸");
+            case "腰部" -> List.of("腰背伸展", "坐姿躯干转动", "骨盆轻摆放松");
+            case "背部" -> List.of("扩胸运动", "坐姿含胸伸背", "肩胛内收放松");
+            case "腿部" -> List.of("腿后侧拉伸", "踝关节环绕", "提踵放松");
+            case "手腕" -> List.of("手腕环绕", "手指伸展", "前臂放松拉伸");
+            default -> List.of("局部拉伸放松", "关节轻柔活动", "呼吸调整放松");
+        };
+        return defaults.get(Math.min(index, defaults.size() - 1));
     }
 
     private String buildReadablePromptText(String title, String overview, List<PromptResponse.ActionItem> actions, String tip) {

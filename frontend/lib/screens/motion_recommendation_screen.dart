@@ -1,5 +1,6 @@
 // 微运动推荐页面
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../constants/body_part_catalog.dart';
 import '../services/api_service.dart';
@@ -447,6 +448,11 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                     style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
                 ),
+                IconButton(
+                  onPressed: () => _copyMotionResult(motion, actions),
+                  tooltip: '复制推荐',
+                  icon: const Icon(Icons.copy_outlined),
+                ),
               ],
             ),
 
@@ -861,5 +867,47 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
       default:
         return '零基础';
     }
+  }
+
+  Future<void> _copyMotionResult(Map<String, dynamic> motion, List<Map<String, dynamic>> actions) async {
+    final buffer = StringBuffer()
+      ..writeln(motion['title']?.toString() ?? '$_selectedBodyPart AI 微运动方案')
+      ..writeln()
+      ..writeln(motion['overview']?.toString() ?? '基于当前状态生成的微运动建议');
+
+    final duration = motion['suggested_duration'];
+    final difficulty = motion['difficulty_level']?.toString();
+    if (duration != null || (difficulty != null && difficulty.isNotEmpty)) {
+      buffer.writeln();
+      if (duration != null) {
+        buffer.writeln('建议时长：$duration 秒');
+      }
+      if (difficulty != null && difficulty.isNotEmpty) {
+        buffer.writeln('推荐强度：$difficulty');
+      }
+    }
+
+    if (actions.isNotEmpty) {
+      buffer.writeln();
+      buffer.writeln('推荐动作：');
+      for (var i = 0; i < actions.length; i++) {
+        final action = actions[i];
+        buffer.writeln('${i + 1}. ${action['name'] ?? '未命名动作'}（${action['seconds'] ?? 20} 秒）');
+        buffer.writeln('做法：${action['instruction'] ?? '请跟随动作指导完成。'}');
+        buffer.writeln('注意：${action['warning'] ?? '如有不适请立即停止。'}');
+      }
+    }
+
+    final tip = motion['tip']?.toString();
+    if (tip != null && tip.isNotEmpty) {
+      buffer.writeln();
+      buffer.writeln('提示：$tip');
+    }
+
+    await Clipboard.setData(ClipboardData(text: buffer.toString().trim()));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('推荐内容已复制')),
+    );
   }
 }

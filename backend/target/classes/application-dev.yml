@@ -84,8 +84,8 @@ aliyun:
 
 # 视频目录配置
 video:
-  directory: C:/Users/lying/Desktop/kuibuqianli/backend/video
-  output-directory: C:/Users/lying/Desktop/kuibuqianli/backend/video/output
+  directory: C:\Users\30698\Desktop\video
+  output-directory: C:\Users\30698\Desktop\video
 
 # ========== 新增：DeepSeek API配置 ==========
 deepseek:

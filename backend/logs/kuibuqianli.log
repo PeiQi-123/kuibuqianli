@@ -1,403 +1,60 @@
-2026-03-23T00:28:44.475+08:00 ERROR 32628 --- [http-nio-0.0.0.0-8080-exec-1] c.k.c.exception.GlobalExceptionHandler   : Default exception: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
+2026-03-25T10:58:59.734+08:00  WARN 53988 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-25T10:58:59.790+08:00  WARN 53988 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-25T10:58:59.794+08:00  INFO 53988 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.2 with PID 53988 (C:\Users\30698\Desktop\mifar\kuibuqianli\backend\target\classes started by 30698 in C:\Users\30698\Desktop\mifar\kuibuqianli\backend)
+2026-03-25T10:58:59.795+08:00 DEBUG 53988 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-25T10:58:59.796+08:00  INFO 53988 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-25T10:59:00.978+08:00  INFO 53988 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a61f3d45-22b4-39a0-95a7-8203c5af368e
+2026-03-25T10:59:01.242+08:00  INFO 53988 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-25T10:59:01.249+08:00  INFO 53988 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-25T10:59:01.250+08:00  INFO 53988 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-25T10:59:01.307+08:00  INFO 53988 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-25T10:59:01.308+08:00  INFO 53988 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1484 ms
+2026-03-25T10:59:01.344+08:00 DEBUG 53988 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-25T10:59:01.960+08:00  INFO 53988 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@4ad1a276, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@4a833595, org.springframework.security.web.context.SecurityContextHolderFilter@4b5798c2, org.springframework.security.web.header.HeaderWriterFilter@37bda983, org.springframework.web.filter.CorsFilter@31006a75, org.springframework.security.web.authentication.logout.LogoutFilter@55638165, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@71039ce1, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5ca22e19, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@49122853, org.springframework.security.web.session.SessionManagementFilter@75d97e18, org.springframework.security.web.access.ExceptionTranslationFilter@606b53a3, org.springframework.security.web.access.intercept.AuthorizationFilter@ff1f465]
+2026-03-25T10:59:02.160+08:00  INFO 53988 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-25T10:59:02.170+08:00  INFO 53988 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 2.74 seconds (process running for 3.462)
+2026-03-25T11:00:57.356+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-25T11:00:57.361+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-25T11:00:57.388+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 26 ms
+2026-03-25T11:00:57.456+08:00  WARN 53988 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/info' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-25T11:01:25.590+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-25T11:01:25.987+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-3] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@22e2230d
+2026-03-25T11:01:25.993+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-25T11:01:42.519+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-5] c.k.c.exception.GlobalExceptionHandler   : Default exception: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
 
-org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-	at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:103) ~[spring-jdbc-6.0.14.jar:6.0.14]
+org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:246) ~[spring-jdbc-6.0.14.jar:6.0.14]
 	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1572) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:667) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:713) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:744) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:757) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:815) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.loadRecentSamples(PreferenceLearningServiceImpl.java:119) ~[classes/:na]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.buildLearningProfile(PreferenceLearningServiceImpl.java:45) ~[classes/:na]
-	at com.kuibuqianli.controller.UserController.getPreferenceInsights(UserController.java:110) ~[classes/:na]
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at jdk.proxy2/jdk.proxy2.$Proxy93.selectOne(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:160) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:148) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at jdk.proxy2/jdk.proxy2.$Proxy97.selectById(Unknown Source) ~[na:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.getUserInfo(UserServiceImpl.java:99) ~[classes/:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.loginWithUser(UserServiceImpl.java:158) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.16.jar:6.0]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:112) ~[classes/:na]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
-Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'feedback_tag' in 'field list'
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52) ~[HikariCP-5.0.1.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
-	at org.springframework.jdbc.core.JdbcTemplate$1.doInPreparedStatement(JdbcTemplate.java:722) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:648) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	... 100 common frames omitted
-
-2026-03-23T02:44:16.206+08:00  INFO 32628 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-03-23T02:44:16.266+08:00  INFO 32628 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-03-23T11:46:03.611+08:00  WARN 35664 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
-2026-03-23T11:46:03.663+08:00  WARN 35664 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
-2026-03-23T11:46:03.667+08:00  INFO 35664 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.2 with PID 35664 (C:\Users\30698\Desktop\mifar\kuibuqianli\backend\target\classes started by 30698 in C:\Users\30698\Desktop\mifar\kuibuqianli\backend)
-2026-03-23T11:46:03.668+08:00 DEBUG 35664 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
-2026-03-23T11:46:03.668+08:00  INFO 35664 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
-2026-03-23T11:46:05.490+08:00  INFO 35664 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a61f3d45-22b4-39a0-95a7-8203c5af368e
-2026-03-23T11:46:05.756+08:00  INFO 35664 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2026-03-23T11:46:05.764+08:00  INFO 35664 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-03-23T11:46:05.764+08:00  INFO 35664 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
-2026-03-23T11:46:05.827+08:00  INFO 35664 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
-2026-03-23T11:46:05.827+08:00  INFO 35664 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2129 ms
-2026-03-23T11:46:05.868+08:00 DEBUG 35664 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
-2026-03-23T11:46:06.588+08:00  INFO 35664 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@37e55819, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2bdcfcf, org.springframework.security.web.context.SecurityContextHolderFilter@67a0ff25, org.springframework.security.web.header.HeaderWriterFilter@608b35fa, org.springframework.web.filter.CorsFilter@6248cfab, org.springframework.security.web.authentication.logout.LogoutFilter@722b2728, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@166e5a6d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@432c0f1, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5871a482, org.springframework.security.web.session.SessionManagementFilter@674aa626, org.springframework.security.web.access.ExceptionTranslationFilter@5dd6a4c8, org.springframework.security.web.access.intercept.AuthorizationFilter@6b8bdcc6]
-2026-03-23T11:46:06.800+08:00  INFO 35664 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
-2026-03-23T11:46:06.810+08:00  INFO 35664 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 3.508 seconds (process running for 12.401)
-2026-03-23T11:46:12.527+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-2] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-03-23T11:46:12.528+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-03-23T11:46:12.531+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-2] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
-2026-03-23T11:46:12.569+08:00  WARN 35664 --- [http-nio-0.0.0.0-8080-exec-2] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/login' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
-2026-03-23T11:46:12.828+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-03-23T11:46:13.220+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@76da2ee6
-2026-03-23T11:46:13.224+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-2] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-03-23T12:24:15.563+08:00 ERROR 35664 --- [http-nio-0.0.0.0-8080-exec-2] c.k.c.exception.GlobalExceptionHandler   : Default exception: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-
-org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-	at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:103) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1572) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:667) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:713) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:744) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:757) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:815) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.loadRecentSamples(PreferenceLearningServiceImpl.java:119) ~[classes/:na]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.buildLearningProfile(PreferenceLearningServiceImpl.java:45) ~[classes/:na]
-	at com.kuibuqianli.controller.UserController.getPreferenceInsights(UserController.java:110) ~[classes/:na]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.16.jar:6.0]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:112) ~[classes/:na]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
-Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'feedback_tag' in 'field list'
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52) ~[HikariCP-5.0.1.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
-	at org.springframework.jdbc.core.JdbcTemplate$1.doInPreparedStatement(JdbcTemplate.java:722) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:648) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	... 100 common frames omitted
-
-2026-03-23T12:31:26.572+08:00 ERROR 35664 --- [http-nio-0.0.0.0-8080-exec-7] c.k.c.exception.GlobalExceptionHandler   : Default exception: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-
-org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-	at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:103) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1572) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:667) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:713) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:744) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:757) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:815) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.loadRecentSamples(PreferenceLearningServiceImpl.java:119) ~[classes/:na]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.buildLearningProfile(PreferenceLearningServiceImpl.java:45) ~[classes/:na]
-	at com.kuibuqianli.controller.UserController.getPreferenceInsights(UserController.java:110) ~[classes/:na]
-	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
-	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.16.jar:6.0]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:112) ~[classes/:na]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
-Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'feedback_tag' in 'field list'
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52) ~[HikariCP-5.0.1.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
-	at org.springframework.jdbc.core.JdbcTemplate$1.doInPreparedStatement(JdbcTemplate.java:722) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:648) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	... 100 common frames omitted
-
-2026-03-23T12:31:26.696+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-1] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
-2026-03-23T12:31:26.697+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-1] c.k.controller.MicroMotionController     : 身体部位: 头部
-2026-03-23T12:31:26.698+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-1] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础。
-2026-03-23T12:31:26.698+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-1] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=1, gender=女, height=165.0, weight=60.0, bmi=22.04, bmi_type=正常}
-2026-03-23T12:31:26.700+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-1] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础。
-2026-03-23T12:31:26.706+08:00 ERROR 35664 --- [http-nio-0.0.0.0-8080-exec-1] c.kuibuqianli.service.DeepSeekService    : 调用DeepSeek API失败
-
-org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-	at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:103) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1572) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:667) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:713) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:744) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:757) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:815) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.loadRecentSamples(PreferenceLearningServiceImpl.java:119) ~[classes/:na]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.buildLearningProfile(PreferenceLearningServiceImpl.java:45) ~[classes/:na]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.enrichUserInfo(PreferenceLearningServiceImpl.java:92) ~[classes/:na]
-	at com.kuibuqianli.service.DeepSeekService.enrichUserInfo(DeepSeekService.java:111) ~[classes/:na]
-	at com.kuibuqianli.service.DeepSeekService.generateMicroMotionPrompt(DeepSeekService.java:68) ~[classes/:na]
-	at com.kuibuqianli.controller.MicroMotionController.generatePrompt(MicroMotionController.java:50) ~[classes/:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.14.jar:6.0.14]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699) ~[spring-aop-6.0.14.jar:6.0.14]
+	at com.kuibuqianli.service.impl.UserServiceImpl$$SpringCGLIB$$0.loginWithUser(<generated>) ~[classes/:na]
+	at com.kuibuqianli.controller.UserController.login(UserController.java:54) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
@@ -491,158 +148,73 @@ org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad 
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
 	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
-Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'feedback_tag' in 'field list'
+Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
 	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
 	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
 	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52) ~[HikariCP-5.0.1.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
-	at org.springframework.jdbc.core.JdbcTemplate$1.doInPreparedStatement(JdbcTemplate.java:722) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:648) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	... 103 common frames omitted
-
-2026-03-23T12:31:26.718+08:00 ERROR 35664 --- [http-nio-0.0.0.0-8080-exec-1] c.k.controller.MicroMotionController     : 生成提示词失败: 生成微运动提示词失败: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-2026-03-23T12:31:29.323+08:00 ERROR 35664 --- [http-nio-0.0.0.0-8080-exec-4] c.k.c.exception.GlobalExceptionHandler   : Default exception: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-
-org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-	at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:103) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1572) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:667) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:713) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:744) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:757) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:815) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.loadRecentSamples(PreferenceLearningServiceImpl.java:119) ~[classes/:na]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.buildLearningProfile(PreferenceLearningServiceImpl.java:45) ~[classes/:na]
-	at com.kuibuqianli.controller.UserController.getPreferenceInsights(UserController.java:110) ~[classes/:na]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44) ~[HikariCP-5.0.1.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
-	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564) ~[tomcat-embed-core-10.1.16.jar:6.0]
-	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
-	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:112) ~[classes/:na]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
-	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
-	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
-	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
-Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'feedback_tag' in 'field list'
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52) ~[HikariCP-5.0.1.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
-	at org.springframework.jdbc.core.JdbcTemplate$1.doInPreparedStatement(JdbcTemplate.java:722) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:648) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	... 100 common frames omitted
+	at org.apache.ibatis.logging.jdbc.PreparedStatementLogger.invoke(PreparedStatementLogger.java:59) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy3/jdk.proxy3.$Proxy118.execute(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:79) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy116.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:63) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:325) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:156) ~[mybatis-3.5.10.jar:3.5.10]
+	at com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor.intercept(MybatisPlusInterceptor.java:81) ~[mybatis-plus-extension-3.5.3.jar:3.5.3]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:62) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy115.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:151) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:145) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:76) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	... 107 common frames omitted
 
-2026-03-23T12:31:29.339+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
-2026-03-23T12:31:29.340+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 身体部位: 头部
-2026-03-23T12:31:29.340+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础。
-2026-03-23T12:31:29.340+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=1, gender=女, height=165.0, weight=60.0, bmi=22.04, bmi_type=正常}
-2026-03-23T12:31:29.341+08:00  INFO 35664 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础。
-2026-03-23T12:31:29.348+08:00 ERROR 35664 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 调用DeepSeek API失败
+2026-03-25T11:01:50.584+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-8] c.k.c.exception.GlobalExceptionHandler   : Default exception: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
 
-org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-	at org.springframework.jdbc.support.SQLExceptionSubclassTranslator.doTranslate(SQLExceptionSubclassTranslator.java:103) ~[spring-jdbc-6.0.14.jar:6.0.14]
+org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:246) ~[spring-jdbc-6.0.14.jar:6.0.14]
 	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.translateException(JdbcTemplate.java:1572) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:667) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:713) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:744) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:757) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.query(JdbcTemplate.java:815) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.loadRecentSamples(PreferenceLearningServiceImpl.java:119) ~[classes/:na]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.buildLearningProfile(PreferenceLearningServiceImpl.java:45) ~[classes/:na]
-	at com.kuibuqianli.service.impl.PreferenceLearningServiceImpl.enrichUserInfo(PreferenceLearningServiceImpl.java:92) ~[classes/:na]
-	at com.kuibuqianli.service.DeepSeekService.enrichUserInfo(DeepSeekService.java:111) ~[classes/:na]
-	at com.kuibuqianli.service.DeepSeekService.generateMicroMotionPrompt(DeepSeekService.java:68) ~[classes/:na]
-	at com.kuibuqianli.controller.MicroMotionController.generatePrompt(MicroMotionController.java:50) ~[classes/:na]
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at jdk.proxy2/jdk.proxy2.$Proxy93.selectOne(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:160) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:148) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at jdk.proxy2/jdk.proxy2.$Proxy97.selectById(Unknown Source) ~[na:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.getUserInfo(UserServiceImpl.java:99) ~[classes/:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.loginWithUser(UserServiceImpl.java:158) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.14.jar:6.0.14]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699) ~[spring-aop-6.0.14.jar:6.0.14]
+	at com.kuibuqianli.service.impl.UserServiceImpl$$SpringCGLIB$$0.loginWithUser(<generated>) ~[classes/:na]
+	at com.kuibuqianli.controller.UserController.login(UserController.java:54) ~[classes/:na]
 	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
 	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
 	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
@@ -736,41 +308,761 @@ org.springframework.jdbc.BadSqlGrammarException: PreparedStatementCallback; bad 
 	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
 	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
 	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
-Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'feedback_tag' in 'field list'
+Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
 	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
 	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
 	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.mysql.cj.jdbc.ClientPreparedStatement.executeQuery(ClientPreparedStatement.java:972) ~[mysql-connector-j-8.0.33.jar:8.0.33]
-	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeQuery(ProxyPreparedStatement.java:52) ~[HikariCP-5.0.1.jar:na]
-	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeQuery(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
-	at org.springframework.jdbc.core.JdbcTemplate$1.doInPreparedStatement(JdbcTemplate.java:722) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	at org.springframework.jdbc.core.JdbcTemplate.execute(JdbcTemplate.java:648) ~[spring-jdbc-6.0.14.jar:6.0.14]
-	... 103 common frames omitted
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44) ~[HikariCP-5.0.1.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.logging.jdbc.PreparedStatementLogger.invoke(PreparedStatementLogger.java:59) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy3/jdk.proxy3.$Proxy118.execute(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:79) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy116.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:63) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:325) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:156) ~[mybatis-3.5.10.jar:3.5.10]
+	at com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor.intercept(MybatisPlusInterceptor.java:81) ~[mybatis-plus-extension-3.5.3.jar:3.5.3]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:62) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy115.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:151) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:145) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:76) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	... 107 common frames omitted
 
-2026-03-23T12:31:29.358+08:00 ERROR 35664 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 生成提示词失败: 生成微运动提示词失败: PreparedStatementCallback; bad SQL grammar [SELECT motion_name, duration, completed, created_at, feedback_tag, feedback_score FROM exercise_record WHERE user_id = ? AND created_at >= ? ORDER BY created_at DESC]
-2026-03-23T13:15:04.393+08:00  INFO 35664 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-03-23T13:15:04.503+08:00  INFO 35664 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
-2026-03-23T13:15:18.315+08:00  WARN 40924 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
-2026-03-23T13:15:18.366+08:00  WARN 40924 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
-2026-03-23T13:15:18.372+08:00  INFO 40924 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.2 with PID 40924 (C:\Users\30698\Desktop\mifar\kuibuqianli\backend\target\classes started by 30698 in C:\Users\30698\Desktop\mifar\kuibuqianli\backend)
-2026-03-23T13:15:18.372+08:00 DEBUG 40924 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
-2026-03-23T13:15:18.373+08:00  INFO 40924 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
-2026-03-23T13:15:19.538+08:00  INFO 40924 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a61f3d45-22b4-39a0-95a7-8203c5af368e
-2026-03-23T13:15:19.861+08:00  INFO 40924 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
-2026-03-23T13:15:19.869+08:00  INFO 40924 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
-2026-03-23T13:15:19.869+08:00  INFO 40924 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
-2026-03-23T13:15:19.951+08:00  INFO 40924 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
-2026-03-23T13:15:19.952+08:00  INFO 40924 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1544 ms
-2026-03-23T13:15:19.994+08:00 DEBUG 40924 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
-2026-03-23T13:15:20.792+08:00  INFO 40924 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@213835b6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@24a3d414, org.springframework.security.web.context.SecurityContextHolderFilter@4dd1d2bb, org.springframework.security.web.header.HeaderWriterFilter@5dd6a4c8, org.springframework.web.filter.CorsFilter@37e55819, org.springframework.security.web.authentication.logout.LogoutFilter@a84338a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@67a0ff25, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7d6c4079, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2bdcfcf, org.springframework.security.web.session.SessionManagementFilter@14e3d439, org.springframework.security.web.access.ExceptionTranslationFilter@3d235635, org.springframework.security.web.access.intercept.AuthorizationFilter@29c59b6e]
-2026-03-23T13:15:21.037+08:00  INFO 40924 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
-2026-03-23T13:15:21.047+08:00  INFO 40924 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 3.11 seconds (process running for 12.914)
-2026-03-23T13:16:05.432+08:00  INFO 40924 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-03-23T13:16:05.434+08:00  INFO 40924 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
-2026-03-23T13:16:05.436+08:00  INFO 40924 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
-2026-03-23T13:16:05.463+08:00  WARN 40924 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/info' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
-2026-03-23T13:16:05.642+08:00  INFO 40924 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
-2026-03-23T13:16:05.873+08:00  INFO 40924 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@f890196
-2026-03-23T13:16:05.877+08:00  INFO 40924 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
-2026-03-23T13:23:10.022+08:00  INFO 40924 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
-2026-03-23T13:23:10.041+08:00  INFO 40924 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-25T11:02:07.107+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-2] c.k.c.exception.GlobalExceptionHandler   : Default exception: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
+
+org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:246) ~[spring-jdbc-6.0.14.jar:6.0.14]
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at jdk.proxy2/jdk.proxy2.$Proxy93.selectOne(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:160) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:148) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at jdk.proxy2/jdk.proxy2.$Proxy97.selectById(Unknown Source) ~[na:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.getUserInfo(UserServiceImpl.java:99) ~[classes/:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.loginWithUser(UserServiceImpl.java:158) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.14.jar:6.0.14]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699) ~[spring-aop-6.0.14.jar:6.0.14]
+	at com.kuibuqianli.service.impl.UserServiceImpl$$SpringCGLIB$$0.loginWithUser(<generated>) ~[classes/:na]
+	at com.kuibuqianli.controller.UserController.login(UserController.java:54) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:77) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
+Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44) ~[HikariCP-5.0.1.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.logging.jdbc.PreparedStatementLogger.invoke(PreparedStatementLogger.java:59) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy3/jdk.proxy3.$Proxy118.execute(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:79) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy116.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:63) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:325) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:156) ~[mybatis-3.5.10.jar:3.5.10]
+	at com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor.intercept(MybatisPlusInterceptor.java:81) ~[mybatis-plus-extension-3.5.3.jar:3.5.3]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:62) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy115.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:151) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:145) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:76) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	... 107 common frames omitted
+
+2026-03-25T11:02:40.628+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-3] c.k.c.exception.GlobalExceptionHandler   : Default exception: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
+
+org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:246) ~[spring-jdbc-6.0.14.jar:6.0.14]
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at jdk.proxy2/jdk.proxy2.$Proxy93.selectOne(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:160) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:148) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at jdk.proxy2/jdk.proxy2.$Proxy97.selectById(Unknown Source) ~[na:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.getUserInfo(UserServiceImpl.java:99) ~[classes/:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.loginWithUser(UserServiceImpl.java:158) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.14.jar:6.0.14]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699) ~[spring-aop-6.0.14.jar:6.0.14]
+	at com.kuibuqianli.service.impl.UserServiceImpl$$SpringCGLIB$$0.loginWithUser(<generated>) ~[classes/:na]
+	at com.kuibuqianli.controller.UserController.login(UserController.java:54) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:77) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
+Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44) ~[HikariCP-5.0.1.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.logging.jdbc.PreparedStatementLogger.invoke(PreparedStatementLogger.java:59) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy3/jdk.proxy3.$Proxy118.execute(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:79) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy116.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:63) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:325) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:156) ~[mybatis-3.5.10.jar:3.5.10]
+	at com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor.intercept(MybatisPlusInterceptor.java:81) ~[mybatis-plus-extension-3.5.3.jar:3.5.3]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:62) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy115.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:151) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:145) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:76) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	... 107 common frames omitted
+
+2026-03-25T11:03:01.534+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-5] c.k.c.exception.GlobalExceptionHandler   : Default exception: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
+
+org.springframework.jdbc.BadSqlGrammarException: 
+### Error querying database.  Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+### The error may exist in com/kuibuqianli/dao/mapper/UserMapper.java (best guess)
+### The error may involve defaultParameterMap
+### The error occurred while setting parameters
+### SQL: SELECT id,username,password,email,phone,height,weight,bmi,bmi_type,age,gender,remind_enabled,remind_interval,remind_max_times,remind_avoid_time,created_at,updated_at,is_active,avatar_url FROM user WHERE id=?
+### Cause: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+; bad SQL grammar []
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:246) ~[spring-jdbc-6.0.14.jar:6.0.14]
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:73) ~[spring-jdbc-6.0.14.jar:6.0.14]
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at jdk.proxy2/jdk.proxy2.$Proxy93.selectOne(Unknown Source) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate.selectOne(SqlSessionTemplate.java:160) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperMethod.execute(MybatisMapperMethod.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy$PlainMethodInvoker.invoke(MybatisMapperProxy.java:148) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at com.baomidou.mybatisplus.core.override.MybatisMapperProxy.invoke(MybatisMapperProxy.java:89) ~[mybatis-plus-core-3.5.3.jar:3.5.3]
+	at jdk.proxy2/jdk.proxy2.$Proxy97.selectById(Unknown Source) ~[na:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.getUserInfo(UserServiceImpl.java:99) ~[classes/:na]
+	at com.kuibuqianli.service.impl.UserServiceImpl.loginWithUser(UserServiceImpl.java:158) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:343) ~[spring-aop-6.0.14.jar:6.0.14]
+	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:699) ~[spring-aop-6.0.14.jar:6.0.14]
+	at com.kuibuqianli.service.impl.UserServiceImpl$$SpringCGLIB$$0.loginWithUser(<generated>) ~[classes/:na]
+	at com.kuibuqianli.controller.UserController.login(UserController.java:54) ~[classes/:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:150) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:884) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:797) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1081) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:974) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:914) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:590) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885) ~[spring-webmvc-6.0.14.jar:6.0.14]
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658) ~[tomcat-embed-core-10.1.16.jar:6.0]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:205) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51) ~[tomcat-embed-websocket-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at com.kuibuqianli.security.JwtAuthenticationFilter.doFilterInternal(JwtAuthenticationFilter.java:77) ~[classes/:na]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:365) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:107) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:93) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:374) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191) ~[spring-security-web-6.1.5.jar:6.1.5]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:352) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:268) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116) ~[spring-web-6.0.14.jar:6.0.14]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:174) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:149) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:482) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:115) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:340) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:391) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:896) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1744) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1191) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:659) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-10.1.16.jar:10.1.16]
+	at java.base/java.lang.Thread.run(Thread.java:1570) ~[na:na]
+Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'field list'
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:121) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.mysql.cj.jdbc.ClientPreparedStatement.execute(ClientPreparedStatement.java:354) ~[mysql-connector-j-8.0.33.jar:8.0.33]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.execute(ProxyPreparedStatement.java:44) ~[HikariCP-5.0.1.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.execute(HikariProxyPreparedStatement.java) ~[HikariCP-5.0.1.jar:na]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.logging.jdbc.PreparedStatementLogger.invoke(PreparedStatementLogger.java:59) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy3/jdk.proxy3.$Proxy118.execute(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.statement.PreparedStatementHandler.query(PreparedStatementHandler.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.statement.RoutingStatementHandler.query(RoutingStatementHandler.java:79) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:64) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy116.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.executor.SimpleExecutor.doQuery(SimpleExecutor.java:63) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.queryFromDatabase(BaseExecutor.java:325) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.executor.BaseExecutor.query(BaseExecutor.java:156) ~[mybatis-3.5.10.jar:3.5.10]
+	at com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor.intercept(MybatisPlusInterceptor.java:81) ~[mybatis-plus-extension-3.5.3.jar:3.5.3]
+	at org.apache.ibatis.plugin.Plugin.invoke(Plugin.java:62) ~[mybatis-3.5.10.jar:3.5.10]
+	at jdk.proxy2/jdk.proxy2.$Proxy115.query(Unknown Source) ~[na:na]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:151) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:145) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:140) ~[mybatis-3.5.10.jar:3.5.10]
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.selectOne(DefaultSqlSession.java:76) ~[mybatis-3.5.10.jar:3.5.10]
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580) ~[na:na]
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427) ~[mybatis-spring-2.0.7.jar:2.0.7]
+	... 107 common frames omitted
+
+2026-03-25T11:04:55.204+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T11:04:55.205+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T11:04:55.205+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约3分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T11:04:55.205+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=3分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T11:04:55.206+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约3分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T11:04:55.216+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 生成提示词失败: 当前视频库为空，暂时无法生成可播放的微运动方案
+2026-03-25T11:05:05.199+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T11:05:05.200+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T11:05:05.200+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约3分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T11:05:05.200+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=3分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T11:05:05.200+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约3分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T11:05:05.207+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : 生成提示词失败: 当前视频库为空，暂时无法生成可播放的微运动方案
+2026-03-25T11:18:42.698+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T11:18:42.700+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T11:18:42.701+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约3分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T11:18:42.701+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=3分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T11:18:42.702+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约3分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T11:18:42.714+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-7] c.k.controller.MicroMotionController     : 生成提示词失败: 当前视频库为空，暂时无法生成可播放的微运动方案
+2026-03-25T11:54:41.643+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T11:54:41.646+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T11:54:41.647+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T11:54:41.647+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=5分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T11:54:41.648+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T11:54:41.658+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 生成提示词失败: 当前视频库为空，暂时无法生成可播放的微运动方案
+2026-03-25T12:13:13.223+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T12:13:13.226+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T12:13:13.226+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T12:13:13.226+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=5分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T12:13:13.228+08:00  INFO 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T12:13:13.237+08:00 ERROR 53988 --- [http-nio-0.0.0.0-8080-exec-6] c.k.controller.MicroMotionController     : 生成提示词失败: 当前视频库为空，暂时无法生成可播放的微运动方案
+2026-03-25T13:09:06.084+08:00  INFO 53988 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-25T13:09:06.096+08:00  INFO 53988 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-25T13:10:10.668+08:00  WARN 12352 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-25T13:10:10.730+08:00  WARN 12352 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-25T13:10:10.737+08:00  INFO 12352 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.2 with PID 12352 (C:\Users\30698\Desktop\mifar\kuibuqianli\backend\target\classes started by 30698 in C:\Users\30698\Desktop\mifar\kuibuqianli\backend)
+2026-03-25T13:10:10.737+08:00 DEBUG 12352 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-25T13:10:10.738+08:00  INFO 12352 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-25T13:10:12.648+08:00  INFO 12352 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a61f3d45-22b4-39a0-95a7-8203c5af368e
+2026-03-25T13:10:12.940+08:00  INFO 12352 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-25T13:10:12.948+08:00  INFO 12352 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-25T13:10:12.948+08:00  INFO 12352 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-25T13:10:13.019+08:00  INFO 12352 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-25T13:10:13.019+08:00  INFO 12352 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2243 ms
+2026-03-25T13:10:13.063+08:00 DEBUG 12352 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-25T13:10:13.756+08:00  INFO 12352 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@3d88ce0e, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@31f7eb8, org.springframework.security.web.context.SecurityContextHolderFilter@5fdb7394, org.springframework.security.web.header.HeaderWriterFilter@606b53a3, org.springframework.web.filter.CorsFilter@4ad1a276, org.springframework.security.web.authentication.logout.LogoutFilter@df7d1d4, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@4b5798c2, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@44aed6a4, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@4a833595, org.springframework.security.web.session.SessionManagementFilter@660296d5, org.springframework.security.web.access.ExceptionTranslationFilter@1d55dd21, org.springframework.security.web.access.intercept.AuthorizationFilter@7019d619]
+2026-03-25T13:10:14.008+08:00  INFO 12352 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-25T13:10:14.023+08:00  INFO 12352 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 3.698 seconds (process running for 4.441)
+2026-03-25T13:10:18.553+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-25T13:10:18.554+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-25T13:10:18.556+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-25T13:10:18.570+08:00  WARN 12352 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/info' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-25T13:10:18.659+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-25T13:10:18.861+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4125edc2
+2026-03-25T13:10:18.864+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-25T13:10:22.367+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-10] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T13:10:22.368+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-10] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T13:10:22.368+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-10] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T13:10:22.368+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-10] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=5分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T13:10:22.368+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-10] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T13:10:22.376+08:00 ERROR 12352 --- [http-nio-0.0.0.0-8080-exec-10] c.k.controller.MicroMotionController     : 生成提示词失败: 当前视频库为空，暂时无法生成可播放的微运动方案
+2026-03-25T13:10:23.766+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T13:10:23.766+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T13:10:23.766+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T13:10:23.766+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=5分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T13:10:23.766+08:00  INFO 12352 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T13:10:23.772+08:00 ERROR 12352 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 生成提示词失败: 当前视频库为空，暂时无法生成可播放的微运动方案
+2026-03-25T13:24:49.030+08:00  INFO 12352 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-25T13:24:49.054+08:00  INFO 12352 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-25T13:24:55.024+08:00  WARN 45672 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-25T13:24:55.078+08:00  WARN 45672 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-25T13:24:55.084+08:00  INFO 45672 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.2 with PID 45672 (C:\Users\30698\Desktop\mifar\kuibuqianli\backend\target\classes started by 30698 in C:\Users\30698\Desktop\mifar\kuibuqianli\backend)
+2026-03-25T13:24:55.084+08:00 DEBUG 45672 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-25T13:24:55.085+08:00  INFO 45672 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-25T13:24:55.801+08:00  INFO 45672 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a61f3d45-22b4-39a0-95a7-8203c5af368e
+2026-03-25T13:24:56.079+08:00  INFO 45672 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-25T13:24:56.086+08:00  INFO 45672 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-25T13:24:56.086+08:00  INFO 45672 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-25T13:24:56.152+08:00  INFO 45672 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-25T13:24:56.152+08:00  INFO 45672 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1033 ms
+2026-03-25T13:24:56.193+08:00 DEBUG 45672 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-25T13:24:56.805+08:00  INFO 45672 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@213835b6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@24a3d414, org.springframework.security.web.context.SecurityContextHolderFilter@4dd1d2bb, org.springframework.security.web.header.HeaderWriterFilter@5dd6a4c8, org.springframework.web.filter.CorsFilter@37e55819, org.springframework.security.web.authentication.logout.LogoutFilter@a84338a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@67a0ff25, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@7d6c4079, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@2bdcfcf, org.springframework.security.web.session.SessionManagementFilter@14e3d439, org.springframework.security.web.access.ExceptionTranslationFilter@3d235635, org.springframework.security.web.access.intercept.AuthorizationFilter@29c59b6e]
+2026-03-25T13:24:57.005+08:00  INFO 45672 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-25T13:24:57.017+08:00  INFO 45672 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 2.31 seconds (process running for 2.841)
+2026-03-25T13:25:45.761+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-25T13:25:45.762+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-25T13:25:45.764+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-25T13:25:45.793+08:00  WARN 45672 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/info' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-25T13:25:45.938+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-25T13:25:46.317+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@74494c02
+2026-03-25T13:25:46.320+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-25T13:25:47.500+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T13:25:47.500+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T13:25:47.500+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T13:25:47.502+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=5分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T13:25:47.503+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T13:25:47.508+08:00 DEBUG 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.kuibuqianli.service.DeepSeekService    : 系统提示词: 你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
+生成简短、实用、安全的微运动建议。
+
+【要求】
+1. 运动建议要简单易行，可以在办公位或家里完成，不需要特殊设备
+2. 考虑用户的BMI和年龄，避免不适合的运动
+3. 每次建议包含2-3个微运动动作
+4. 每个动作要说明：动作名称、具体做法、持续时间、注意事项
+5. 用友好、鼓励的语气，像私人教练一样
+6. 返回格式要清晰易读，不要使用 markdown
+7. 如果用户有某些健康禁忌（如腰伤、高血压等），要特别提醒
+8. 结合用户的当前姿态给出针对性建议
+9. 动作名称应简洁、自然、通用，便于后续检索对应指导视频
+10. 只返回 JSON，不要返回 markdown，不要写 ```json，不要添加任何解释文字
+11. 如果用户存在显式偏好或系统学习出的偏好，优先让推荐结果与这些偏好保持一致
+12. 如果用户最近反馈显示“太难”，优先降低动作复杂度和节奏；如果显示“太简单”，优先适当增加挑战度
+13. 优先选择与目标部位、偏好运动类型、偏好时长、偏好难度一致的动作组合
+
+【JSON格式】
+{
+  "title": "针对颈部的微运动方案",
+  "overview": "一句简短说明，告诉用户这套动作适合什么情况",
+  "difficulty_level": "入门或进阶",
+  "suggested_duration": 60,
+  "actions": [
+    {
+      "name": "简洁明确的标准动作名称",
+      "seconds": 20,
+      "instruction": "一句清晰做法",
+      "warning": "一句注意事项"
+    }
+  ],
+  "tip": "一句个性化提醒"
+}
+
+2026-03-25T13:25:47.509+08:00 DEBUG 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.kuibuqianli.service.DeepSeekService    : 用户提示词: 请为以下用户生成微运动建议：
+
+【身体部位】头部
+【当前姿态】希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+【用户信息】
+  - 年龄: 21
+  - 性别: 女
+  - 身高(cm): 160.0
+  - 体重(kg): 60.0
+  - BMI: 23.44
+  - BMI类型: 正常
+  - 动态学习建议难度: 零基础
+  - 动态学习结论: 近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。
+  - completed_sessions_30d: 0
+  - completion_rate_30d: 0.0
+
+【推荐策略约束】
+  - 推荐难度尽量贴近: 零基础
+  - 系统动态学习结论: 近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。
+
+2026-03-25T13:25:47.512+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.kuibuqianli.service.DeepSeekService    : 调用DeepSeek API - model: deepseek-chat, maxTokens: 1000, temperature: 0.7
+2026-03-25T13:26:00.162+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.kuibuqianli.service.DeepSeekService    : DeepSeek API调用完成 - 耗时: 12649ms, 状态码: 200 OK
+2026-03-25T13:26:00.180+08:00 DEBUG 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.kuibuqianli.service.DeepSeekService    : 生成的结构化提示词: 针对头颈部的静态拉伸方案
+这套动作适合久坐办公后头部紧张僵硬时，通过静态停留来放松
+1. 颈部侧向拉伸 (60秒)
+做法：坐直，将头缓慢向一侧肩膀靠近，感受对侧颈部拉伸，保持呼吸，然后换边
+注意：动作要缓慢，避免用力过猛，拉伸到有轻微牵拉感即可，不要追求疼痛
+2. 下巴后缩 (60秒)
+做法：坐直或站直，目视前方，缓慢将下巴水平向后移动，感觉后颈有拉伸感，保持姿势
+注意：保持头部水平，不要低头或仰头，动作幅度要小，感受深层肌肉的发力
+3. 颈部后侧拉伸 (60秒)
+做法：坐直，双手交叉放于后脑勺，轻轻将头向前下方带，直到感觉后颈有舒适拉伸感
+注意：手部仅提供轻微引导，不要用力下拉，全程保持肩部放松下沉
+提示：每个动作保持60秒，感受呼吸和肌肉的放松，非常适合在办公间隙进行。
+2026-03-25T13:26:00.188+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.kuibuqianli.service.DeepSeekService    : 微运动提示词生成成功 - token使用: PromptResponse.ApiUsage(promptTokens=745, completionTokens=322, totalTokens=1067)
+2026-03-25T13:26:00.191+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.k.controller.MicroMotionController     : 提示词生成成功，时长: 60秒，难度: 入门
+2026-03-25T13:26:00.192+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-9] c.k.controller.MicroMotionController     : Token使用 - 提示: 745, 完成: 322, 总计: 1067
+2026-03-25T13:32:28.270+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-25T13:32:28.273+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-25T13:32:28.274+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T13:32:28.274+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=5分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-25T13:32:28.275+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-25T13:32:28.282+08:00 DEBUG 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.kuibuqianli.service.DeepSeekService    : 系统提示词: 你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
+生成简短、实用、安全的微运动建议。
+
+【要求】
+1. 运动建议要简单易行，可以在办公位或家里完成，不需要特殊设备
+2. 考虑用户的BMI和年龄，避免不适合的运动
+3. 每次建议包含2-3个微运动动作
+4. 每个动作要说明：动作名称、具体做法、持续时间、注意事项
+5. 用友好、鼓励的语气，像私人教练一样
+6. 返回格式要清晰易读，不要使用 markdown
+7. 如果用户有某些健康禁忌（如腰伤、高血压等），要特别提醒
+8. 结合用户的当前姿态给出针对性建议
+9. 动作名称应简洁、自然、通用，便于后续检索对应指导视频
+10. 只返回 JSON，不要返回 markdown，不要写 ```json，不要添加任何解释文字
+11. 如果用户存在显式偏好或系统学习出的偏好，优先让推荐结果与这些偏好保持一致
+12. 如果用户最近反馈显示“太难”，优先降低动作复杂度和节奏；如果显示“太简单”，优先适当增加挑战度
+13. 优先选择与目标部位、偏好运动类型、偏好时长、偏好难度一致的动作组合
+
+【JSON格式】
+{
+  "title": "针对颈部的微运动方案",
+  "overview": "一句简短说明，告诉用户这套动作适合什么情况",
+  "difficulty_level": "入门或进阶",
+  "suggested_duration": 60,
+  "actions": [
+    {
+      "name": "简洁明确的标准动作名称",
+      "seconds": 20,
+      "instruction": "一句清晰做法",
+      "warning": "一句注意事项"
+    }
+  ],
+  "tip": "一句个性化提醒"
+}
+
+2026-03-25T13:32:28.283+08:00 DEBUG 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.kuibuqianli.service.DeepSeekService    : 用户提示词: 请为以下用户生成微运动建议：
+
+【身体部位】头部
+【当前姿态】希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+【用户信息】
+  - 年龄: 21
+  - 性别: 女
+  - 身高(cm): 160.0
+  - 体重(kg): 60.0
+  - BMI: 23.44
+  - BMI类型: 正常
+  - 动态学习建议难度: 零基础
+  - 动态学习结论: 近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。
+  - completed_sessions_30d: 0
+  - completion_rate_30d: 0.0
+
+【推荐策略约束】
+  - 推荐难度尽量贴近: 零基础
+  - 系统动态学习结论: 近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。
+
+2026-03-25T13:32:28.283+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.kuibuqianli.service.DeepSeekService    : 调用DeepSeek API - model: deepseek-chat, maxTokens: 1000, temperature: 0.7
+2026-03-25T13:32:39.592+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.kuibuqianli.service.DeepSeekService    : DeepSeek API调用完成 - 耗时: 11309ms, 状态码: 200 OK
+2026-03-25T13:32:39.597+08:00 DEBUG 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.kuibuqianli.service.DeepSeekService    : 生成的结构化提示词: 针对头颈部的静态拉伸方案
+这套动作适合久坐办公后，通过静态停留来缓解头颈部的紧张和僵硬。
+1. 颈部侧向拉伸 (60秒)
+做法：坐直，缓慢将头向一侧肩膀倾斜，感受对侧颈部拉伸，保持呼吸。
+注意：动作要慢，不要耸肩，两侧各做30秒。
+2. 下巴后缩 (40秒)
+做法：坐直，目视前方，缓慢将下巴水平向后移动，感觉后颈有轻微拉伸感，保持住。
+注意：保持头部水平，不要低头或仰头，感受颈椎后侧的伸展。
+3. 颈部后侧拉伸 (30秒)
+做法：坐直，双手交叉放于后脑勺，轻轻低头，让下巴靠近胸口，感受颈后拉伸。
+注意：手部仅提供轻微引导，不要用力下拉，避免疼痛。
+提示：每个动作保持静态停留，配合深长呼吸，能更好地放松肌肉。如果感到任何刺痛，请立即停止。
+2026-03-25T13:32:39.599+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.kuibuqianli.service.DeepSeekService    : 微运动提示词生成成功 - token使用: PromptResponse.ApiUsage(promptTokens=745, completionTokens=310, totalTokens=1055)
+2026-03-25T13:32:39.599+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.k.controller.MicroMotionController     : 提示词生成成功，时长: 60秒，难度: 入门
+2026-03-25T13:32:39.600+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.k.controller.MicroMotionController     : Token使用 - 提示: 745, 完成: 310, 总计: 1055
+2026-03-25T13:35:08.618+08:00  INFO 45672 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-25T13:35:08.634+08:00  INFO 45672 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
