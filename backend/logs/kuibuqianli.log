@@ -1066,3 +1066,227 @@ Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'avatar_url' in 'fie
 2026-03-25T13:32:39.600+08:00  INFO 45672 --- [http-nio-0.0.0.0-8080-exec-3] c.k.controller.MicroMotionController     : Token使用 - 提示: 745, 完成: 310, 总计: 1055
 2026-03-25T13:35:08.618+08:00  INFO 45672 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
 2026-03-25T13:35:08.634+08:00  INFO 45672 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-29T00:25:02.327+08:00  WARN 17444 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-29T00:25:02.410+08:00  WARN 17444 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-29T00:25:02.420+08:00  INFO 17444 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.2 with PID 17444 (C:\Users\30698\Desktop\mifar\kuibuqianli\backend\target\classes started by 30698 in C:\Users\30698\Desktop\mifar\kuibuqianli\backend)
+2026-03-29T00:25:02.421+08:00 DEBUG 17444 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-29T00:25:02.421+08:00  INFO 17444 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-29T00:25:04.713+08:00  INFO 17444 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a61f3d45-22b4-39a0-95a7-8203c5af368e
+2026-03-29T00:25:05.318+08:00  INFO 17444 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-29T00:25:05.328+08:00  INFO 17444 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-29T00:25:05.328+08:00  INFO 17444 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-29T00:25:05.443+08:00  INFO 17444 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-29T00:25:05.443+08:00  INFO 17444 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 2956 ms
+2026-03-29T00:25:05.513+08:00 DEBUG 17444 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-29T00:25:06.823+08:00  INFO 17444 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@37e55819, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@2bdcfcf, org.springframework.security.web.context.SecurityContextHolderFilter@67a0ff25, org.springframework.security.web.header.HeaderWriterFilter@608b35fa, org.springframework.web.filter.CorsFilter@6248cfab, org.springframework.security.web.authentication.logout.LogoutFilter@722b2728, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@166e5a6d, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@432c0f1, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@5871a482, org.springframework.security.web.session.SessionManagementFilter@674aa626, org.springframework.security.web.access.ExceptionTranslationFilter@5dd6a4c8, org.springframework.security.web.access.intercept.AuthorizationFilter@6b8bdcc6]
+2026-03-29T00:25:07.821+08:00  INFO 17444 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-29T00:25:07.852+08:00  INFO 17444 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 6.052 seconds (process running for 6.876)
+2026-03-29T00:29:08.240+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-29T00:29:08.243+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-29T00:29:08.245+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+2026-03-29T00:29:08.292+08:00  WARN 17444 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/info' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-29T00:29:08.572+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-29T00:29:08.929+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@754f41a2
+2026-03-29T00:29:08.934+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-29T01:02:07.733+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-29T01:02:07.738+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-29T01:02:07.739+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.k.controller.MicroMotionController     : 姿态信息: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-29T01:02:07.739+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=静态拉伸, preferred_duration_request=5分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-29T01:02:07.740+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-29T01:02:07.764+08:00 DEBUG 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.kuibuqianli.service.DeepSeekService    : 系统提示词: 你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
+生成简短、实用、安全的微运动建议。
+
+【要求】
+1. 运动建议要简单易行，可以在办公位或家里完成，不需要特殊设备
+2. 考虑用户的BMI和年龄，避免不适合的运动
+3. 每次建议包含2-3个微运动动作
+4. 每个动作要说明：动作名称、具体做法、持续时间、注意事项
+5. 用友好、鼓励的语气，像私人教练一样
+6. 返回格式要清晰易读，不要使用 markdown
+7. 如果用户有某些健康禁忌（如腰伤、高血压等），要特别提醒
+8. 结合用户的当前姿态给出针对性建议
+9. 动作名称应简洁、自然、通用，便于后续检索对应指导视频
+10. 只返回 JSON，不要返回 markdown，不要写 ```json，不要添加任何解释文字
+11. 如果用户存在显式偏好或系统学习出的偏好，优先让推荐结果与这些偏好保持一致
+12. 如果用户最近反馈显示“太难”，优先降低动作复杂度和节奏；如果显示“太简单”，优先适当增加挑战度
+13. 优先选择与目标部位、偏好运动类型、偏好时长、偏好难度一致的动作组合
+14. 当前没有候选动作池时，可自行生成安全且通用的动作名称
+
+【JSON格式】
+{
+  "title": "针对颈部的微运动方案",
+  "overview": "一句简短说明，告诉用户这套动作适合什么情况",
+  "difficulty_level": "入门或进阶",
+  "suggested_duration": 60,
+  "actions": [
+    {
+      "name": "候选动作池中的标准动作名称",
+      "rerank_score": 0.92,
+      "seconds": 20,
+      "instruction": "一句清晰做法",
+      "warning": "一句注意事项",
+      "selection_reason": "为什么最终选择这个动作"
+    }
+  ],
+  "candidate_ranking": [
+    {
+      "name": "候选动作池中的标准动作名称",
+      "rerank_score": 0.92,
+      "selected": true,
+      "reason": "动作与目标部位、偏好和安全约束的匹配原因"
+    }
+  ],
+  "tip": "一句个性化提醒"
+}
+
+2026-03-29T01:02:07.765+08:00 DEBUG 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.kuibuqianli.service.DeepSeekService    : 用户提示词: 请为以下用户生成微运动建议：
+
+【身体部位】头部
+【当前姿态】希望通过静态停留拉伸来缓解紧张和僵硬；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+【用户信息】
+  - 年龄: 21
+  - 性别: 女
+  - 身高(cm): 160.0
+  - 体重(kg): 60.0
+  - BMI: 23.44
+  - BMI类型: 正常
+  - 动态学习建议难度: 零基础
+  - 动态学习结论: 近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。
+  - 特殊情况/禁忌: []
+  - completed_sessions_30d: 0
+  - completion_rate_30d: 0.0
+
+【推荐策略约束】
+  - 推荐难度尽量贴近: 零基础
+  - 系统动态学习结论: 近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。
+
+2026-03-29T01:02:07.794+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.kuibuqianli.service.DeepSeekService    : 调用DeepSeek API - model: deepseek-chat, maxTokens: 1000, temperature: 0.7
+2026-03-29T01:02:32.511+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.kuibuqianli.service.DeepSeekService    : DeepSeek API调用完成 - 耗时: 24716ms, 状态码: 200 OK
+2026-03-29T01:02:32.536+08:00 DEBUG 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.kuibuqianli.service.DeepSeekService    : 生成的结构化提示词: 针对头颈部的静态拉伸方案
+这套动作适合在办公久坐后，通过温和的静态停留来缓解头部和颈部的紧张僵硬感。
+1. 颈部侧向拉伸 (60秒)
+做法：坐直，缓慢将头向一侧肩膀倾斜，感受另一侧颈部的拉伸，保持呼吸，每侧停留30秒。
+注意：动作要缓慢，避免弹震或过度用力，感到轻微拉伸感即可，不要引起疼痛。
+2. 下巴后缩 (60秒)
+做法：坐直，目视前方，缓慢地将下巴水平向后平移，感觉后颈有轻微拉伸感，保持这个姿势。
+注意：保持头部水平，不要低头或仰头，动作幅度宜小，以舒适为准。
+3. 颈部后侧拉伸 (60秒)
+做法：坐直，缓慢低头，让下巴靠近胸口，感受颈后侧的拉伸，双手可轻轻放在后脑勺提供轻微压力。
+注意：双手仅提供轻微引导，不要用力下压，避免对颈椎造成过大压力。
+提示：每个动作保持呼吸均匀，感受肌肉的舒展。如果感到任何不适，请立即停止。坚持每天做几次，对缓解久坐疲劳很有帮助！
+2026-03-29T01:02:32.573+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.kuibuqianli.service.DeepSeekService    : 微运动提示词生成成功 - token使用: PromptResponse.ApiUsage(promptTokens=859, completionTokens=663, totalTokens=1522)
+2026-03-29T01:02:32.577+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.k.controller.MicroMotionController     : 提示词生成成功，时长: 60秒，难度: 入门
+2026-03-29T01:02:32.577+08:00  INFO 17444 --- [http-nio-0.0.0.0-8080-exec-5] c.k.controller.MicroMotionController     : Token使用 - 提示: 859, 完成: 663, 总计: 1522
+2026-03-29T01:04:20.942+08:00  INFO 17444 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-03-29T01:04:20.944+08:00  INFO 17444 --- [SpringApplicationShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-03-29T02:01:32.454+08:00  WARN 23296 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-29T02:01:32.645+08:00  WARN 23296 --- [main] c.a.nacos.client.logging.NacosLogging    : Load Logback Configuration of Nacos fail, message: Could not initialize Logback Nacos logging from classpath:nacos-logback.xml
+2026-03-29T02:01:32.668+08:00  INFO 23296 --- [main] com.kuibuqianli.KuibuQianliApplication   : Starting KuibuQianliApplication using Java 22.0.2 with PID 23296 (C:\Users\30698\Desktop\mifar\kuibuqianli\backend\target\classes started by 30698 in C:\Users\30698\Desktop\mifar\kuibuqianli\backend)
+2026-03-29T02:01:32.669+08:00 DEBUG 23296 --- [main] com.kuibuqianli.KuibuQianliApplication   : Running with Spring Boot v3.1.6, Spring v6.0.14
+2026-03-29T02:01:32.671+08:00  INFO 23296 --- [main] com.kuibuqianli.KuibuQianliApplication   : The following 1 profile is active: "dev"
+2026-03-29T02:01:36.501+08:00  INFO 23296 --- [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=a61f3d45-22b4-39a0-95a7-8203c5af368e
+2026-03-29T02:01:37.455+08:00  INFO 23296 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-03-29T02:01:37.476+08:00  INFO 23296 --- [main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-29T02:01:37.476+08:00  INFO 23296 --- [main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2026-03-29T02:01:37.688+08:00  INFO 23296 --- [main] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring embedded WebApplicationContext
+2026-03-29T02:01:37.689+08:00  INFO 23296 --- [main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4886 ms
+2026-03-29T02:01:37.789+08:00 DEBUG 23296 --- [main] c.k.security.JwtAuthenticationFilter     : Filter 'jwtAuthenticationFilter' configured for use
+2026-03-29T02:01:39.543+08:00  INFO 23296 --- [main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@377dbc50, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@531ec2ca, org.springframework.security.web.context.SecurityContextHolderFilter@31b741e2, org.springframework.security.web.header.HeaderWriterFilter@47198524, org.springframework.web.filter.CorsFilter@70884875, org.springframework.security.web.authentication.logout.LogoutFilter@37e55819, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@28f05b0c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5fdb7394, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@7019d619, org.springframework.security.web.session.SessionManagementFilter@5a8dcfbb, org.springframework.security.web.access.ExceptionTranslationFilter@674aa626, org.springframework.security.web.access.intercept.AuthorizationFilter@1d7f2f0a]
+2026-03-29T02:01:40.214+08:00  INFO 23296 --- [main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path '/api'
+2026-03-29T02:01:40.240+08:00  INFO 23296 --- [main] com.kuibuqianli.KuibuQianliApplication   : Started KuibuQianliApplication in 9.015 seconds (process running for 19.993)
+2026-03-29T02:06:38.165+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/api]    : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-29T02:06:38.166+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-29T02:06:38.170+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-03-29T02:06:38.207+08:00  WARN 23296 --- [http-nio-0.0.0.0-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/api/user/login' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-03-29T02:06:38.398+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-29T02:06:38.600+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@73f4e2e0
+2026-03-29T02:06:38.602+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-29T03:36:46.738+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : ========== 收到生成微运动提示词请求 ==========
+2026-03-29T03:36:46.747+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 身体部位: 头部
+2026-03-29T03:36:46.812+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 姿态信息: 希望缓解视疲劳和长时间用眼带来的紧张；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-29T03:36:46.812+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 用户信息: {age=21, user_id=2, gender=女, height=160.0, weight=60.0, bmi=23.44, bmi_type=正常, preferred_activity_request=眼部放松, preferred_duration_request=5分钟, preferred_intensity_request=零基础, preferred_body_parts=[], preferred_sport_types=[], preferred_durations=[], preferred_difficulty=[零基础], preferred_scenes=[], preference_learning_summary=近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。}
+2026-03-29T03:36:46.815+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : 开始生成微运动提示词 - bodyPart: 头部, postureInfo: 希望缓解视疲劳和长时间用眼带来的紧张；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+2026-03-29T03:36:46.855+08:00 DEBUG 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : 系统提示词: 你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
+生成简短、实用、安全的微运动建议。
+
+【要求】
+1. 运动建议要简单易行，可以在办公位或家里完成，不需要特殊设备
+2. 考虑用户的BMI和年龄，避免不适合的运动
+3. 每次建议包含2-3个微运动动作
+4. 每个动作要说明：动作名称、具体做法、持续时间、注意事项
+5. 用友好、鼓励的语气，像私人教练一样
+6. 返回格式要清晰易读，不要使用 markdown
+7. 如果用户有某些健康禁忌（如腰伤、高血压等），要特别提醒
+8. 结合用户的当前姿态给出针对性建议
+9. 动作名称应简洁、自然、通用，便于后续检索对应指导视频
+10. 只返回 JSON，不要返回 markdown，不要写 ```json，不要添加任何解释文字
+11. 如果用户存在显式偏好或系统学习出的偏好，优先让推荐结果与这些偏好保持一致
+12. 如果用户最近反馈显示“太难”，优先降低动作复杂度和节奏；如果显示“太简单”，优先适当增加挑战度
+13. 优先选择与目标部位、偏好运动类型、偏好时长、偏好难度一致的动作组合
+14. 当前没有候选动作池时，可自行生成安全且通用的动作名称
+
+【JSON格式】
+{
+  "title": "针对颈部的微运动方案",
+  "overview": "一句简短说明，告诉用户这套动作适合什么情况",
+  "difficulty_level": "入门或进阶",
+  "suggested_duration": 60,
+  "actions": [
+    {
+      "name": "候选动作池中的标准动作名称",
+      "rerank_score": 0.92,
+      "seconds": 20,
+      "instruction": "一句清晰做法",
+      "warning": "一句注意事项",
+      "selection_reason": "为什么最终选择这个动作"
+    }
+  ],
+  "candidate_ranking": [
+    {
+      "name": "候选动作池中的标准动作名称",
+      "rerank_score": 0.92,
+      "selected": true,
+      "reason": "动作与目标部位、偏好和安全约束的匹配原因"
+    }
+  ],
+  "tip": "一句个性化提醒"
+}
+
+2026-03-29T03:36:46.864+08:00 DEBUG 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : 用户提示词: 请为以下用户生成微运动建议：
+
+【身体部位】头部
+【当前姿态】希望缓解视疲劳和长时间用眼带来的紧张；期望训练时长约5分钟；强度偏好为零基础；系统学习偏好：近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。。
+【用户信息】
+  - 年龄: 21
+  - 性别: 女
+  - 身高(cm): 160.0
+  - 体重(kg): 60.0
+  - BMI: 23.44
+  - BMI类型: 正常
+  - 动态学习建议难度: 零基础
+  - 动态学习结论: 近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。
+  - 特殊情况/禁忌: []
+  - completed_sessions_30d: 0
+  - completion_rate_30d: 0.0
+
+【推荐策略约束】
+  - 推荐难度尽量贴近: 零基础
+  - 系统动态学习结论: 近30天共分析0次训练，完成率0%。系统学习到你更偏好全身放松部位、静态拉伸类型、3-5分钟时长，并主要在办公久坐场景下进行微运动。当前尚未积累足够的推荐反馈，系统将继续根据训练完成情况学习。
+
+2026-03-29T03:36:46.921+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : 调用DeepSeek API - model: deepseek-chat, maxTokens: 1000, temperature: 0.7
+2026-03-29T03:37:09.258+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : DeepSeek API调用完成 - 耗时: 22337ms, 状态码: 200 OK
+2026-03-29T03:37:09.300+08:00 DEBUG 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : 生成的结构化提示词: 针对头部的微运动方案
+这套动作专为缓解长时间用眼后的视疲劳和头部紧张设计，适合在办公位随时进行。
+1. 眼球转动放松 (120秒)
+做法：坐直，头部保持不动，缓慢地按顺时针方向转动眼球10圈，再按逆时针方向转动10圈，然后闭眼休息10秒。
+注意：转动时速度要慢，避免过快引起头晕。如果佩戴隐形眼镜感觉不适，可减少转动圈数。
+2. 颈部侧向拉伸 (90秒)
+做法：保持坐姿，背部挺直。缓慢将头向右侧倾斜，感觉左侧颈部有拉伸感，保持15秒。然后换左侧重复。
+注意：动作要轻柔缓慢，不要用力过猛或耸肩。只需感到轻微拉伸即可。
+3. 掌心温热敷眼 (60秒)
+做法：双手掌心快速摩擦至发热，然后轻轻覆盖在闭合的双眼上，保持30秒，感受掌心的温热和黑暗。
+注意：确保手掌清洁，覆盖时不要压迫眼球。
+提示：完成这组动作后，可以眺望窗外远处绿色植物20秒，让眼睛得到更好的休息哦。
+2026-03-29T03:37:09.359+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.kuibuqianli.service.DeepSeekService    : 微运动提示词生成成功 - token使用: PromptResponse.ApiUsage(promptTokens=860, completionTokens=680, totalTokens=1540)
+2026-03-29T03:37:09.371+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : 提示词生成成功，时长: 60秒，难度: 入门
+2026-03-29T03:37:09.371+08:00  INFO 23296 --- [http-nio-0.0.0.0-8080-exec-8] c.k.controller.MicroMotionController     : Token使用 - 提示: 860, 完成: 680, 总计: 1540

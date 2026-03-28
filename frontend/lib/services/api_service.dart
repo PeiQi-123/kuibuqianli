@@ -10,19 +10,19 @@ class ApiService {
   static String get baseUrl {
     if (kIsWeb) {
       // 浏览器调试
-      return 'http://localhost:8080/api';
+      return 'http://10.27.246.204:8080/api';
     }
 
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         // Android 模拟器访问宿主机
-        return 'http://10.0.2.2:8080/api';
+        return 'http://10.27.246.204:8080/api';
       case TargetPlatform.iOS:
         // iOS 模拟器一般直接用 localhost
-        return 'http://localhost:8080/api';
+        return 'http://10.27.246.204:8080/api';
       default:
         // Windows / macOS / Linux 桌面
-        return 'http://localhost:8080/api';
+        return 'http://10.27.246.204:8080/api';
     }
   }
 

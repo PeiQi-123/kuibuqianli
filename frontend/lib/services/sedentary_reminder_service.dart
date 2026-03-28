@@ -89,12 +89,24 @@ class SedentaryReminderDebugInfo {
   final double activityThreshold;
   final Duration activeDuration;
   final Duration requiredDuration;
+  final DateTime? activityStartedAt;
+  final DateTime? lastMotionObservedAt;
+  final DateTime? lastScoredMotionAt;
   final bool activityQualified;
   final bool willRemindNow;
   final String reminderDecision;
   final DateTime? cooldownUntil;
+  final Duration cooldownRemaining;
   final String lastActivitySourceLabel;
   final String lastActivityTypeLabel;
+  final double lastAccelX;
+  final double lastAccelY;
+  final double lastAccelZ;
+  final double lastAccelMagnitude;
+  final double lastAccelDelta;
+  final bool lastObviousMotion;
+  final bool lastSensorEventScored;
+  final String lastSensorDecision;
   final bool wearableMockConnected;
   final int wearableMockSteps;
   final int wearableMockMoveCount;
@@ -108,12 +120,24 @@ class SedentaryReminderDebugInfo {
     required this.activityThreshold,
     required this.activeDuration,
     required this.requiredDuration,
+    required this.activityStartedAt,
+    required this.lastMotionObservedAt,
+    required this.lastScoredMotionAt,
     required this.activityQualified,
     required this.willRemindNow,
     required this.reminderDecision,
     required this.cooldownUntil,
+    required this.cooldownRemaining,
     required this.lastActivitySourceLabel,
     required this.lastActivityTypeLabel,
+    required this.lastAccelX,
+    required this.lastAccelY,
+    required this.lastAccelZ,
+    required this.lastAccelMagnitude,
+    required this.lastAccelDelta,
+    required this.lastObviousMotion,
+    required this.lastSensorEventScored,
+    required this.lastSensorDecision,
     required this.wearableMockConnected,
     required this.wearableMockSteps,
     required this.wearableMockMoveCount,
@@ -170,11 +194,11 @@ class SedentaryReminderService extends ChangeNotifier
   SedentaryReminderService._();
 
   static const double _effectiveActivityScoreThreshold = 8;
-  static const double _obviousMotionDeltaThreshold = 2.0;
-  static const double _obviousMotionAxisThreshold = 2.6;
+  static const double _obviousMotionDeltaThreshold = 3.2;
   static const Duration _effectiveActivityMinDuration = Duration(seconds: 15);
   static const Duration _activityScoreStepInterval = Duration(seconds: 2);
-  static const Duration _activityScoreDecayGap = Duration(seconds: 3);
+  static const Duration _activityScoreDecayGap = Duration(seconds: 1);
+  static const Duration _continuousActivityBreakGap = Duration(seconds: 4);
   static const Duration _reminderCheckInterval = Duration(seconds: 10);
   static const Duration _autoMovementCooldown = Duration(minutes: 5);
   static const int _wearableStepResetThreshold = 20;
@@ -199,18 +223,33 @@ class SedentaryReminderService extends ChangeNotifier
         _activityScore >= _effectiveActivityScoreThreshold &&
         activeDuration >= _effectiveActivityMinDuration;
     final reminderDecision = _buildReminderDecision(now);
+    final cooldownRemaining = _autoMovementCooldownUntil == null
+        ? Duration.zero
+        : _autoMovementCooldownUntil!.difference(now);
 
     return SedentaryReminderDebugInfo(
       activityScore: _activityScore,
       activityThreshold: _effectiveActivityScoreThreshold,
       activeDuration: activeDuration.isNegative ? Duration.zero : activeDuration,
       requiredDuration: _effectiveActivityMinDuration,
+      activityStartedAt: _activityStartedAt,
+      lastMotionObservedAt: _lastMotionObservedAt,
+      lastScoredMotionAt: _lastScoredMotionAt,
       activityQualified: activityQualified,
       willRemindNow: reminderDecision.startsWith('会提醒'),
       reminderDecision: reminderDecision,
       cooldownUntil: _autoMovementCooldownUntil,
+      cooldownRemaining: cooldownRemaining.isNegative ? Duration.zero : cooldownRemaining,
       lastActivitySourceLabel: _activitySourceLabel(_lastSignal?.source),
       lastActivityTypeLabel: _activityTypeLabel(_lastSignal?.type),
+      lastAccelX: _lastAccelX,
+      lastAccelY: _lastAccelY,
+      lastAccelZ: _lastAccelZ,
+      lastAccelMagnitude: _lastAccelMagnitude,
+      lastAccelDelta: _lastAccelDelta,
+      lastObviousMotion: _lastObviousMotion,
+      lastSensorEventScored: _lastSensorEventScored,
+      lastSensorDecision: _lastSensorDecision,
       wearableMockConnected: _wearableMockConnected || _oppoWearableConnected,
       wearableMockSteps: _wearableMockStepDelta,
       wearableMockMoveCount: _wearableMockMoveCountDelta,
@@ -239,6 +278,14 @@ class SedentaryReminderService extends ChangeNotifier
   DateTime? _lastScoredMotionAt;
   DateTime? _lastMotionObservedAt;
   DateTime? _autoMovementCooldownUntil;
+  double _lastAccelX = 0;
+  double _lastAccelY = 0;
+  double _lastAccelZ = 0;
+  double _lastAccelMagnitude = 0;
+  double _lastAccelDelta = 0;
+  bool _lastObviousMotion = false;
+  bool _lastSensorEventScored = false;
+  String _lastSensorDecision = '暂无传感器事件';
   ActivitySignal? _lastSignal;
   bool _wearableMockConnected = false;
   bool _oppoWearableConnected = false;
@@ -426,6 +473,11 @@ class SedentaryReminderService extends ChangeNotifier
     _stopDebugDecayTimer();
     _resetActivityDetection();
     notifyListeners();
+  }
+
+  void debugResetAutoMovementCooldown() {
+    _autoMovementCooldownUntil = null;
+    _updateState(statusText: '调试：已重置自动活动冷却');
   }
 
   void debugResetTodayReminderCount() {
@@ -654,8 +706,15 @@ class SedentaryReminderService extends ChangeNotifier
 
   void _handleAccelerometerEvent(AccelerometerEvent event) {
     final now = DateTime.now();
+    _lastAccelX = event.x;
+    _lastAccelY = event.y;
+    _lastAccelZ = event.z;
     if (_autoMovementCooldownUntil != null && now.isBefore(_autoMovementCooldownUntil!)) {
+      _lastObviousMotion = false;
+      _lastSensorEventScored = false;
+      _lastSensorDecision = '冷却中，忽略新的自动活动判定';
       _decayActivityScore(now);
+      notifyListeners();
       return;
     }
 
@@ -663,13 +722,16 @@ class SedentaryReminderService extends ChangeNotifier
       event.x * event.x + event.y * event.y + event.z * event.z,
     );
     final delta = (magnitude - 9.8).abs();
-    final obviousMotion =
-        delta >= _obviousMotionDeltaThreshold ||
-        event.x.abs() >= _obviousMotionAxisThreshold ||
-        event.y.abs() >= _obviousMotionAxisThreshold;
+    _lastAccelMagnitude = magnitude;
+    _lastAccelDelta = delta;
+    final obviousMotion = delta >= _obviousMotionDeltaThreshold;
+    _lastObviousMotion = obviousMotion;
+    _lastSensorEventScored = false;
 
     if (!obviousMotion) {
+      _lastSensorDecision = '未达到明显运动阈值（仅根据合加速度波动判定）';
       _decayActivityScore(now);
+      notifyListeners();
       return;
     }
 
@@ -680,11 +742,18 @@ class SedentaryReminderService extends ChangeNotifier
         now.difference(_lastScoredMotionAt!) >= _activityScoreStepInterval) {
       _activityScore += 1;
       _lastScoredMotionAt = now;
+      _lastSensorEventScored = true;
+      _lastSensorDecision = '达到明显运动阈值，活动分数 +1';
+    } else {
+      _lastSensorDecision = '达到明显运动阈值，但未到下一次计分间隔';
     }
 
     final activeDuration = now.difference(_activityStartedAt!);
     if (_activityScore >= _effectiveActivityScoreThreshold &&
         activeDuration >= _effectiveActivityMinDuration) {
+      _lastSensorDecision = _hasWearablePriority
+          ? '达到有效活动，但当前为手环优先，仅记录信号'
+          : '达到有效活动，已重置久坐并进入冷却';
       _reportActivitySignal(
         ActivitySignal(
           source: ActivitySignalSource.sensor,
@@ -701,7 +770,11 @@ class SedentaryReminderService extends ChangeNotifier
       } else {
         _resetActivityDetection();
       }
+      notifyListeners();
+      return;
     }
+
+    notifyListeners();
   }
 
   void _decayActivityScore(DateTime now) {
@@ -713,6 +786,12 @@ class SedentaryReminderService extends ChangeNotifier
 
     final idleDuration = now.difference(_lastMotionObservedAt!);
     if (idleDuration < _activityScoreDecayGap) {
+      return;
+    }
+
+    if (idleDuration >= _continuousActivityBreakGap) {
+      _resetActivityDetection();
+      _lastSensorDecision = '静止超过 ${_continuousActivityBreakGap.inSeconds} 秒，连续活动已中断';
       return;
     }
 

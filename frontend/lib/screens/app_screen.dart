@@ -36,21 +36,26 @@ class _AppScreenState extends State<AppScreen> {
       // 功能首页
       Scaffold(
         backgroundColor: Colors.transparent,
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('images/background.png'),
-              fit: BoxFit.cover,
+        body: LayoutBuilder(
+          builder: (context, viewportConstraints) => Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('images/background.png'),
+                fit: BoxFit.cover,
+                alignment: Alignment.topCenter,
+              ),
             ),
-          ),
-          child: SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 700),
-                  child: Column(
-                    children: [
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: 700,
+                      minHeight: viewportConstraints.maxHeight - 40,
+                    ),
+                    child: Column(
+                      children: [
                       AnimatedBuilder(
                         animation: SedentaryReminderService.instance,
                         builder: (context, _) => SizedBox(
@@ -75,50 +80,60 @@ class _AppScreenState extends State<AppScreen> {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      GridView.count(
-                        crossAxisCount: 2,
-                        mainAxisSpacing: 72,
-                        crossAxisSpacing: 72,
-                        childAspectRatio: 1.5,
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.only(bottom: 20),
-                        children: [
-                          _buildMenuCard(
-                            context,
-                            icon: Icons.fitness_center,
-                            title: '微运动推荐',
-                            subtitle: 'AI智能推荐',
-                            color: Colors.blue,
-                            onTap: () => context.push('/motion_recommendation'),
-                          ),
-                          _buildMenuCard(
-                            context,
-                            icon: Icons.videocam,
-                            title: '选择身体部位',
-                            subtitle: '3D人体选择',
-                            color: Colors.orange,
-                            onTap: () => context.push('/choose_part_of_body'),
-                          ),
-                          _buildMenuCard(
-                            context,
-                            icon: Icons.camera_alt,
-                            title: '姿态检测',
-                            subtitle: '实时运动姿态',
-                            color: Colors.green,
-                            onTap: () => context.push('/posture_detection'),
-                          ),
-                          _buildMenuCard(
-                            context,
-                            icon: Icons.bar_chart,
-                            title: '健康数据',
-                            subtitle: '运动统计',
-                            color: Colors.purple,
-                            onTap: () => context.push('/health_data'),
-                          ),
-                        ],
+                      LayoutBuilder(
+                        builder: (context, constraints) {
+                          final isCompact = constraints.maxWidth < 380;
+                          final crossSpacing = isCompact ? 12.0 : 16.0;
+                          final mainSpacing = isCompact ? 12.0 : 16.0;
+                          final aspectRatio = isCompact ? 1.2 : 1.35;
+
+                          return GridView.count(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: mainSpacing,
+                            crossAxisSpacing: crossSpacing,
+                            childAspectRatio: aspectRatio,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.only(bottom: 20),
+                            children: [
+                              _buildMenuCard(
+                                context,
+                                icon: Icons.fitness_center,
+                                title: '微运动推荐',
+                                subtitle: 'AI智能推荐',
+                                color: Colors.blue,
+                                onTap: () => context.push('/motion_recommendation'),
+                              ),
+                              _buildMenuCard(
+                                context,
+                                icon: Icons.videocam,
+                                title: '选择身体部位',
+                                subtitle: '3D人体选择',
+                                color: Colors.orange,
+                                onTap: () => context.push('/choose_part_of_body'),
+                              ),
+                              _buildMenuCard(
+                                context,
+                                icon: Icons.camera_alt,
+                                title: '姿态检测',
+                                subtitle: '实时运动姿态',
+                                color: Colors.green,
+                                onTap: () => context.push('/posture_detection'),
+                              ),
+                              _buildMenuCard(
+                                context,
+                                icon: Icons.bar_chart,
+                                title: '健康数据',
+                                subtitle: '运动统计',
+                                color: Colors.purple,
+                                onTap: () => context.push('/health_data'),
+                              ),
+                            ],
+                          );
+                        },
                       ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -182,11 +197,18 @@ class _AppScreenState extends State<AppScreen> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blue.withOpacity(0.18), width: 1.2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
+            color: Colors.blue.withOpacity(0.18),
+            blurRadius: 16,
+            spreadRadius: 1,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.white.withOpacity(0.55),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
@@ -196,37 +218,44 @@ class _AppScreenState extends State<AppScreen> {
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(icon, size: 24, color: color),
                   ),
-                  child: Icon(icon, size: 22, color: color),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                  const SizedBox(height: 8),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Colors.grey[600],
+                  const SizedBox(height: 4),
+                  Flexible(
+                    child: Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: Colors.grey[600],
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                ),
               ],
             ),
           ),
@@ -243,11 +272,18 @@ class _AppScreenState extends State<AppScreen> {
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.95),
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.blue.withOpacity(0.28), width: 1.4),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            color: Colors.blue.withOpacity(0.22),
+            blurRadius: 18,
+            spreadRadius: 1,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.white.withOpacity(0.55),
+            blurRadius: 10,
+            offset: const Offset(0, -2),
           ),
         ],
       ),
@@ -505,6 +541,22 @@ class _AppScreenState extends State<AppScreen> {
                 ),
                 _buildDebugChip('最近来源', debug.lastActivitySourceLabel),
                 _buildDebugChip('最近信号', debug.lastActivityTypeLabel),
+                _buildDebugChip(
+                  '明显运动',
+                  debug.lastObviousMotion ? '是' : '否',
+                  color: debug.lastObviousMotion ? Colors.green : Colors.grey,
+                ),
+                _buildDebugChip(
+                  '本次有计分',
+                  debug.lastSensorEventScored ? '是' : '否',
+                  color: debug.lastSensorEventScored ? Colors.blue : Colors.grey,
+                ),
+                _buildDebugChip(
+                  '冷却剩余',
+                  debug.cooldownRemaining > Duration.zero
+                      ? '${debug.cooldownRemaining.inSeconds}s'
+                      : '无',
+                ),
               ],
             ),
             const SizedBox(height: 8),
@@ -529,6 +581,42 @@ class _AppScreenState extends State<AppScreen> {
             Text(
               debug.signalSummary,
               style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              '传感器判定：${debug.lastSensorDecision}',
+              style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildDebugChip('X', debug.lastAccelX.toStringAsFixed(2)),
+                _buildDebugChip('Y', debug.lastAccelY.toStringAsFixed(2)),
+                _buildDebugChip('Z', debug.lastAccelZ.toStringAsFixed(2)),
+                _buildDebugChip('Magnitude', debug.lastAccelMagnitude.toStringAsFixed(2)),
+                _buildDebugChip('Delta', debug.lastAccelDelta.toStringAsFixed(2)),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _buildDebugChip(
+                  '活动开始',
+                  debug.activityStartedAt == null ? '未开始' : _formatTime(debug.activityStartedAt!),
+                ),
+                _buildDebugChip(
+                  '最近运动',
+                  debug.lastMotionObservedAt == null ? '暂无' : _formatTime(debug.lastMotionObservedAt!),
+                ),
+                _buildDebugChip(
+                  '最近计分',
+                  debug.lastScoredMotionAt == null ? '暂无' : _formatTime(debug.lastScoredMotionAt!),
+                ),
+              ],
             ),
             if (debug.cooldownUntil != null) ...[
               const SizedBox(height: 4),
@@ -582,6 +670,10 @@ class _AppScreenState extends State<AppScreen> {
                 OutlinedButton(
                   onPressed: service.debugResetActivity,
                   child: const Text('重置分数'),
+                ),
+                OutlinedButton(
+                  onPressed: service.debugResetAutoMovementCooldown,
+                  child: const Text('重置自动活动冷却'),
                 ),
               ],
             ),
