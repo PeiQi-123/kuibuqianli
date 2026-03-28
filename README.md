@@ -1,188 +1,347 @@
-# 跬步千里 - 微运动健康管理系统
+# 跬步千里
 
-> 一个基于 AI 的个性化微运动健康管理平台，帮助用户在工作间隙进行科学有效的微运动。
+> 一个面向久坐人群的微运动健康管理系统。项目以 Flutter 为用户端、Spring Boot 为核心业务后端、MySQL 为数据底座，围绕“久坐提醒 -> 个性化推荐 -> 视频跟练 -> 反馈学习”构建闭环。
 
-## ✨ 项目简介
+## 项目定位
 
-**跬步千里** 是一个全栈微运动健康管理系统，通过 AI 技术为用户提供个性化的微运动方案和实时姿态检测，帮助久坐人群在工作间隙进行科学有效的运动。
+**跬步千里** 不是单纯的动作展示应用，而是一个带推荐闭环的微运动系统。当前代码已经具备以下主链路：
 
-### 核心功能
+1. 用户登录并完善身体信息、运动偏好
+2. 系统根据目标部位、历史偏好、近期反馈、特殊情况生成微运动推荐
+3. 用户在视频页跟练并完成训练
+4. 系统保存运动记录、推荐反馈和两阶段推荐明细
+5. 后续推荐继续利用这些数据做个性化调整
 
-- 🏃 **个性化微运动生成** - 基于用户活动类型和偏好生成定制化运动方案
-- 📹 **AI 视频指导** - 自动生成运动指导视频
-- 🎯 **实时姿态检测** - 检测用户运动姿态并提供改进建议
-- 📊 **健康数据管理** - 记录和分析用户的运动数据
-- 🔐 **用户系统** - 完整的注册、登录和用户信息管理
-- 📱 **多平台支持** - 支持 iOS、Android、Web 和 Windows
+## 当前核心能力
 
-## 🏗️ 技术架构
+- **两阶段微运动推荐**
+  - 第一阶段做候选动作召回、排序和多样性筛选
+  - 第二阶段用 LLM 在候选池内重排并生成最终动作方案
+- **推荐可解释性**
+  - 返回命中偏好摘要
+  - 保存候选召回分、LLM 重排分、最终融合分和选择理由
+- **视频指导闭环**
+  - 推荐结果可进入视频播放页
+  - 完成训练后写入运动记录并触发反馈学习
+- **用户偏好动态学习**
+  - 基于近 30 天训练完成情况、反馈标签、时长和时间衰减更新画像
+- **久坐提醒**
+  - 前端本地进行久坐检测与分级提醒
+  - 后端记录提醒状态和日志
+- **多平台前端**
+  - Flutter 支持 Android、iOS、Web、Windows 等平台
+- **3D 身体部位选择**
+  - 支持通过 3D 模型选择目标部位，进入 AI 推荐或视频指导
 
-### 后端服务 (`backend/`)
-- **框架**: Spring Boot 3.1.6
-- **语言**: Java 17
-- **数据库**: MySQL 8.0+
-- **ORM**: MyBatis Plus
-- **安全**: Spring Security + JWT
-- **API 文档**: SpringDoc OpenAPI (Swagger)
+## 当前技术栈
 
-### 前端应用 (`frontend/`)
-- **框架**: Flutter 3.0+
-- **语言**: Dart
-- **状态管理**: Provider
-- **路由**: go_router
-- **图表**: fl_chart
+### 前端 `frontend/`
 
-### AI 服务 (`ai-service/`)
-- **框架**: FastAPI
-- **语言**: Python 3.8+
-- **功能**: 微运动生成、姿态检测、视频生成
+- Flutter
+- Dart
+- go_router
+- Provider
+- video_player
+- model_viewer_plus
 
-## 🚀 快速开始
+### 后端 `backend/`
 
-### 前置要求
+- Spring Boot 3.1.6
+- Java 17
+- MyBatis Plus
+- Spring Security
+- JWT
+- MySQL 8
+- SpringDoc OpenAPI
+
+### AI 服务 `ai-service/`
+
+- FastAPI
+- Python
+
+说明：
+
+- 当前**核心推荐主链路在后端 `backend/`**，即 `POST /api/micro-motion/generate-prompt`
+- `ai-service/` 目前更偏向实验/兼容层，不是当前最重要的生产主链路
+
+## 推荐算法现状
+
+项目当前已经从“单次 LLM 直接生成”升级为“两阶段推荐”：
+
+1. **候选召回阶段**
+   - 从本地视频动作库中召回动作候选
+   - 使用目标部位、显式偏好、近期反馈、重复疲劳、特殊情况等信号排序
+2. **LLM 重排阶段**
+   - 将候选动作池注入提示词
+   - 要求模型在候选池内选择最终动作，并返回重排分与选择理由
+3. **结果落表**
+   - 保存 `exercise_record`
+   - 保存 `recommendation_trace`
+
+推荐算法研究文档见：
+
+- [推荐算法研究说明](docs/architecture/recommendation_algorithm_research.md)
+
+## 主要模块
+
+### 1. 微运动推荐
+
+入口页面：
+
+- `frontend/lib/screens/motion_recommendation_screen.dart`
+
+核心后端：
+
+- `backend/src/main/java/com/kuibuqianli/service/DeepSeekService.java`
+- `backend/src/main/java/com/kuibuqianli/service/VideoService.java`
+- `backend/src/main/java/com/kuibuqianli/service/impl/PreferenceLearningServiceImpl.java`
+
+### 2. 视频跟练与记录
+
+入口页面：
+
+- `frontend/lib/screens/video_player_screen.dart`
+
+核心后端：
+
+- `backend/src/main/java/com/kuibuqianli/controller/MotionController.java`
+- `backend/src/main/java/com/kuibuqianli/service/impl/ExerciseRecordServiceImpl.java`
+
+### 3. 久坐提醒
+
+前端核心：
+
+- `frontend/lib/services/sedentary_reminder_service.dart`
+
+后端接口：
+
+- `backend/src/main/java/com/kuibuqianli/controller/ReminderController.java`
+- `backend/src/main/java/com/kuibuqianli/service/impl/ReminderServiceImpl.java`
+
+### 4. 3D 身体部位选择
+
+- `frontend/lib/screens/choose_part_of_body_screen.dart`
+
+### 5. 健康数据与偏好设置
+
+- `frontend/lib/screens/health_data_screen.dart`
+- `frontend/lib/screens/preference_screen.dart`
+- `backend/src/main/java/com/kuibuqianli/service/impl/HealthDataServiceImpl.java`
+- `backend/src/main/java/com/kuibuqianli/service/impl/UserServiceImpl.java`
+
+## 本地开发前置要求
 
 - JDK 17+
 - Maven 3.6+
-- Python 3.8+
-- Flutter 3.0+
+- Flutter SDK
 - MySQL 8.0+
+- Windows PowerShell 或 CMD
 
-### 快速启动
+可选：
 
-1. **克隆项目**
-   ```bash
-   git clone <repository-url>
-   cd kuibuqianli
-   ```
+- Python 3.8+，仅在你需要运行 `ai-service/` 时使用
 
-2. **配置数据库**
-   ```sql
-   CREATE DATABASE kuibuqianli CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-   ```
+## 快速开始
 
-3. **启动服务**
+### 1. 克隆项目
 
-   **Windows 用户**（推荐）:
-   ```bash
-   # 启动 AI 服务
-   scripts\start_ai_service.bat
-   
-   # 启动后端服务
-   scripts\start_backend.bat
-   
-   # 启动前端应用
-   scripts\start_frontend.bat
-   ```
-
-   **手动启动**:
-   ```bash
-   # AI 服务
-   cd ai-service
-   python -m venv venv
-   venv\Scripts\activate  # Windows
-   pip install -r requirements.txt
-   uvicorn app.main:app --reload --port 8000
-   
-   # 后端服务
-   cd backend
-   mvn spring-boot:run
-   
-   # 前端应用
-   cd frontend
-   flutter pub get
-   flutter run
-   ```
-
-### 访问地址
-
-- **前端应用**: 根据 Flutter 运行平台而定
-- **后端 API**: http://localhost:8080/api
-- **后端 API 文档**: http://localhost:8080/api/swagger-ui.html
-- **AI 服务**: http://localhost:8000
-- **AI 服务文档**: http://localhost:8000/docs
-
-## 📚 文档
-
-- [快速开始指南](QUICKSTART.md) - 5 分钟快速启动项目
-- [开发指南](DEVELOPMENT.md) - 详细的开发环境搭建和开发流程
-
-## 📁 项目结构
-
+```bash
+git clone <repository-url>
+cd kuibuqianli
 ```
+
+### 2. 创建数据库
+
+```sql
+CREATE DATABASE kuibuqianli CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+### 3. 初始化数据库
+
+新库建议按顺序执行以下脚本：
+
+```text
+database/init/01_create_tables.sql
+database/init/02_alter_user_table_add_profile_columns.sql
+database/init/03_alter_exercise_record_add_feedback.sql
+database/init/04_alter_exercise_record_add_recommendation_explanation.sql
+database/init/05_create_recommendation_trace_table.sql
+```
+
+如果是已有数据库，至少确认以下内容已经存在：
+
+- `user` 表中的画像字段
+- `exercise_record.feedback_*`
+- `exercise_record.recommendation_*`
+- `recommendation_trace` 表
+
+你也可以先尝试：
+
+```bash
+scripts\init_database.bat
+```
+
+### 4. 启动后端
+
+推荐方式：
+
+```bash
+scripts\start_backend.bat
+```
+
+手动方式：
+
+```bash
+cd backend
+mvn spring-boot:run
+```
+
+默认地址：
+
+- API: `http://localhost:8080/api`
+- Swagger: `http://localhost:8080/api/swagger-ui.html`
+
+### 5. 启动前端
+
+推荐方式：
+
+```bash
+scripts\start_frontend.bat
+```
+
+手动方式：
+
+```bash
+cd frontend
+flutter pub get
+flutter run
+```
+
+### 6. 可选：启动 AI 服务
+
+如果你需要验证 `ai-service/` 的实验接口：
+
+```bash
+cd ai-service
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+```
+
+默认地址：
+
+- AI 服务: `http://localhost:8000`
+- 文档: `http://localhost:8000/docs`
+
+## 推荐的验证顺序
+
+启动完成后，建议按下面顺序验证：
+
+1. 打开 `http://localhost:8080/api/swagger-ui.html`
+2. 调用 `POST /api/user/register`
+3. 调用 `POST /api/user/login`
+4. 调用 `POST /api/micro-motion/generate-prompt`
+5. 调用 `POST /api/motion/record`
+6. 检查 `exercise_record` 与 `recommendation_trace` 是否写入
+
+## 数据库说明
+
+### 关键业务表
+
+- `user`
+- `user_preference`
+- `exercise_record`
+- `remind_log`
+- `video`
+- `video_attribute`
+- `exercise_video`
+- `video_statistics`
+- `recommendation_trace`
+
+### `recommendation_trace` 的作用
+
+这张表用于保存两阶段推荐过程中的关键中间结果，便于：
+
+- 排查为什么某个动作被推荐
+- 分析候选召回与 LLM 重排之间的差异
+- 做离线评估、A/B 对比和规则优化
+
+## 项目结构
+
+```text
 kuibuqianli/
-├── backend/              # Spring Boot 后端服务
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/     # Java 源代码
-│   │       └── resources/ # 配置文件
-│   └── pom.xml           # Maven 配置
-├── frontend/             # Flutter 前端应用
-│   ├── lib/              # Dart 源代码
-│   └── pubspec.yaml      # Flutter 依赖配置
-├── ai-service/           # Python FastAPI AI 服务
-│   ├── app/              # Python 源代码
-│   └── requirements.txt  # Python 依赖
-├── database/             # 数据库脚本
-│   └── init/             # 初始化脚本
-├── docker/               # Docker 配置
-├── scripts/              # 启动脚本
-├── DEVELOPMENT.md        # 开发指南
-└── QUICKSTART.md         # 快速开始指南
+├── backend/                         # Spring Boot 核心后端
+├── frontend/                        # Flutter 前端
+├── ai-service/                      # FastAPI 实验/兼容服务
+├── database/
+│   └── init/                        # 数据库初始化与增量脚本
+├── docs/
+│   ├── api/
+│   ├── architecture/
+│   ├── database/
+│   └── deployment/
+├── scripts/                         # 启动与辅助脚本
+├── 3dmod/                           # 3D 模型资源
+└── README.md
 ```
 
-## 🔧 开发
+## 当前实现边界
 
-### 环境配置
+以下内容需要明确：
 
-详细的环境配置和开发流程请参考 [开发指南](DEVELOPMENT.md)。
+- 姿态检测主链路仍在持续完善中，当前更偏向传感器/模拟验证，不是完整视觉姿态产品
+- `ai-service/` 中部分接口仍是占位或实验性质
+- 当前推荐系统已经是两阶段结构，但召回阶段仍以规则打分为主，还不是完整学习排序系统
+- 仓库中目前仍包含部分日志、构建产物和比赛材料，后续建议继续清理
 
-### 代码规范
+## 常见问题
 
-- **Java**: 遵循 Google Java Style Guide
-- **Dart**: 遵循 Dart Style Guide  
-- **Python**: 遵循 PEP 8
+### 1. 后端启动失败
 
-### Git 提交规范
+优先检查：
 
-```
-feat: 新功能
-fix: 修复 bug
-docs: 文档更新
-style: 代码格式调整
-refactor: 代码重构
-test: 测试相关
-chore: 构建/工具相关
-```
+- MySQL 是否已启动
+- `backend/src/main/resources/application-dev.yml` 中数据库配置是否正确
+- 数据库表结构是否执行完整
 
-## 🐛 常见问题
+### 2. 推荐接口返回 500
 
-### 端口被占用
-修改配置文件中的端口号或停止占用端口的进程。
+优先检查：
 
-### 数据库连接失败
-1. 检查 MySQL 服务是否启动
-2. 验证数据库配置是否正确
-3. 确认数据库已创建
+- DeepSeek 配置是否可用
+- `exercise_record` 与 `recommendation_trace` 表结构是否存在
+- 本地视频目录配置是否有效
 
-### 依赖安装失败
-- **Maven**: 检查网络连接，配置镜像源
-- **Flutter**: 运行 `flutter clean && flutter pub get`
-- **Python**: 使用国内镜像源 `pip install -i https://pypi.tuna.tsinghua.edu.cn/simple`
+### 3. 前端无法请求后端
 
-更多问题请查看 [开发指南](DEVELOPMENT.md) 中的常见问题部分。
+优先检查：
 
-## 📝 许可证
+- 后端是否启动在 `8080`
+- Flutter 运行平台对应的地址是否正确
+- Android 模拟器下是否走了 `10.0.2.2`
 
-[待添加]
+### 4. 数据能写 `exercise_record`，但不能写 `recommendation_trace`
 
-## 👥 贡献
+通常是以下原因：
 
-欢迎提交 Issue 和 Pull Request！
+- 数据库未执行 `05_create_recommendation_trace_table.sql`
+- 老库未补齐 `exercise_record` 推荐解释字段
 
-## 📞 联系方式
+## 相关文档
 
-[待添加]
+- [推荐算法研究说明](docs/architecture/recommendation_algorithm_research.md)
+- [系统架构文档](docs/architecture/system_architecture.md)
+- [数据库设计文档](docs/database/database_design.md)
+- [后端 API 文档](docs/api/backend_api.md)
+- [AI 服务 API 文档](docs/api/ai_service_api.md)
 
----
+## 开发建议
 
-**祝开发愉快！** 🎉
+如果你要继续迭代这个项目，建议优先关注：
+
+1. 两阶段推荐链路的离线评估与报表
+2. `recommendation_trace` 的可视化分析
+3. 姿态检测主链路补齐
+4. 数据库脚本兼容性和仓库清理
+5. 推荐反馈与偏好学习的进一步模型化
