@@ -66,12 +66,19 @@ public class DeepSeekService {
 
         try {
             request.setUserInfo(enrichUserInfo(request.getUserInfo()));
+            Long userId = extractUserId(request.getUserInfo());
+            List<Map<String, Object>> candidateActions = videoService.recommendActionCandidates(
+                    userId,
+                    request.getBodyPart(),
+                    request.getUserInfo(),
+                    8
+            );
 
             // 1. 构建系统提示词
-            String systemPrompt = buildSystemPrompt();
+            String systemPrompt = buildSystemPrompt(candidateActions);
 
             // 2. 构建用户提示词
-            String userPrompt = buildUserPrompt(request);
+            String userPrompt = buildUserPrompt(request, candidateActions);
 
             log.debug("系统提示词: {}", systemPrompt);
             log.debug("用户提示词: {}", userPrompt);
@@ -80,7 +87,7 @@ public class DeepSeekService {
             DeepSeekResponse apiResponse = callDeepSeekAPI(systemPrompt, userPrompt);
 
             // 4. 解析响应并生成返回结果
-            PromptResponse response = parseResponse(apiResponse, request);
+            PromptResponse response = parseResponse(apiResponse, request, candidateActions);
 
             log.info("微运动提示词生成成功 - token使用: {}", response.getApiUsage());
             return response;
@@ -124,7 +131,10 @@ public class DeepSeekService {
     /**
      * 构建系统提示词
      */
-    private String buildSystemPrompt() {
+    private String buildSystemPrompt(List<Map<String, Object>> candidateActions) {
+        String candidateConstraint = candidateActions == null || candidateActions.isEmpty()
+                ? "14. 当前没有候选动作池时，可自行生成安全且通用的动作名称"
+                : "14. 如果提供候选动作池，优先从候选动作池中选择动作，尽量不要输出池外动作；如果必须输出池外动作，也要保证动作安全、通用且可检索";
         return """
             你是一个专业的微运动健康顾问。请根据用户的身体部位、当前姿态和个人信息，
             生成简短、实用、安全的微运动建议。
@@ -143,6 +153,7 @@ public class DeepSeekService {
             11. 如果用户存在显式偏好或系统学习出的偏好，优先让推荐结果与这些偏好保持一致
             12. 如果用户最近反馈显示“太难”，优先降低动作复杂度和节奏；如果显示“太简单”，优先适当增加挑战度
             13. 优先选择与目标部位、偏好运动类型、偏好时长、偏好难度一致的动作组合
+            %s
             
             【JSON格式】
             {
@@ -152,21 +163,31 @@ public class DeepSeekService {
               "suggested_duration": 60,
               "actions": [
                 {
-                  "name": "简洁明确的标准动作名称",
+                  "name": "候选动作池中的标准动作名称",
+                  "rerank_score": 0.92,
                   "seconds": 20,
                   "instruction": "一句清晰做法",
-                  "warning": "一句注意事项"
+                  "warning": "一句注意事项",
+                  "selection_reason": "为什么最终选择这个动作"
+                }
+              ],
+              "candidate_ranking": [
+                {
+                  "name": "候选动作池中的标准动作名称",
+                  "rerank_score": 0.92,
+                  "selected": true,
+                  "reason": "动作与目标部位、偏好和安全约束的匹配原因"
                 }
               ],
               "tip": "一句个性化提醒"
             }
-            """;
+            """.formatted(candidateConstraint);
     }
 
     /**
      * 构建用户提示词
      */
-    private String buildUserPrompt(PromptRequest request) {
+    private String buildUserPrompt(PromptRequest request, List<Map<String, Object>> candidateActions) {
         StringBuilder prompt = new StringBuilder();
 
         prompt.append("请为以下用户生成微运动建议：\n\n");
@@ -179,6 +200,7 @@ public class DeepSeekService {
             // 提取关键信息并格式化
             extractAndFormatUserInfo(userInfo, prompt);
             appendPreferenceGuidance(userInfo, prompt);
+            appendCandidateGuidance(candidateActions, prompt);
         } else {
             prompt.append("  - 无特定用户信息\n");
         }
@@ -191,6 +213,7 @@ public class DeepSeekService {
         List<String> preferredSportTypes = extractStringList(userInfo.get("preferred_sport_types"));
         List<String> preferredDurations = extractStringList(userInfo.get("preferred_durations"));
         List<String> preferredDifficulty = extractStringList(userInfo.get("preferred_difficulty"));
+        List<String> explicitSpecialCases = extractStringList(userInfo.get("explicit_special_cases"));
         String learningSummary = stringValue(userInfo.get("preference_learning_summary"), "");
 
         prompt.append("\n【推荐策略约束】\n");
@@ -206,9 +229,45 @@ public class DeepSeekService {
         if (!preferredDifficulty.isEmpty()) {
             prompt.append("  - 推荐难度尽量贴近: ").append(String.join("、", preferredDifficulty)).append("\n");
         }
+        if (!explicitSpecialCases.isEmpty()) {
+            prompt.append("  - 需要规避的特殊情况/禁忌: ").append(String.join("、", explicitSpecialCases)).append("\n");
+            prompt.append("  - 优先使用舒缓、安全、低冲击动作，避免强刺激和高风险动作\n");
+        }
         if (!learningSummary.isBlank()) {
             prompt.append("  - 系统动态学习结论: ").append(learningSummary).append("\n");
         }
+    }
+
+    private void appendCandidateGuidance(List<Map<String, Object>> candidateActions, StringBuilder prompt) {
+        if (candidateActions == null || candidateActions.isEmpty()) {
+            return;
+        }
+        prompt.append("\n【候选动作池（召回+排序结果）】\n");
+        for (int index = 0; index < candidateActions.size(); index++) {
+            Map<String, Object> candidate = candidateActions.get(index);
+            String actionName = stringValue(candidate.get("action_name"), "");
+            String category = stringValue(candidate.get("category"), "");
+            String score = String.valueOf(candidate.getOrDefault("score", ""));
+            List<String> reasons = extractStringList(candidate.get("reasons"));
+            prompt.append("  ")
+                    .append(index + 1)
+                    .append(". ")
+                    .append(actionName);
+            if (!category.isBlank()) {
+                prompt.append("（").append(category).append("）");
+            }
+            if (!score.isBlank()) {
+                prompt.append(" - 分数 ").append(score);
+            }
+            if (!reasons.isEmpty()) {
+                prompt.append(" - ").append(String.join("、", reasons));
+            }
+            prompt.append("\n");
+        }
+        prompt.append("【动作选择要求】\n");
+        prompt.append("  - 优先从候选动作池前列选择 2-3 个动作\n");
+        prompt.append("  - 尽量保持动作类别多样，避免所有动作都属于同一种模式\n");
+        prompt.append("  - 对近期负反馈多、最近反复出现的动作降低优先级\n");
     }
 
     private String buildVideoRule(List<String> availableVideos) {
@@ -310,6 +369,7 @@ public class DeepSeekService {
         displayNames.put("preferred_durations", "动态学习偏好时长");
         displayNames.put("preferred_pace", "动态学习偏好节奏");
         displayNames.put("preferred_difficulty", "动态学习建议难度");
+        displayNames.put("explicit_special_cases", "特殊情况/禁忌");
 
         return displayNames.getOrDefault(key, key);
     }
@@ -361,7 +421,11 @@ public class DeepSeekService {
     /**
      * 解析API响应
      */
-    private PromptResponse parseResponse(DeepSeekResponse apiResponse, PromptRequest originalRequest) {
+    private PromptResponse parseResponse(
+            DeepSeekResponse apiResponse,
+            PromptRequest originalRequest,
+            List<Map<String, Object>> candidateActions
+    ) {
         if (apiResponse == null || apiResponse.getChoices() == null || apiResponse.getChoices().isEmpty()) {
             log.error("API返回无效响应: {}", apiResponse);
             throw new RuntimeException("API返回无效响应");
@@ -370,10 +434,12 @@ public class DeepSeekService {
         // 获取生成的提示词
         String rawContent = sanitizeAiText(apiResponse.getChoices().get(0).getMessage().getContent());
         Map<String, Object> content = parseAiJsonContent(rawContent);
+        List<String> allowedActions = extractCandidateActionNames(candidateActions);
         List<PromptResponse.ActionItem> actions = buildActionItems(
                 content.get("actions"),
                 originalRequest.getBodyPart(),
-                originalRequest.getUserInfo()
+                originalRequest.getUserInfo(),
+                allowedActions
         );
 
         String title = stringValue(content.get("title"), "针对" + originalRequest.getBodyPart() + "的微运动方案");
@@ -393,6 +459,11 @@ public class DeepSeekService {
                 actions,
                 duration,
                 difficulty
+        );
+        List<Map<String, Object>> recommendationTrace = buildRecommendationTrace(
+                candidateActions,
+                content.get("candidate_ranking"),
+                actions
         );
 
         // 构建API使用情况
@@ -414,6 +485,7 @@ public class DeepSeekService {
                 .actions(actions)
                 .tip(tip)
                 .preferenceApplied(preferenceApplied)
+                .recommendationTrace(recommendationTrace)
                 .apiUsage(usage)
                 .status("success")
                 .build();
@@ -509,8 +581,15 @@ public class DeepSeekService {
         }
     }
 
-    private List<PromptResponse.ActionItem> buildActionItems(Object actionsObject, String bodyPart, Map<String, Object> userInfo) {
+    private List<PromptResponse.ActionItem> buildActionItems(
+            Object actionsObject,
+            String bodyPart,
+            Map<String, Object> userInfo,
+            List<String> allowedActions
+    ) {
         List<PromptResponse.ActionItem> result = new ArrayList<>();
+        Set<String> usedActionNames = new LinkedHashSet<>();
+        List<String> preferredActions = allowedActions == null ? Collections.emptyList() : allowedActions;
 
         if (actionsObject instanceof List<?> actionList) {
             for (Object item : actionList) {
@@ -518,27 +597,194 @@ public class DeepSeekService {
                     continue;
                 }
                 String resolvedAction = stringValue(actionMap.get("name"), suggestFallbackActionName(bodyPart, result.size()));
+                resolvedAction = resolveAllowedAction(resolvedAction, preferredActions, preferredActions, result.size());
+                resolvedAction = ensureDistinctActionName(resolvedAction, usedActionNames, preferredActions, result.size(), bodyPart);
+                usedActionNames.add(resolvedAction);
                 result.add(PromptResponse.ActionItem.builder()
                         .name(resolvedAction)
                         .seconds(intValue(actionMap.get("seconds"), 20))
                         .instruction(stringValue(actionMap.get("instruction"), "请缓慢完成动作，保持呼吸自然。"))
                         .warning(stringValue(actionMap.get("warning"), "如果感到不适，请立即停止。"))
+                        .rerankScore(doubleValue(actionMap.get("rerank_score")))
+                        .selectionReason(stringValue(actionMap.get("selection_reason"), ""))
                         .build());
             }
         }
 
         if (result.isEmpty()) {
             for (int index = 0; index < 3; index++) {
+                String fallbackAction = ensureDistinctActionName(
+                        suggestFallbackActionName(bodyPart, index),
+                        usedActionNames,
+                        preferredActions,
+                        index,
+                        bodyPart
+                );
+                usedActionNames.add(fallbackAction);
                 result.add(PromptResponse.ActionItem.builder()
-                        .name(suggestFallbackActionName(bodyPart, index))
+                        .name(fallbackAction)
                         .seconds(20)
                         .instruction("请缓慢完成动作，保持身体放松和呼吸稳定。")
                         .warning("动作保持轻柔，出现不适请立即停止。")
+                        .rerankScore(null)
+                        .selectionReason("")
                         .build());
             }
         }
 
         return result;
+    }
+
+    private List<String> extractCandidateActionNames(List<Map<String, Object>> candidateActions) {
+        if (candidateActions == null || candidateActions.isEmpty()) {
+            return Collections.emptyList();
+        }
+        return candidateActions.stream()
+                .map(item -> stringValue(item.get("action_name"), ""))
+                .filter(name -> !name.isBlank())
+                .distinct()
+                .toList();
+    }
+
+    private List<Map<String, Object>> buildRecommendationTrace(
+            List<Map<String, Object>> candidateActions,
+            Object candidateRankingObject,
+            List<PromptResponse.ActionItem> selectedActions
+    ) {
+        if (candidateActions == null || candidateActions.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Map<String, Map<String, Object>> llmRanking = parseCandidateRanking(candidateRankingObject);
+        Map<String, Integer> selectedOrder = new HashMap<>();
+        Map<String, PromptResponse.ActionItem> selectedActionMap = new HashMap<>();
+        for (int index = 0; index < selectedActions.size(); index++) {
+            PromptResponse.ActionItem action = selectedActions.get(index);
+            selectedOrder.put(normalizeForCompare(action.getName()), index + 1);
+            selectedActionMap.put(normalizeForCompare(action.getName()), action);
+        }
+
+        List<Double> recallScores = candidateActions.stream()
+                .map(item -> doubleValue(item.get("score")))
+                .filter(Objects::nonNull)
+                .toList();
+        double minRecall = recallScores.stream().mapToDouble(Double::doubleValue).min().orElse(0D);
+        double maxRecall = recallScores.stream().mapToDouble(Double::doubleValue).max().orElse(1D);
+
+        List<Map<String, Object>> trace = new ArrayList<>();
+        for (int index = 0; index < candidateActions.size(); index++) {
+            Map<String, Object> candidate = candidateActions.get(index);
+            String actionName = stringValue(candidate.get("action_name"), "");
+            String normalizedName = normalizeForCompare(actionName);
+            Double recallScore = doubleValue(candidate.get("score"));
+            double normalizedRecall = normalizeScore(recallScore, minRecall, maxRecall);
+            Map<String, Object> llmInfo = llmRanking.getOrDefault(normalizedName, Collections.emptyMap());
+            PromptResponse.ActionItem selectedAction = selectedActionMap.get(normalizedName);
+
+            Double rerankScore = doubleValue(llmInfo.get("rerank_score"));
+            if (rerankScore == null && selectedAction != null) {
+                rerankScore = selectedAction.getRerankScore();
+            }
+            rerankScore = normalizeUnitScore(rerankScore, index);
+
+            String llmReason = stringValue(llmInfo.get("reason"), "");
+            if (llmReason.isBlank() && selectedAction != null) {
+                llmReason = stringValue(selectedAction.getSelectionReason(), "");
+            }
+
+            Integer selectedRank = selectedOrder.get(normalizedName);
+            boolean selected = selectedRank != null;
+            double finalScore = selected
+                    ? (normalizedRecall * 0.4D) + (rerankScore * 0.6D)
+                    : (normalizedRecall * 0.7D) + (rerankScore * 0.3D);
+
+            Map<String, Object> item = new LinkedHashMap<>();
+            item.put("action_name", actionName);
+            item.put("category", stringValue(candidate.get("category"), ""));
+            item.put("candidate_rank", index + 1);
+            item.put("selected_rank", selectedRank);
+            item.put("selected", selected);
+            item.put("recall_score", recallScore);
+            item.put("normalized_recall_score", roundScore(normalizedRecall));
+            item.put("llm_rerank_score", roundScore(rerankScore));
+            item.put("final_score", roundScore(finalScore));
+            item.put("recall_reasons", candidate.getOrDefault("reasons", Collections.emptyList()));
+            item.put("llm_reason", llmReason);
+            trace.add(item);
+        }
+
+        trace.sort((left, right) -> Double.compare(
+                doubleValue(right.get("final_score")) == null ? 0D : doubleValue(right.get("final_score")),
+                doubleValue(left.get("final_score")) == null ? 0D : doubleValue(left.get("final_score"))
+        ));
+        return trace;
+    }
+
+    private Map<String, Map<String, Object>> parseCandidateRanking(Object candidateRankingObject) {
+        if (!(candidateRankingObject instanceof List<?> rankingList)) {
+            return Collections.emptyMap();
+        }
+        Map<String, Map<String, Object>> rankingMap = new HashMap<>();
+        for (Object item : rankingList) {
+            if (!(item instanceof Map<?, ?> rawMap)) {
+                continue;
+            }
+            Map<String, Object> map = new HashMap<>();
+            rawMap.forEach((key, value) -> map.put(String.valueOf(key), value));
+            String actionName = stringValue(map.get("name"), "");
+            if (!actionName.isBlank()) {
+                rankingMap.put(normalizeForCompare(actionName), map);
+            }
+        }
+        return rankingMap;
+    }
+
+    private double normalizeScore(Double value, double min, double max) {
+        if (value == null) {
+            return 0D;
+        }
+        if (Math.abs(max - min) < 1e-6) {
+            return 1D;
+        }
+        return Math.max(0D, Math.min(1D, (value - min) / (max - min)));
+    }
+
+    private double normalizeUnitScore(Double score, int fallbackIndex) {
+        if (score == null) {
+            return Math.max(0.2D, 0.95D - (fallbackIndex * 0.08D));
+        }
+        if (score > 1D && score <= 100D) {
+            return Math.max(0D, Math.min(1D, score / 100D));
+        }
+        return Math.max(0D, Math.min(1D, score));
+    }
+
+    private double roundScore(double score) {
+        return Math.round(score * 1000D) / 1000D;
+    }
+
+    private String ensureDistinctActionName(
+            String actionName,
+            Set<String> usedActionNames,
+            List<String> allowedActions,
+            int replacementIndex,
+            String bodyPart
+    ) {
+        if (!usedActionNames.contains(actionName)) {
+            return actionName;
+        }
+        if (allowedActions != null) {
+            for (String candidate : allowedActions) {
+                if (!usedActionNames.contains(candidate)) {
+                    return candidate;
+                }
+            }
+        }
+        String fallback = suggestFallbackActionName(bodyPart, replacementIndex + usedActionNames.size());
+        if (!usedActionNames.contains(fallback)) {
+            return fallback;
+        }
+        return fallback + (usedActionNames.size() + 1);
     }
 
     private String suggestFallbackActionName(String bodyPart, int index) {
@@ -717,6 +963,20 @@ public class DeepSeekService {
             return Integer.parseInt(value.toString());
         } catch (NumberFormatException e) {
             return fallback;
+        }
+    }
+
+    private Double doubleValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Number number) {
+            return number.doubleValue();
+        }
+        try {
+            return Double.parseDouble(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
         }
     }
 

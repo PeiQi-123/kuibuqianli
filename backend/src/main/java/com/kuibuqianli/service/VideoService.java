@@ -68,6 +68,14 @@ public class VideoService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    private record ActionCandidate(
+            String actionName,
+            double score,
+            String category,
+            List<String> reasons
+    ) {
+    }
+
     public List<String> getAvailableVideos() {
         return getAvailableVideos(null, null);
     }
@@ -88,6 +96,45 @@ public class VideoService {
         } catch (IOException e) {
             return Collections.emptyList();
         }
+    }
+
+    public List<Map<String, Object>> recommendActionCandidates(
+            Long userId,
+            String bodyPart,
+            Map<String, Object> userInfo,
+            int limit
+    ) {
+        List<String> availableVideos = getAvailableVideos();
+        if (availableVideos.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        Map<String, Double> feedbackScores = userId == null ? Collections.emptyMap() : loadFeedbackScores(userId);
+        Map<String, Integer> recentUsage = userId == null ? Collections.emptyMap() : loadRecentActionUsage(userId);
+
+        List<ActionCandidate> rankedCandidates = availableVideos.stream()
+                .map(this::toActionName)
+                .filter(name -> !name.isBlank())
+                .distinct()
+                .map(actionName -> scoreActionCandidate(actionName, bodyPart, userInfo, feedbackScores, recentUsage))
+                .sorted((left, right) -> Double.compare(right.score(), left.score()))
+                .toList();
+
+        if (rankedCandidates.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        return diversifyCandidates(rankedCandidates, Math.max(limit, 1)).stream()
+                .limit(Math.max(limit, 1))
+                .map(candidate -> {
+                    Map<String, Object> item = new LinkedHashMap<>();
+                    item.put("action_name", candidate.actionName());
+                    item.put("score", Math.round(candidate.score() * 100D) / 100D);
+                    item.put("category", candidate.category());
+                    item.put("reasons", candidate.reasons());
+                    return item;
+                })
+                .collect(Collectors.toList());
     }
 
     public String findVideoByKeyword(String keyword) {
@@ -742,6 +789,229 @@ public class VideoService {
         System.out.println("DEBUG full path: " + path);
         System.out.println("DEBUG file exists: " + Files.exists(path));
         return Files.exists(path) ? path.toString() : null;
+    }
+
+    private String toActionName(String filename) {
+        if (filename == null) {
+            return "";
+        }
+        return filename.replaceFirst("\\.[^.]+$", "")
+                .replace('_', ' ')
+                .replace('-', ' ')
+                .trim();
+    }
+
+    private ActionCandidate scoreActionCandidate(
+            String actionName,
+            String bodyPart,
+            Map<String, Object> userInfo,
+            Map<String, Double> feedbackScores,
+            Map<String, Integer> recentUsage
+    ) {
+        double score = 1.0D;
+        List<String> reasons = new ArrayList<>();
+        String normalizedAction = normalizeKeyword(actionName);
+        String category = inferActionCategory(actionName);
+
+        if (matchesBodyPart(actionName, bodyPart)) {
+            score += 3.0D;
+            reasons.add("目标部位命中");
+        }
+
+        List<String> preferredBodyParts = extractStringList(userInfo == null ? null : userInfo.get("preferred_body_parts"));
+        if (!preferredBodyParts.isEmpty() && preferredBodyParts.stream().anyMatch(part -> matchesBodyPart(actionName, part))) {
+            score += 2.0D;
+            reasons.add("贴近历史偏好部位");
+        }
+
+        List<String> preferredSportTypes = extractStringList(userInfo == null ? null : userInfo.get("preferred_sport_types"));
+        if (!preferredSportTypes.isEmpty() && preferredSportTypes.stream().anyMatch(type -> matchesPreference(actionName, type))) {
+            score += 1.8D;
+            reasons.add("贴近历史偏好类型");
+        }
+
+        List<String> preferredDifficulty = extractStringList(userInfo == null ? null : userInfo.get("preferred_difficulty"));
+        if (!preferredDifficulty.isEmpty()) {
+            String difficulty = preferredDifficulty.get(0);
+            if ((difficulty.contains("零基础") || difficulty.contains("入门"))
+                    && containsAnyNormalized(normalizedAction, "拉伸", "放松", "呼吸", "按摩")) {
+                score += 0.9D;
+                reasons.add("适合低难度偏好");
+            } else if ((difficulty.contains("有难度") || difficulty.contains("进阶"))
+                    && containsAnyNormalized(normalizedAction, "动态", "力量", "提踵", "旋转", "绕环")) {
+                score += 0.9D;
+                reasons.add("适合进阶偏好");
+            }
+        }
+
+        List<String> specialCases = extractStringList(userInfo == null ? null : userInfo.get("explicit_special_cases"));
+        if (!specialCases.isEmpty()) {
+            if (containsAnyNormalized(normalizedAction, "力量", "深蹲", "高抬腿", "动态")) {
+                score -= 0.8D;
+                reasons.add("存在特殊情况，降低高刺激动作权重");
+            }
+            if (containsAnyNormalized(normalizedAction, "拉伸", "放松", "呼吸", "按摩")) {
+                score += 0.6D;
+                reasons.add("存在特殊情况，提升舒缓动作权重");
+            }
+        }
+
+        double feedbackScore = feedbackScores.entrySet().stream()
+                .filter(entry -> normalizedAction.contains(entry.getKey()) || entry.getKey().contains(normalizedAction))
+                .mapToDouble(Map.Entry::getValue)
+                .sum();
+        if (feedbackScore != 0.0D) {
+            score += feedbackScore;
+            reasons.add(feedbackScore > 0 ? "近期正反馈较好" : "近期负反馈较多");
+        }
+
+        int usageCount = recentUsage.entrySet().stream()
+                .filter(entry -> normalizedAction.contains(entry.getKey()) || entry.getKey().contains(normalizedAction))
+                .mapToInt(Map.Entry::getValue)
+                .sum();
+        if (usageCount > 0) {
+            double fatiguePenalty = Math.min(usageCount * 0.7D, 2.1D);
+            score -= fatiguePenalty;
+            reasons.add("近期重复较多，触发疲劳降权");
+        } else {
+            score += 0.35D;
+            reasons.add("近期较少出现，增加新鲜度");
+        }
+
+        return new ActionCandidate(actionName, score, category, reasons);
+    }
+
+    private List<ActionCandidate> diversifyCandidates(List<ActionCandidate> rankedCandidates, int limit) {
+        List<ActionCandidate> selected = new ArrayList<>();
+        Set<String> selectedNames = new HashSet<>();
+        Set<String> usedCategories = new HashSet<>();
+
+        for (ActionCandidate candidate : rankedCandidates) {
+            if (selected.size() >= limit) {
+                break;
+            }
+            if (selectedNames.contains(candidate.actionName())) {
+                continue;
+            }
+            if (!candidate.category().isBlank() && usedCategories.contains(candidate.category())) {
+                continue;
+            }
+            selected.add(candidate);
+            selectedNames.add(candidate.actionName());
+            if (!candidate.category().isBlank()) {
+                usedCategories.add(candidate.category());
+            }
+        }
+
+        for (ActionCandidate candidate : rankedCandidates) {
+            if (selected.size() >= limit) {
+                break;
+            }
+            if (selectedNames.contains(candidate.actionName())) {
+                continue;
+            }
+            selected.add(candidate);
+            selectedNames.add(candidate.actionName());
+        }
+
+        return selected;
+    }
+
+    private Map<String, Integer> loadRecentActionUsage(Long userId) {
+        LocalDateTime threshold = LocalDateTime.now().minusDays(3);
+        List<Map<String, Object>> rows = jdbcTemplate.queryForList(
+                "SELECT motion_name, COUNT(*) AS usage_count FROM exercise_record WHERE user_id = ? AND created_at >= ? GROUP BY motion_name",
+                userId,
+                Timestamp.valueOf(threshold)
+        );
+
+        Map<String, Integer> result = new HashMap<>();
+        for (Map<String, Object> row : rows) {
+            String motionName = normalizeKeyword(Objects.toString(row.get("motion_name"), ""));
+            Object usageValue = row.get("usage_count");
+            int usageCount = usageValue instanceof Number ? ((Number) usageValue).intValue() : 0;
+            if (!motionName.isEmpty() && usageCount > 0) {
+                result.put(motionName, usageCount);
+            }
+        }
+        return result;
+    }
+
+    private String inferActionCategory(String actionName) {
+        String normalizedAction = normalizeKeyword(actionName);
+        if (containsAnyNormalized(normalizedAction, "呼吸")) {
+            return "深呼吸";
+        }
+        if (containsAnyNormalized(normalizedAction, "按摩", "按压", "放松")) {
+            return "按摩放松";
+        }
+        if (containsAnyNormalized(normalizedAction, "力量", "提踵", "抬腿", "深蹲")) {
+            return "微力量锻炼";
+        }
+        if (containsAnyNormalized(normalizedAction, "绕环", "旋转", "活动")) {
+            return "关节活动";
+        }
+        if (containsAnyNormalized(normalizedAction, "动态", "摆")) {
+            return "动态拉伸";
+        }
+        if (containsAnyNormalized(normalizedAction, "拉伸", "伸展")) {
+            return "静态拉伸";
+        }
+        return "";
+    }
+
+    private boolean matchesBodyPart(String actionName, String bodyPart) {
+        if (bodyPart == null || bodyPart.isBlank()) {
+            return false;
+        }
+        String normalizedAction = normalizeKeyword(actionName);
+        for (String keyword : resolveBodyPartKeywords(normalizeKeyword(bodyPart))) {
+            if (normalizedAction.contains(keyword)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean matchesPreference(String actionName, String preference) {
+        if (preference == null || preference.isBlank()) {
+            return false;
+        }
+        String normalizedAction = normalizeKeyword(actionName);
+        String normalizedPreference = normalizeKeyword(preference);
+        if (normalizedAction.contains(normalizedPreference) || normalizedPreference.contains(normalizedAction)) {
+            return true;
+        }
+        return switch (preference) {
+            case "静态拉伸" -> containsAnyNormalized(normalizedAction, "拉伸", "伸展");
+            case "动态拉伸" -> containsAnyNormalized(normalizedAction, "动态", "摆");
+            case "关节活动" -> containsAnyNormalized(normalizedAction, "绕环", "旋转", "活动");
+            case "按摩放松" -> containsAnyNormalized(normalizedAction, "按摩", "按压", "放松");
+            case "体态矫正" -> containsAnyNormalized(normalizedAction, "体态", "收下巴", "矫正");
+            case "深呼吸" -> containsAnyNormalized(normalizedAction, "呼吸");
+            case "眼部放松" -> containsAnyNormalized(normalizedAction, "眼");
+            case "微力量锻炼" -> containsAnyNormalized(normalizedAction, "力量", "提踵", "抬腿", "深蹲");
+            default -> false;
+        };
+    }
+
+    private List<String> extractStringList(Object value) {
+        if (!(value instanceof List<?> list)) {
+            return Collections.emptyList();
+        }
+        return list.stream()
+                .map(String::valueOf)
+                .filter(item -> !item.isBlank())
+                .toList();
+    }
+
+    private boolean containsAnyNormalized(String source, String... keywords) {
+        for (String keyword : keywords) {
+            if (source.contains(normalizeKeyword(keyword))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<String> sortVideosByPreference(List<String> videos, Long userId, String bodyPart) {

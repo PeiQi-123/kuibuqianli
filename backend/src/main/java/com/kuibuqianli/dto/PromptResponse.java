@@ -65,6 +65,9 @@ public class PromptResponse {
     @JsonProperty("preference_applied")
     private Map<String, Object> preferenceApplied;
 
+    @JsonProperty("recommendation_trace")
+    private List<Map<String, Object>> recommendationTrace;
+
     @Data
     @Builder
     public static class ActionItem {
@@ -79,6 +82,12 @@ public class PromptResponse {
 
         @JsonProperty("warning")
         private String warning;
+
+        @JsonProperty("rerank_score")
+        private Double rerankScore;
+
+        @JsonProperty("selection_reason")
+        private String selectionReason;
     }
 
     /**

@@ -12,4 +12,5 @@ public class ExerciseRecordCreateDTO {
     private Boolean completed;
     private String recommendationSummary;
     private List<String> recommendationMatchedItems;
+    private List<java.util.Map<String, Object>> recommendationTrace;
 }

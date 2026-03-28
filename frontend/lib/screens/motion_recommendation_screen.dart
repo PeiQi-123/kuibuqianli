@@ -410,6 +410,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
       'steps': actions.map((action) => action['name']?.toString() ?? '').where((name) => name.isNotEmpty).toList(),
       'tip': motion['tip'],
       'preference_applied': preferenceApplied,
+      'recommendation_trace': motion['recommendation_trace'],
     };
 
     return Container(

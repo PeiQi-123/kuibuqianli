@@ -199,6 +199,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         'completed': true,
         'recommendationSummary': _preferenceApplied?['summary'],
         'recommendationMatchedItems': _preferenceMatchedItems(),
+        'recommendationTrace': widget.motionData?['recommendation_trace'] ?? const [],
       });
 
       if (!mounted) return;

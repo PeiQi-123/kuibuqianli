@@ -11,11 +11,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -30,6 +34,7 @@ public class ExerciseRecordServiceImpl implements ExerciseRecordService {
     private ObjectMapper objectMapper;
 
     @Override
+    @Transactional
     public Long createRecord(Long userId, ExerciseRecordCreateDTO dto) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -51,7 +56,11 @@ public class ExerciseRecordServiceImpl implements ExerciseRecordService {
             return ps;
         }, keyHolder);
         Number key = keyHolder.getKey();
-        return key == null ? null : key.longValue();
+        Long recordId = key == null ? null : key.longValue();
+        if (recordId != null) {
+            saveRecommendationTrace(recordId, dto.getRecommendationTrace());
+        }
+        return recordId;
     }
 
     @Override
@@ -119,6 +128,92 @@ public class ExerciseRecordServiceImpl implements ExerciseRecordService {
             return objectMapper.writeValueAsString(value);
         } catch (JsonProcessingException e) {
             return null;
+        }
+    }
+
+    private void saveRecommendationTrace(Long recordId, List<Map<String, Object>> recommendationTrace) {
+        if (recordId == null || recommendationTrace == null || recommendationTrace.isEmpty()) {
+            return;
+        }
+
+        String sql = """
+                INSERT INTO recommendation_trace (
+                    exercise_record_id,
+                    action_name,
+                    category,
+                    candidate_rank,
+                    selected_rank,
+                    selected,
+                    recall_score,
+                    normalized_recall_score,
+                    llm_rerank_score,
+                    final_score,
+                    recall_reasons,
+                    llm_reason
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """;
+
+        jdbcTemplate.batchUpdate(sql, recommendationTrace, recommendationTrace.size(), (ps, item) -> {
+            ps.setLong(1, recordId);
+            ps.setString(2, stringValue(item.get("action_name")));
+            ps.setString(3, stringValue(item.get("category")));
+            setInteger(ps, 4, intValue(item.get("candidate_rank")));
+            setInteger(ps, 5, intValue(item.get("selected_rank")));
+            ps.setBoolean(6, Boolean.TRUE.equals(item.get("selected")));
+            setDouble(ps, 7, doubleValue(item.get("recall_score")));
+            setDouble(ps, 8, doubleValue(item.get("normalized_recall_score")));
+            setDouble(ps, 9, doubleValue(item.get("llm_rerank_score")));
+            setDouble(ps, 10, doubleValue(item.get("final_score")));
+            ps.setString(11, toJson(item.get("recall_reasons")));
+            ps.setString(12, stringValue(item.get("llm_reason")));
+        });
+    }
+
+    private String stringValue(Object value) {
+        return value == null ? null : Objects.toString(value, null);
+    }
+
+    private Integer intValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Number number) {
+            return number.intValue();
+        }
+        try {
+            return Integer.parseInt(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private Double doubleValue(Object value) {
+        if (value == null) {
+            return null;
+        }
+        if (value instanceof Number number) {
+            return number.doubleValue();
+        }
+        try {
+            return Double.parseDouble(value.toString());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private void setInteger(PreparedStatement ps, int index, Integer value) throws java.sql.SQLException {
+        if (value == null) {
+            ps.setNull(index, java.sql.Types.INTEGER);
+        } else {
+            ps.setInt(index, value);
+        }
+    }
+
+    private void setDouble(PreparedStatement ps, int index, Double value) throws java.sql.SQLException {
+        if (value == null) {
+            ps.setNull(index, java.sql.Types.DECIMAL);
+        } else {
+            ps.setDouble(index, value);
         }
     }
 }

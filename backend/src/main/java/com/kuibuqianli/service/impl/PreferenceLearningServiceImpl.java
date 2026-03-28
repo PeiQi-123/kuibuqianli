@@ -100,6 +100,7 @@ public class PreferenceLearningServiceImpl implements PreferenceLearningService 
         enriched.put("preferred_durations", learning.getMergedPreferences().getOrDefault("duration", Collections.emptyList()));
         enriched.put("preferred_pace", learning.getMergedPreferences().getOrDefault("pace", Collections.emptyList()));
         enriched.put("preferred_difficulty", learning.getMergedPreferences().getOrDefault("difficulty", Collections.emptyList()));
+        enriched.put("explicit_special_cases", learning.getExplicitPreferences().getOrDefault("special_case", Collections.emptyList()));
         enriched.put("completed_sessions_30d", learning.getCompletedSessions());
         enriched.put("completion_rate_30d", learning.getCompletionRate());
         return enriched;
