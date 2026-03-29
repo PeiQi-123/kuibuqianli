@@ -46,7 +46,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _generateOrLoadVideos();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _generateOrLoadVideos();
+    });
   }
 
   @override
@@ -66,7 +68,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     
     if (actions.isNotEmpty) {
       try {
-        final response = await _apiService.post('/video/find-or-generate-steps', {
+        // 只查找本地视频，不自动生成
+        final response = await _apiService.post('/video/find-steps', {
           'steps': actions,
           'motionId': motionId,
         });
@@ -84,18 +87,36 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 _matchedVideos = validVideos;
                 _selectedVideo = validVideos.first;
                 _currentStep = 0;
+                _isLoading = false;
               });
-              setState(() => _isLoading = false);
+              return;
+            } else {
+              // 没有找到匹配的视频，询问用户是否要生成
+              if (mounted) {
+                await _showGenerateVideoDialog(actions, motionId);
+                return;
+              }
+            }
+          } else {
+            // 没有找到匹配的视频，询问用户是否要生成
+            if (mounted) {
+              await _showGenerateVideoDialog(actions, motionId);
               return;
             }
           }
         }
       } catch (e) {
-        debugPrint('生成/查找视频失败: $e');
+        debugPrint('查找视频失败: $e');
+        // 查找失败，加载所有视频
+        await _loadVideos();
+        setState(() => _isLoading = false);
+        return;
       }
     }
     
+    // 没有动作数据或查找失败，直接加载所有视频
     await _loadVideos();
+    setState(() => _isLoading = false);
   }
 
   Future<void> _openVideo() async {
@@ -139,6 +160,92 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       }
     } finally {
       setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _showGenerateVideoDialog(List<Map<String, dynamic>> actions, String motionId) async {
+    // 先设置加载状态为false，让用户看到界面
+    setState(() => _isLoading = false);
+    
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('未找到匹配的视频'),
+        content: const Text('当前没有找到与运动动作匹配的本地视频。是否要使用AI生成视频？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('取消'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('使用AI生成'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && mounted) {
+      // 用户选择使用AI生成视频
+      await _generateVideoWithAI(actions, motionId);
+    } else if (mounted) {
+      // 用户取消，加载所有视频作为备选
+      setState(() => _isLoading = true);
+      await _loadVideos();
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _generateVideoWithAI(List<Map<String, dynamic>> actions, String motionId) async {
+    setState(() => _isLoading = true);
+    
+    try {
+      final response = await _apiService.post('/video/generate-steps', {
+        'steps': actions,
+        'motionId': motionId,
+      });
+      
+      if (response != null && response['code'] == 200) {
+        final stepVideos = response['data'] as List<dynamic>? ?? [];
+        if (stepVideos.isNotEmpty) {
+          final validVideos = stepVideos
+              .where((v) => v['videoFileName'] != null && v['videoFileName'].toString().isNotEmpty)
+              .map((v) => v['videoFileName'].toString())
+              .toList();
+          
+          if (validVideos.isNotEmpty) {
+            setState(() {
+              _matchedVideos = validVideos;
+              _selectedVideo = validVideos.first;
+              _currentStep = 0;
+              _isLoading = false;
+            });
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('AI视频生成成功')),
+              );
+            }
+            return;
+          }
+        }
+      }
+      
+      // AI生成失败，显示提示并加载所有视频
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('AI视频生成失败，将显示所有可用视频')),
+        );
+      }
+      await _loadVideos();
+      
+    } catch (e) {
+      debugPrint('AI视频生成失败: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('AI视频生成失败: $e')),
+        );
+      }
+      await _loadVideos();
     }
   }
 

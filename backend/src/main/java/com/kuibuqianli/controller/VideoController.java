@@ -96,6 +96,42 @@ public class VideoController {
         
         return Result.success(result);
     }
+    
+    @Operation(summary = "Find local videos for steps (no generation)")
+    @PostMapping("/find-steps")
+    public Result<List<Map<String, Object>>> findVideosForSteps(@RequestBody Map<String, Object> request) {
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> steps = (List<Map<String, Object>>) request.get("steps");
+        String motionId = (String) request.getOrDefault("motionId", "motion");
+        
+        if (steps == null || steps.isEmpty()) {
+            return Result.error("steps cannot be empty");
+        }
+        
+        System.out.println("DEBUG: Find local videos for " + steps.size() + " steps");
+        
+        List<Map<String, Object>> result = videoService.findVideosForSteps(steps, motionId);
+        
+        return Result.success(result);
+    }
+    
+    @Operation(summary = "Generate videos for steps")
+    @PostMapping("/generate-steps")
+    public Result<List<Map<String, Object>>> generateVideosForSteps(@RequestBody Map<String, Object> request) {
+        @SuppressWarnings("unchecked")
+        List<Map<String, Object>> steps = (List<Map<String, Object>>) request.get("steps");
+        String motionId = (String) request.getOrDefault("motionId", "motion");
+        
+        if (steps == null || steps.isEmpty()) {
+            return Result.error("steps cannot be empty");
+        }
+        
+        System.out.println("DEBUG: Generate videos for " + steps.size() + " steps");
+        
+        List<Map<String, Object>> result = videoService.generateVideosForSteps(steps, motionId);
+        
+        return Result.success(result);
+    }
 
     @Operation(summary = "调用AI生成视频")
     @PostMapping("/generate")

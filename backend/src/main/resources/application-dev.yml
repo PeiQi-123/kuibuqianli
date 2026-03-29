@@ -1,4 +1,7 @@
 # 开发环境配置
+server:
+  port: 8081  # 改为8081端口，避免冲突
+
 spring:
   main:
     allow-bean-definition-overriding: true
@@ -77,10 +80,15 @@ ai:
   video-api-url: http://localhost:8001/video
   api-key: your_ai_api_key
 
-# 阿里云百炼视频生成配置
+# 可灵（Kling AI）视频生成配置
 aliyun:
-  video-api-url: https://dashscope.aliyuncs.com/api/v1/services/aigc/text2video/generation
-  api-key: sk-f2e88757a27e4355a863b94b81708917
+  # 可灵视频生成API端点
+  video-api-url: https://api.klingai.com/v1/videos/generations
+  # 可灵API密钥（在 app.klingai.com 创建）
+  access-key: AEye4RGyaftyHB8adkB3KGE894ARALdt
+  secret-key: PYgfRJHHfDpGtArPQPFtLEAEDyRMmtkJ
+  # 模型名称
+  model: kling-video-v3
 
 # 视频目录配置
 video:

@@ -6,6 +6,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.Claims;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,13 +30,98 @@ public class VideoService {
     @Value("${video.output-directory:C:/Users/lying/Desktop/kuibuqianli/backend/video/output}")
     private String outputDir;
     
-    @Value("${aliyun.video-api-url:https://dashscope.aliyuncs.com/api/v1/services/aigc/text2video/generation}")
+    @Value("${aliyun.video-api-url:https://api.klingai.com/v1/videos/generations}")
     private String aliyunVideoApiUrl;
     
-    @Value("${aliyun.api-key:sk-f2e88757a27e4355a863b94b81708917}")
-    private String aliyunApiKey;
+    @Value("${aliyun.access-key:AEye4RGyaftyHB8adkB3KGE894ARALdt}")
+    private String aliyunAccessKey;
+    
+    @Value("${aliyun.secret-key:PYgfRJHHfDpGtArPQPFtLEAEDyRMmtkJ}")
+    private String aliyunSecretKey;
+    
+    @Value("${aliyun.model:kling-video-v3}")
+    private String aliyunModel;
     
     private final RestTemplate restTemplate = new RestTemplate();
+    
+    /**
+     * 生成JWT Token（可灵API认证）- 可灵官方唯一认可的正确格式
+     * 关键点：
+     * 1. 时间戳使用秒（不是毫秒）
+     * 2. 使用setClaims()设置所有字段
+     * 3. 签名方式：SignatureAlgorithm.HS256, SECRET_KEY.getBytes()
+     */
+    private String generateJwtToken() {
+        try {
+            long nowMillis = System.currentTimeMillis();
+            long nowSeconds = nowMillis / 1000;
+            
+            System.out.println("DEBUG: 生成JWT Token（可灵官方标准格式）");
+            System.out.println("  - 当前时间（毫秒）: " + nowMillis);
+            System.out.println("  - 当前时间（秒）: " + nowSeconds);
+            System.out.println("  - iat（签发时间）: " + nowSeconds);
+            System.out.println("  - nbf（生效时间，提前60秒）: " + (nowSeconds - 60));
+            System.out.println("  - exp（过期时间，1小时后）: " + (nowSeconds + 3600));
+            
+            // 创建claims map - 必须用这个格式
+            java.util.Map<String, Object> claims = new java.util.HashMap<>();
+            claims.put("iss", aliyunAccessKey);          // 必须
+            claims.put("iat", nowSeconds);               // 签发时间（秒）
+            claims.put("nbf", nowSeconds - 60);          // 生效时间（提前60秒）
+            claims.put("exp", nowSeconds + 3600);        // 过期时间（1小时后）
+            
+            System.out.println("DEBUG: JWT Claims: " + claims);
+            
+            // 👇 可灵官方唯一认可的签名方式
+            String jwtToken = Jwts.builder()
+                    .setHeaderParam("alg", "HS256")      // 强制算法
+                    .setHeaderParam("typ", "JWT")        // 强制类型
+                    .setClaims(claims)                   // 设置所有claims
+                    .signWith(
+                        SignatureAlgorithm.HS256,        // 必须用这个
+                        aliyunSecretKey.getBytes()       // 必须用.getBytes()
+                    )
+                    .compact();
+            
+            System.out.println("DEBUG: 生成的JWT Token长度: " + jwtToken.length());
+            System.out.println("DEBUG: JWT Token（前60字符）: " + jwtToken.substring(0, Math.min(60, jwtToken.length())) + "...");
+            
+            // 解码验证Token结构（使用相同的签名方式）
+            try {
+                Claims parsedClaims = Jwts.parser()
+                    .setSigningKey(aliyunSecretKey.getBytes())
+                    .parseClaimsJws(jwtToken)
+                    .getBody();
+                
+                System.out.println("DEBUG: JWT验证成功，包含字段:");
+                System.out.println("  - iss: " + parsedClaims.get("iss"));
+                System.out.println("  - iat: " + parsedClaims.get("iat"));
+                System.out.println("  - nbf: " + parsedClaims.get("nbf"));
+                System.out.println("  - exp: " + parsedClaims.get("exp"));
+                
+                // 验证时间格式
+                Object iat = parsedClaims.get("iat");
+                Object nbf = parsedClaims.get("nbf");
+                Object exp = parsedClaims.get("exp");
+                
+                System.out.println("DEBUG: 时间格式验证:");
+                System.out.println("  - iat类型: " + (iat != null ? iat.getClass().getSimpleName() : "null"));
+                System.out.println("  - nbf类型: " + (nbf != null ? nbf.getClass().getSimpleName() : "null"));
+                System.out.println("  - exp类型: " + (exp != null ? exp.getClass().getSimpleName() : "null"));
+                
+            } catch (Exception e) {
+                System.err.println("DEBUG: JWT验证失败: " + e.getMessage());
+                e.printStackTrace();
+            }
+            
+            return jwtToken;
+            
+        } catch (Exception e) {
+            System.err.println("生成JWT Token失败: " + e.getMessage());
+            e.printStackTrace();
+            return null;
+        }
+    }
 
     // 简单的中文关键词和文件名关键词映射，用于从步骤文本中推断对应片段
     // 比如: "坐姿脚尖点地" 会匹配到包含 "脚" 或 "腿" 的文件名
@@ -255,10 +345,10 @@ public class VideoService {
     }
     
     /**
-     * 为每个步骤单独查找或生成视频
-     * @param steps 运动步骤列表（每个元素包含步骤名称和描述）
-     * @param motionId 运动ID
-     * @return 每个步骤对应的视频列表
+     * Find or generate videos for steps
+     * @param steps Step list, each step contains name and instruction
+     * @param motionId Motion ID
+     * @return Video list for each step
      */
     public List<Map<String, Object>> findOrGenerateVideosForSteps(List<Map<String, Object>> steps, String motionId) {
         List<Map<String, Object>> result = new ArrayList<>();
@@ -269,11 +359,11 @@ public class VideoService {
         
         for (int i = 0; i < steps.size(); i++) {
             Map<String, Object> step = steps.get(i);
-            String stepName = step.get("name") != null ? step.get("name").toString() : "步骤" + (i + 1);
+            String stepName = step.get("name") != null ? step.get("name").toString() : "Step" + (i + 1);
             String instruction = step.get("instruction") != null ? step.get("instruction").toString() : "";
-            String stepText = stepName + "，" + instruction;
+            String stepText = stepName + ", " + instruction;
             
-            System.out.println("DEBUG: 处理步骤 " + (i + 1) + ": " + stepName);
+            System.out.println("DEBUG: Process step " + (i + 1) + ": " + stepName);
             
             String videoPath = findOrGenerateVideoForSingleStep(stepText, stepName);
             
@@ -282,6 +372,78 @@ public class VideoService {
             stepVideo.put("stepName", stepName);
             stepVideo.put("videoPath", videoPath);
             stepVideo.put("videoFileName", videoPath != null ? extractFileName(videoPath) : null);
+            
+            result.add(stepVideo);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Find local videos for steps (no generation)
+     * @param steps Step list, each step contains name and instruction
+     * @param motionId Motion ID
+     * @return Video list for each step
+     */
+    public List<Map<String, Object>> findVideosForSteps(List<Map<String, Object>> steps, String motionId) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        
+        if (steps == null || steps.isEmpty()) {
+            return result;
+        }
+        
+        for (int i = 0; i < steps.size(); i++) {
+            Map<String, Object> step = steps.get(i);
+            String stepName = step.get("name") != null ? step.get("name").toString() : "Step" + (i + 1);
+            String instruction = step.get("instruction") != null ? step.get("instruction").toString() : "";
+            String stepText = stepName + ", " + instruction;
+            
+            System.out.println("DEBUG: Find video for step " + (i + 1) + ": " + stepName);
+            
+            String videoPath = fuzzyFindVideoByMatchRate(stepText);
+            
+            Map<String, Object> stepVideo = new HashMap<>();
+            stepVideo.put("stepIndex", i + 1);
+            stepVideo.put("stepName", stepName);
+            stepVideo.put("videoPath", videoPath);
+            stepVideo.put("videoFileName", videoPath != null ? extractFileName(videoPath) : null);
+            stepVideo.put("found", videoPath != null);
+            
+            result.add(stepVideo);
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Generate videos for steps
+     * @param steps Step list, each step contains name and instruction
+     * @param motionId Motion ID
+     * @return Video list for each step
+     */
+    public List<Map<String, Object>> generateVideosForSteps(List<Map<String, Object>> steps, String motionId) {
+        List<Map<String, Object>> result = new ArrayList<>();
+        
+        if (steps == null || steps.isEmpty()) {
+            return result;
+        }
+        
+        for (int i = 0; i < steps.size(); i++) {
+            Map<String, Object> step = steps.get(i);
+            String stepName = step.get("name") != null ? step.get("name").toString() : "Step" + (i + 1);
+            String instruction = step.get("instruction") != null ? step.get("instruction").toString() : "";
+            String stepText = stepName + ", " + instruction;
+            
+            System.out.println("DEBUG: Generate video for step " + (i + 1) + ": " + stepName);
+            
+            String videoPath = generateVideoFromSingleStep(stepText, stepName);
+            
+            Map<String, Object> stepVideo = new HashMap<>();
+            stepVideo.put("stepIndex", i + 1);
+            stepVideo.put("stepName", stepName);
+            stepVideo.put("videoPath", videoPath);
+            stepVideo.put("videoFileName", videoPath != null ? extractFileName(videoPath) : null);
+            stepVideo.put("generated", videoPath != null);
             
             result.add(stepVideo);
         }
@@ -389,126 +551,137 @@ public class VideoService {
     }
     
     /**
-     * 调用阿里云百炼视频生成API
+     * 调用可灵API生成视频
      * @param description 视频描述
-     * @return 生成的视频URL
+     * @return 视频URL或null
      */
     private String callAliyunVideoApi(String description) {
         try {
-            System.out.println("DEBUG: 调用阿里云API，描述: " + description);
+            System.out.println("DEBUG: 调用可灵API，描述: " + description);
             
-            // 尝试多个API地址
-            String[] apiUrls = {
-                "https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis",
-                "https://dashscope-us.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis"
-            };
+            // 检查API密钥是否已配置
+            if (aliyunAccessKey == null || aliyunAccessKey.isEmpty() || 
+                aliyunSecretKey == null || aliyunSecretKey.isEmpty()) {
+                System.err.println("ERROR: 可灵API密钥未配置");
+                System.err.println("ERROR: Access Key: " + (aliyunAccessKey != null ? "已设置" : "未设置"));
+                System.err.println("ERROR: Secret Key: " + (aliyunSecretKey != null ? "已设置" : "未设置"));
+                return null;
+            }
             
-            String lastError = "";
-            for (String apiUrl : apiUrls) {
-                try {
-                    URL url = new URL(apiUrl);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json");
-                    conn.setRequestProperty("Authorization", "Bearer " + aliyunApiKey);
-                    conn.setRequestProperty("X-DashScope-Async", "enable");
-                    conn.setConnectTimeout(30000);
-                    conn.setReadTimeout(60000);
-                    conn.setDoOutput(true);
-                    
-                    String requestBody = String.format(
-                        "{\"model\": \"wan2.6-t2v\", \"input\": {\"prompt\": \"%s\"}, \"parameters\": {\"size\": \"1280*720\", \"duration\": 5}}",
-                        description.replace("\"", "\\\"")
-                    );
-                    
-                    System.out.println("DEBUG: 尝试API地址: " + apiUrl);
-                    System.out.println("DEBUG: 请求体: " + requestBody);
-                    
-                    try (OutputStream os = conn.getOutputStream()) {
-                        byte[] input = requestBody.getBytes("utf-8");
-                        os.write(input, 0, input.length);
+            // 生成JWT Token
+            String jwtToken = generateJwtToken();
+            if (jwtToken == null) {
+                System.err.println("ERROR: 生成JWT Token失败");
+                return null;
+            }
+            
+            System.out.println("DEBUG: 生成的JWT Token长度: " + jwtToken.length());
+            System.out.println("DEBUG: JWT Token前50字符: " + jwtToken.substring(0, Math.min(50, jwtToken.length())) + "...");
+            System.out.println("DEBUG: JWT Token后50字符: ..." + jwtToken.substring(Math.max(0, jwtToken.length() - 50)));
+            
+            // 可灵视频生成API地址
+            String apiUrl = aliyunVideoApiUrl;
+            
+            URL url = new URL(apiUrl);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setRequestProperty("Authorization", "Bearer " + jwtToken);
+            conn.setConnectTimeout(30000);
+            conn.setReadTimeout(60000);
+            conn.setDoOutput(true);
+            
+            // 可灵API请求体格式（根据官方文档）
+            String requestBody = String.format(
+                "{\"model\": \"%s\", \"prompt\": \"%s\", \"duration\": 5, \"ratio\": \"16:9\", \"mode\": \"std\"}",
+                aliyunModel,
+                description.replace("\"", "\\\"")
+            );
+            
+            System.out.println("DEBUG: API地址: " + apiUrl);
+            System.out.println("DEBUG: 请求体: " + requestBody);
+            
+            try (OutputStream os = conn.getOutputStream()) {
+                byte[] input = requestBody.getBytes("utf-8");
+                os.write(input, 0, input.length);
+            }
+            
+            int responseCode = conn.getResponseCode();
+            System.out.println("DEBUG: API响应码: " + responseCode);
+            
+            if (responseCode == 200 || responseCode == 201) {
+                try (BufferedReader br = new BufferedReader(
+                        new InputStreamReader(conn.getInputStream(), "utf-8"))) {
+                    StringBuilder response = new StringBuilder();
+                    String responseLine;
+                    while ((responseLine = br.readLine()) != null) {
+                        response.append(responseLine.trim());
                     }
                     
-                    int responseCode = conn.getResponseCode();
-                    System.out.println("DEBUG: API响应码: " + responseCode);
+                    String responseStr = response.toString();
+                    System.out.println("DEBUG: API响应: " + responseStr);
                     
-                    if (responseCode == 200 || responseCode == 201) {
-                        try (BufferedReader br = new BufferedReader(
-                                new InputStreamReader(conn.getInputStream(), "utf-8"))) {
-                            StringBuilder response = new StringBuilder();
-                            String responseLine;
-                            while ((responseLine = br.readLine()) != null) {
-                                response.append(responseLine.trim());
-                            }
-                            
-                            String responseStr = response.toString();
-                            System.out.println("DEBUG: API响应: " + responseStr);
-                            
-                            if (responseStr.contains("task_id")) {
-                                int start = responseStr.indexOf("task_id") + 10;
-                                int end = responseStr.indexOf("\"", start);
-                                if (end > start) {
-                                    String taskId = responseStr.substring(start, end);
-                                    System.out.println("DEBUG: 获取到任务ID: " + taskId);
-                                    return pollVideoResult(taskId, apiUrl);
-                                }
-                            }
-                            
-                            if (responseStr.contains("video_url")) {
-                                int start = responseStr.indexOf("video_url") + 12;
-                                int end = responseStr.indexOf("\"", start);
-                                if (end > start) {
-                                    return responseStr.substring(start, end);
-                                }
-                            }
-                        }
-                    } else {
-                        try (BufferedReader br = new BufferedReader(
-                                new InputStreamReader(conn.getErrorStream(), "utf-8"))) {
-                            StringBuilder errorResponse = new StringBuilder();
-                            String responseLine;
-                            while ((responseLine = br.readLine()) != null) {
-                                errorResponse.append(responseLine.trim());
-                            }
-                            lastError = errorResponse.toString();
-                            System.err.println("API错误响应: " + lastError);
+                    // 解析响应，获取task_id
+                    if (responseStr.contains("task_id")) {
+                        // 简单解析JSON，获取task_id
+                        int start = responseStr.indexOf("task_id") + 10;
+                        int end = responseStr.indexOf("\"", start);
+                        if (end > start) {
+                            String taskId = responseStr.substring(start, end);
+                            System.out.println("DEBUG: 获取到任务ID: " + taskId);
+                            return pollVideoResult(taskId, jwtToken);
                         }
                     }
-                } catch (Exception e) {
-                    lastError = e.getMessage();
-                    System.err.println("API调用失败: " + e.getMessage());
+                    
+                    // 如果直接返回视频URL
+                    if (responseStr.contains("video_url")) {
+                        int start = responseStr.indexOf("video_url") + 12;
+                        int end = responseStr.indexOf("\"", start);
+                        if (end > start) {
+                            return responseStr.substring(start, end);
+                        }
+                    }
+                }
+            } else {
+                try (BufferedReader br = new BufferedReader(
+                        new InputStreamReader(conn.getErrorStream(), "utf-8"))) {
+                    StringBuilder errorResponse = new StringBuilder();
+                    String responseLine;
+                    while ((responseLine = br.readLine()) != null) {
+                        errorResponse.append(responseLine.trim());
+                    }
+                    String errorStr = errorResponse.toString();
+                    System.err.println("API错误响应: " + errorStr);
                 }
             }
             
-            System.err.println("所有API地址均失败，最后错误: " + lastError);
-            
         } catch (Exception e) {
-            System.err.println("调用阿里云视频API失败: " + e.getMessage());
+            System.err.println("调用可灵视频API失败: " + e.getMessage());
             e.printStackTrace();
         }
         return null;
     }
     
     /**
-     * 轮询阿里云视频生成结果
+     * 轮询可灵视频生成结果
      */
-    private String pollVideoResult(String taskId, String baseApiUrl) {
+    private String pollVideoResult(String taskId, String jwtToken) {
         try {
-            // 根据baseApiUrl确定查询API地址
-            String queryUrl = baseApiUrl.replace("/video-synthesis", "/query");
+            // 可灵API查询地址
+            String queryUrl = "https://api.klingai.com/v1/videos/tasks/" + taskId;
             URL url = new URL(queryUrl);
-            int maxRetries = 180;
+            int maxRetries = 60; // 最多尝试60次（3分钟）
             int retryCount = 0;
             
             System.out.println("DEBUG: 开始轮询任务ID: " + taskId);
             System.out.println("DEBUG: 查询URL: " + queryUrl);
             
             while (retryCount < maxRetries) {
-                Thread.sleep(3000);
+                Thread.sleep(3000); // 每3秒查询一次
                 
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
-                conn.setRequestProperty("Authorization", "Bearer " + aliyunApiKey);
+                conn.setRequestProperty("Authorization", "Bearer " + jwtToken);
                 conn.setConnectTimeout(10000);
                 conn.setReadTimeout(30000);
                 
@@ -527,18 +700,18 @@ public class VideoService {
                         String responseStr = response.toString();
                         System.out.println("DEBUG: 轮询响应: " + responseStr);
                         
-                        // 解析task_status
-                        String taskStatus = extractTaskStatus(responseStr);
+                        // 解析可灵API的状态字段
+                        String taskStatus = extractKlingTaskStatus(responseStr);
                         System.out.println("DEBUG: 当前任务状态: " + taskStatus);
                         
-                        if ("SUCCEEDED".equals(taskStatus)) {
-                            // 提取视频URL - 从 results 数组中提取 url
-                            String videoUrl = extractVideoUrlFromResults(responseStr);
+                        if ("succeeded".equalsIgnoreCase(taskStatus) || "completed".equalsIgnoreCase(taskStatus)) {
+                            // 提取视频URL
+                            String videoUrl = extractKlingVideoUrl(responseStr);
                             if (videoUrl != null) {
                                 System.out.println("DEBUG: 提取到视频URL: " + videoUrl);
                                 return videoUrl;
                             }
-                        } else if ("FAILED".equals(taskStatus)) {
+                        } else if ("failed".equalsIgnoreCase(taskStatus) || "error".equalsIgnoreCase(taskStatus)) {
                             System.err.println("视频生成任务失败");
                             return null;
                         }
@@ -608,6 +781,63 @@ public class VideoService {
             }
         } catch (Exception e) {
             System.err.println("解析task_status失败: " + e.getMessage());
+        }
+        return "UNKNOWN";
+    }
+    
+    /**
+     * 提取可灵API视频URL
+     */
+    private String extractKlingVideoUrl(String response) {
+        if (response == null) return null;
+        try {
+            // 尝试多种可能的字段名
+            String[] urlFields = {"video_url", "url", "result_url", "output_url"};
+            for (String field : urlFields) {
+                int idx = response.indexOf(field);
+                if (idx >= 0) {
+                    int start = response.indexOf("\"", idx + field.length()) + 1;
+                    int end = response.indexOf("\"", start);
+                    if (end > start) {
+                        return response.substring(start, end);
+                    }
+                }
+            }
+            
+            // 如果没有找到标准字段，尝试从data或result中提取
+            if (response.contains("http") && response.contains("mp4")) {
+                int httpStart = response.indexOf("http");
+                int mp4End = response.indexOf("mp4", httpStart);
+                if (mp4End > httpStart) {
+                    return response.substring(httpStart, mp4End + 3);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("解析可灵视频URL失败: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    /**
+     * 提取可灵API任务状态
+     */
+    private String extractKlingTaskStatus(String response) {
+        if (response == null) return "UNKNOWN";
+        try {
+            // 尝试多种可能的状态字段名
+            String[] statusFields = {"status", "task_status", "state"};
+            for (String field : statusFields) {
+                int idx = response.indexOf(field);
+                if (idx >= 0) {
+                    int start = response.indexOf("\"", idx + field.length()) + 1;
+                    int end = response.indexOf("\"", start);
+                    if (end > start) {
+                        return response.substring(start, end);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("解析可灵任务状态失败: " + e.getMessage());
         }
         return "UNKNOWN";
     }

@@ -64,6 +64,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 "/video/files",
                 "/video/find-or-generate",
                 "/video/find-or-generate-steps",
+                "/video/find-steps",
+                "/video/generate-steps",
                 "/video/generate",
                 "/video/concatenate",
                 "/video/concatenate-by-steps",
