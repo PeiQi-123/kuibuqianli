@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import '../constants/body_part_catalog.dart';
+import '../constants/guided_motion_catalog.dart';
 import '../services/api_service.dart';
 import '../services/auth_service.dart';
 
@@ -412,6 +413,7 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
       'preference_applied': preferenceApplied,
       'recommendation_trace': motion['recommendation_trace'],
     };
+    final guidedPlan = GuidedMotionCatalog.buildPlan(motionData);
 
     return Container(
       decoration: BoxDecoration(
@@ -679,6 +681,57 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
 
             const SizedBox(height: 20),
 
+            if (guidedPlan.sessions.isNotEmpty) ...[
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.orange.shade50,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.orange.shade100),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Icon(Icons.camera, size: 18, color: Colors.orange.shade700),
+                        const SizedBox(width: 6),
+                        Text(
+                          '已接入实时跟练指导的动作',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.orange.shade800,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: guidedPlan.sessions
+                          .map(
+                            (session) => Chip(
+                              label: Text(session.definition.title),
+                              backgroundColor: Colors.white,
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    if (guidedPlan.unsupportedActions.isNotEmpty) ...[
+                      const SizedBox(height: 8),
+                      Text(
+                        '以下 AI 动作暂未做实时识别，会自动映射到演示动作：${guidedPlan.unsupportedActions.join('、')}',
+                        style: TextStyle(color: Colors.orange.shade900, height: 1.4),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+            ],
+
             // 操作按钮
             Row(
               children: [
@@ -702,10 +755,10 @@ class _MotionRecommendationScreenState extends State<MotionRecommendationScreen>
                 Expanded(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      context.push('/posture_detection');
+                      context.push('/posture_detection', extra: motionData);
                     },
                     icon: const Icon(Icons.camera_alt, size: 18),
-                    label: const Text('开始检测'),
+                    label: const Text('开始跟练指导'),
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       backgroundColor: Colors.blue,

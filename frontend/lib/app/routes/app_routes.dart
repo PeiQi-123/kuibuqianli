@@ -51,7 +51,10 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/posture_detection',
-      builder: (context, state) => const PostureDetectionScreen(),
+      builder: (context, state) {
+        final motionData = state.extra as Map<String, dynamic>?;
+        return PostureDetectionScreen(motionData: motionData);
+      },
     ),
     GoRoute(
       path: '/choose_part_of_body',

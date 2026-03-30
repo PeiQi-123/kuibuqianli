@@ -1,26 +1,45 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_pose_detection/google_mlkit_pose_detection.dart';
 
+import '../constants/guided_motion_catalog.dart';
+
+class _PoseSnapshot {
+  const _PoseSnapshot({
+    required this.shoulderWidth,
+    required this.avgShoulderY,
+    required this.wristSpan,
+    required this.avgWristY,
+  });
+
+  final double shoulderWidth;
+  final double avgShoulderY;
+  final double wristSpan;
+  final double avgWristY;
+}
+
 class PostureDetectionScreen extends StatefulWidget {
-  const PostureDetectionScreen({super.key});
+  const PostureDetectionScreen({super.key, this.motionData});
+
+  final Map<String, dynamic>? motionData;
 
   @override
   State<PostureDetectionScreen> createState() => _PostureDetectionScreenState();
 }
 
 class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
-  static const int _guidedTotalSeconds = 60;
-
   final PoseDetector _poseDetector = PoseDetector(
     options: PoseDetectorOptions(mode: PoseDetectionMode.stream),
   );
 
+  late final GuidedMotionPlan _guidedPlan;
   CameraController? _cameraController;
+  final List<_PoseSnapshot> _motionHistory = [];
   List<Pose> _poses = const [];
   bool _isBusy = false;
   bool _isInitialized = false;
@@ -36,15 +55,36 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
   Timer? _guidedTimer;
   Timer? _switchOverlayTimer;
   bool _guidedRunning = false;
-  int _guidedRemainingSeconds = _guidedTotalSeconds;
-  String _guidedCue = '点击开始跟练，先做 1 分钟颈部侧屈拉伸。';
+  int _currentActionIndex = 0;
+  int _guidedRemainingSeconds = 0;
+  String _guidedCue = '点击开始跟练';
+  String _guidedFeedbackTitle = '准备开始';
   String _guidedTargetLabel = '左侧';
   bool _showSwitchOverlay = false;
   String _switchOverlayText = '左侧';
 
+  GuidedMotionSession get _currentSession => _guidedPlan.sessions[_currentActionIndex];
+
+  Color get _guidedFeedbackColor {
+    if (_guidedFeedbackTitle.contains('标准') || _guidedFeedbackTitle.contains('完成')) {
+      return Colors.green;
+    }
+    if (_guidedFeedbackTitle.contains('继续') || _guidedFeedbackTitle.contains('方向')) {
+      return Colors.teal;
+    }
+    if (_guidedFeedbackTitle.contains('不够') || _guidedFeedbackTitle.contains('等待')) {
+      return Colors.orange;
+    }
+    return Colors.blueGrey;
+  }
+
   @override
   void initState() {
     super.initState();
+    final builtPlan = GuidedMotionCatalog.buildPlan(widget.motionData);
+    _guidedPlan = builtPlan.sessions.isEmpty ? GuidedMotionCatalog.buildPlan(null) : builtPlan;
+    _guidedRemainingSeconds = _guidedPlan.sessions.first.seconds;
+    _guidedCue = '点击开始跟练，先做 ${_guidedPlan.sessions.first.definition.title}。';
     unawaited(_initializeCamera());
   }
 
@@ -144,14 +184,17 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
       }
       _lastFrameAt = now;
 
+      if (poses.isNotEmpty) {
+        _appendMotionSnapshot(poses.first);
+      }
+
       if (!mounted) return;
       setState(() {
         _poses = poses;
         _detectedPointCount = pointCount;
         _imageSize = inputImage.metadata?.size ?? Size(image.width.toDouble(), image.height.toDouble());
         _statusText = poses.isEmpty ? '未检测到上半身，请调整距离和光线' : '已检测到人体关键点';
-        _guidedTargetLabel = _currentTargetLabel;
-        _guidedCue = _buildGuidedCue(poses);
+        _evaluateGuidedFeedback(poses);
       });
     } catch (e) {
       if (!mounted) return;
@@ -205,13 +248,40 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
     return InputImageRotationValue.fromRawValue(sensorOrientation) ?? InputImageRotation.rotation0deg;
   }
 
+  void _appendMotionSnapshot(Pose pose) {
+    final leftShoulder = pose.landmarks[PoseLandmarkType.leftShoulder];
+    final rightShoulder = pose.landmarks[PoseLandmarkType.rightShoulder];
+    final leftWrist = pose.landmarks[PoseLandmarkType.leftWrist];
+    final rightWrist = pose.landmarks[PoseLandmarkType.rightWrist];
+    if (leftShoulder == null || rightShoulder == null || leftWrist == null || rightWrist == null) {
+      return;
+    }
+
+    _motionHistory.add(
+      _PoseSnapshot(
+        shoulderWidth: (rightShoulder.x - leftShoulder.x).abs().clamp(1, double.infinity),
+        avgShoulderY: (leftShoulder.y + rightShoulder.y) / 2,
+        wristSpan: (rightWrist.x - leftWrist.x).abs(),
+        avgWristY: (leftWrist.y + rightWrist.y) / 2,
+      ),
+    );
+
+    if (_motionHistory.length > 24) {
+      _motionHistory.removeAt(0);
+    }
+  }
+
   Future<void> _toggleCamera() async {
     _useFrontCamera = !_useFrontCamera;
     await _initializeCamera();
   }
 
   String get _currentTargetLabel {
-    final segment = ((_guidedTotalSeconds - _guidedRemainingSeconds) ~/ 15) % 2;
+    if (_currentSession.definition.id != 'neck_tilt') {
+      return '当前动作';
+    }
+    final half = math.max(1, (_currentSession.seconds / 2).floor());
+    final segment = ((_currentSession.seconds - _guidedRemainingSeconds) ~/ half) % 2;
     return segment == 0 ? '左侧' : '右侧';
   }
 
@@ -229,13 +299,25 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
       if (!mounted) return;
       final previousTarget = _currentTargetLabel;
       if (_guidedRemainingSeconds <= 1) {
-        timer.cancel();
-        setState(() {
-          _guidedRunning = false;
-          _guidedRemainingSeconds = 0;
-          _guidedTargetLabel = _currentTargetLabel;
-          _guidedCue = '本轮 1 分钟颈部侧屈拉伸已完成，放松肩颈并调整呼吸。';
-        });
+        if (_currentActionIndex >= _guidedPlan.sessions.length - 1) {
+          timer.cancel();
+          setState(() {
+            _guidedRunning = false;
+            _guidedRemainingSeconds = 0;
+            _guidedTargetLabel = _currentTargetLabel;
+            _guidedFeedbackTitle = '整套动作完成';
+            _guidedCue = '演示版实时跟练已结束，可以直接录制演示视频。';
+          });
+        } else {
+          setState(() {
+            _currentActionIndex += 1;
+            _guidedRemainingSeconds = _currentSession.seconds;
+            _guidedTargetLabel = _currentTargetLabel;
+            _guidedFeedbackTitle = '切换动作';
+            _guidedCue = '切换到 ${_currentSession.definition.title}，请按提示继续跟练。';
+          });
+          _showSideSwitchOverlay('切换动作：${_currentSession.definition.title}');
+        }
         return;
       }
 
@@ -251,11 +333,13 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
 
     setState(() {
       if (_guidedRemainingSeconds == 0) {
-        _guidedRemainingSeconds = _guidedTotalSeconds;
+        _currentActionIndex = 0;
+        _guidedRemainingSeconds = _guidedPlan.sessions.first.seconds;
       }
       _guidedRunning = true;
       _guidedTargetLabel = _currentTargetLabel;
     });
+    _showSideSwitchOverlay('开始：${_currentSession.definition.title}');
   }
 
   void _resetGuidedTraining() {
@@ -263,9 +347,11 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
     _switchOverlayTimer?.cancel();
     setState(() {
       _guidedRunning = false;
-      _guidedRemainingSeconds = _guidedTotalSeconds;
+      _currentActionIndex = 0;
+      _guidedRemainingSeconds = _guidedPlan.sessions.first.seconds;
       _guidedTargetLabel = '左侧';
-      _guidedCue = '点击开始跟练，先做 1 分钟颈部侧屈拉伸。';
+      _guidedFeedbackTitle = '准备开始';
+      _guidedCue = '点击开始跟练，先做 ${_guidedPlan.sessions.first.definition.title}。';
       _showSwitchOverlay = false;
     });
   }
@@ -284,41 +370,129 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
     });
   }
 
-  String _buildGuidedCue(List<Pose> poses) {
+  void _evaluateGuidedFeedback(List<Pose> poses) {
     if (_guidedRemainingSeconds == 0) {
-      return '本轮 1 分钟颈部侧屈拉伸已完成，放松肩颈并调整呼吸。';
+      _guidedFeedbackTitle = '整套动作完成';
+      _guidedCue = '演示版实时跟练已结束，可以直接录制演示视频。';
+      return;
     }
     if (poses.isEmpty) {
-      return '请让头部和双肩完整进入画面，再开始跟练。';
+      _guidedFeedbackTitle = '等待进入画面';
+      _guidedCue = '请让头部、双肩和双臂进入画面，再开始 ${_currentSession.definition.title}。';
+      return;
     }
 
-    final pose = poses.first;
+    switch (_currentSession.definition.id) {
+      case 'neck_tilt':
+        _evaluateNeckTilt(poses.first);
+        break;
+      case 'shrug':
+        _evaluateShrug();
+        break;
+      case 'shoulder_circle':
+        _evaluateShoulderCircle();
+        break;
+      case 'chest_open':
+        _evaluateChestOpen(poses.first);
+        break;
+      default:
+        _guidedFeedbackTitle = '继续动作';
+        _guidedCue = _currentSession.definition.shortInstruction;
+    }
+  }
+
+  void _evaluateNeckTilt(Pose pose) {
     final nose = pose.landmarks[PoseLandmarkType.nose];
     final leftShoulder = pose.landmarks[PoseLandmarkType.leftShoulder];
     final rightShoulder = pose.landmarks[PoseLandmarkType.rightShoulder];
     if (nose == null || leftShoulder == null || rightShoulder == null) {
-      return '请保持头部和双肩可见，方便识别颈部动作。';
+      _guidedFeedbackTitle = '等待颈肩关键点';
+      _guidedCue = '请让头部和双肩完整可见。';
+      return;
     }
 
     final shoulderCenterX = (leftShoulder.x + rightShoulder.x) / 2;
     final shoulderWidth = (rightShoulder.x - leftShoulder.x).abs().clamp(1, double.infinity);
-    final normalizedTilt = (nose.x - shoulderCenterX) / shoulderWidth;
-    final shoulderHeightDiff = (leftShoulder.y - rightShoulder.y).abs();
+    final tilt = (nose.x - shoulderCenterX) / shoulderWidth;
     final targetLeft = _currentTargetLabel == '左侧';
-    final tiltOk = targetLeft ? normalizedTilt < -0.10 : normalizedTilt > 0.10;
-    final strongTilt = targetLeft ? normalizedTilt < -0.18 : normalizedTilt > 0.18;
-    final shouldersRelaxed = shoulderHeightDiff < 26;
+    final tiltOk = targetLeft ? tilt < -0.12 : tilt > 0.12;
+    final tiltGreat = targetLeft ? tilt < -0.20 : tilt > 0.20;
 
     if (!tiltOk) {
-      return '头部向$_currentTargetLabel继续侧屈一点，动作放慢，避免转头。';
+      _guidedFeedbackTitle = '继续侧屈';
+      _guidedCue = '耳朵继续靠近$_currentTargetLabel肩膀，头不要前伸。';
+      return;
     }
-    if (!shouldersRelaxed) {
-      return '很好，继续向$_currentTargetLabel侧屈，同时把双肩放松，不要耸肩。';
+    _guidedFeedbackTitle = tiltGreat ? '动作很标准' : '方向正确';
+    _guidedCue = '保持向$_currentTargetLabel侧屈，肩膀放松，呼吸自然。';
+  }
+
+  void _evaluateShrug() {
+    if (_motionHistory.length < 8) {
+      _guidedFeedbackTitle = '开始提肩';
+      _guidedCue = '双肩向上提起，再慢慢放下。';
+      return;
     }
-    if (strongTilt) {
-      return '动作很标准，保持向$_currentTargetLabel侧屈，呼吸放松。';
+
+    final range = _historyRange((item) => item.avgShoulderY);
+    final shoulderWidth = _motionHistory.last.shoulderWidth;
+    if (range < shoulderWidth * 0.08) {
+      _guidedFeedbackTitle = '动作幅度不够';
+      _guidedCue = '双肩再向上提一点，再慢慢放下。';
+      return;
     }
-    return '再向$_currentTargetLabel轻轻靠近一点，保持肩膀稳定。';
+    _guidedFeedbackTitle = range > shoulderWidth * 0.14 ? '节奏很好' : '动作已识别';
+    _guidedCue = '双肩起伏已经被识别到，继续保持提肩和放松的循环。';
+  }
+
+  void _evaluateShoulderCircle() {
+    if (_motionHistory.length < 8) {
+      _guidedFeedbackTitle = '开始绕肩';
+      _guidedCue = '双肩向前上后下缓慢画圈。';
+      return;
+    }
+    final shoulderRange = _historyRange((item) => item.avgShoulderY);
+    final wristRange = _historyRange((item) => item.avgWristY);
+    final shoulderWidth = _motionHistory.last.shoulderWidth;
+    if (shoulderRange < shoulderWidth * 0.07 || wristRange < shoulderWidth * 0.09) {
+      _guidedFeedbackTitle = '动作还不够明显';
+      _guidedCue = '让肩部画圈更完整一点，动作尽量连贯。';
+      return;
+    }
+    _guidedFeedbackTitle = shoulderRange > shoulderWidth * 0.13 ? '绕肩很流畅' : '继续保持';
+    _guidedCue = '很好，继续保持肩部环绕的连续节奏。';
+  }
+
+  void _evaluateChestOpen(Pose pose) {
+    final leftShoulder = pose.landmarks[PoseLandmarkType.leftShoulder];
+    final rightShoulder = pose.landmarks[PoseLandmarkType.rightShoulder];
+    final leftWrist = pose.landmarks[PoseLandmarkType.leftWrist];
+    final rightWrist = pose.landmarks[PoseLandmarkType.rightWrist];
+    if (leftShoulder == null || rightShoulder == null || leftWrist == null || rightWrist == null) {
+      _guidedFeedbackTitle = '等待手臂关键点';
+      _guidedCue = '请让双手、双肩都进入画面。';
+      return;
+    }
+
+    final shoulderWidth = (rightShoulder.x - leftShoulder.x).abs().clamp(1, double.infinity);
+    final wristSpan = (rightWrist.x - leftWrist.x).abs();
+    final armsOpen = wristSpan > shoulderWidth * 1.55;
+    final excellent = wristSpan > shoulderWidth * 1.85;
+    if (!armsOpen) {
+      _guidedFeedbackTitle = '再把手臂打开一点';
+      _guidedCue = '双臂向身体两侧继续展开，胸口向前打开。';
+      return;
+    }
+    _guidedFeedbackTitle = excellent ? '扩胸动作很标准' : '继续保持扩胸';
+    _guidedCue = '保持双臂打开和胸口展开，停留 1 到 2 秒再回位。';
+  }
+
+  double _historyRange(double Function(_PoseSnapshot item) selector) {
+    if (_motionHistory.isEmpty) {
+      return 0;
+    }
+    final values = _motionHistory.map(selector).toList();
+    return values.reduce(math.max) - values.reduce(math.min);
   }
 
   String _formatCountdown(int seconds) {
@@ -331,7 +505,7 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('姿态检测测试'),
+        title: const Text('实时跟练指导'),
         actions: [
           IconButton(
             onPressed: _initializeCamera,
@@ -369,6 +543,8 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
                 final panels = Column(
                   children: [
                     _buildGuidedTrainingCard(),
+                    const SizedBox(height: 12),
+                    _buildActionQueueCard(),
                     const SizedBox(height: 12),
                     _buildDebugSummaryCard(),
                   ],
@@ -553,7 +729,11 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
           color: _poses.isEmpty ? Colors.orange.shade700 : Colors.green.shade700,
         ),
         title: Text(_poses.isEmpty ? '等待检测人体' : '已识别到人体关键点'),
-        subtitle: Text(_guidedRunning ? '当前跟练目标：颈部向$_guidedTargetLabel侧屈' : '第一版先做 1 分钟颈部侧屈拉伸跟练。'),
+        subtitle: Text(
+          _guidedRunning
+              ? '当前跟练动作：${_currentSession.definition.title}'
+              : '已支持 ${_guidedPlan.sessions.length} 个演示动作实时指导',
+        ),
         trailing: Switch(
           value: _showSkeleton,
           onChanged: (value) => setState(() => _showSkeleton = value),
@@ -581,13 +761,13 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
                   child: const Icon(Icons.timer_outlined, color: Colors.blue),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('1分钟颈部侧屈拉伸', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-                      SizedBox(height: 2),
-                      Text('每 15 秒自动切换左右侧，边做边看纠正提示。'),
+                      Text(_currentSession.definition.title, style: const TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 2),
+                      Text(_currentSession.definition.shortInstruction),
                     ],
                   ),
                 ),
@@ -608,7 +788,8 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
               spacing: 8,
               runSpacing: 8,
               children: [
-                _buildGuideChip('当前目标', _guidedTargetLabel),
+                _buildGuideChip('动作', _currentSession.definition.title),
+                _buildGuideChip('目标', _guidedTargetLabel),
                 _buildGuideChip('剩余时间', _formatCountdown(_guidedRemainingSeconds)),
                 _buildGuideChip('状态', _guidedRunning ? '进行中' : (_guidedRemainingSeconds == 0 ? '已完成' : '未开始')),
               ],
@@ -618,12 +799,25 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
               width: double.infinity,
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.blueGrey.withValues(alpha: 0.08),
+                color: _guidedFeedbackColor.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Text(
-                _guidedCue,
-                style: const TextStyle(height: 1.45),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _guidedFeedbackTitle,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w700,
+                      color: _guidedFeedbackColor,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    _guidedCue,
+                    style: const TextStyle(height: 1.45),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 12),
@@ -695,19 +889,73 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
   }
 
   Widget _buildTipsCard() {
-    return const Card(
+    return Card(
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('测试建议', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
-            Text('1. 让头部、双肩、双肘、双腕进入画面。'),
-            SizedBox(height: 4),
-            Text('2. 背景尽量简单，保持光线充足。'),
-            SizedBox(height: 4),
-            Text('3. 先验证骨架是否稳定，再做动作规则判断。'),
+            const Text('拍摄建议', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text(_currentSession.definition.cameraHint),
+            const SizedBox(height: 4),
+            const Text('背景尽量简单，保持光线充足。'),
+            const SizedBox(height: 4),
+            const Text('拍视频时建议打开骨架，能更直观看到识别效果。'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionQueueCard() {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('本次可演示的跟练动作', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            ..._guidedPlan.sessions.asMap().entries.map((entry) {
+              final isCurrent = entry.key == _currentActionIndex;
+              final session = entry.value;
+              return Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: isCurrent ? session.definition.accentColor.withOpacity(0.10) : Colors.grey.shade50,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: isCurrent ? session.definition.accentColor.withOpacity(0.35) : Colors.grey.shade200,
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 14,
+                      backgroundColor: isCurrent ? session.definition.accentColor : Colors.grey.shade300,
+                      child: Text(
+                        '${entry.key + 1}',
+                        style: TextStyle(
+                          color: isCurrent ? Colors.white : Colors.black87,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(child: Text(session.definition.title, style: const TextStyle(fontWeight: FontWeight.w600))),
+                    Text('${session.seconds}s'),
+                  ],
+                ),
+              );
+            }),
+            if (_guidedPlan.unsupportedActions.isNotEmpty)
+              Text(
+                '暂未做实时识别的 AI 动作：${_guidedPlan.unsupportedActions.join('、')}',
+                style: TextStyle(color: Colors.orange.shade900, height: 1.4),
+              ),
           ],
         ),
       ),
