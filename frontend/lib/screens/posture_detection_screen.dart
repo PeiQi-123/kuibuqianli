@@ -743,7 +743,7 @@ class _PostureDetectionScreenState extends State<PostureDetectionScreen> {
   }
 
   Widget _buildGuidedTrainingCard() {
-    final progress = (_guidedTotalSeconds - _guidedRemainingSeconds) / _guidedTotalSeconds;
+    final progress = (_currentSession.seconds - _guidedRemainingSeconds) / _currentSession.seconds;
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
