@@ -7,24 +7,56 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:micro_exercise_frontend/widgets/custom_button.dart';
 
 import 'package:micro_exercise_frontend/app/app.dart'; // 修改导入路径
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('CustomButton triggers callback when enabled', (WidgetTester tester) async {
+    var tapped = false;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CustomButton(
+            text: 'Start',
+            onPressed: () {
+              tapped = true;
+            },
+          ),
+        ),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
+    await tester.tap(find.text('Start'));
     await tester.pump();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(tapped, isTrue);
+  });
+
+  testWidgets('CustomButton shows loading indicator and disables tap', (WidgetTester tester) async {
+    var tapped = false;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: CustomButton(
+            text: 'Submit',
+            isLoading: true,
+            onPressed: () {
+              tapped = true;
+            },
+          ),
+        ),
+      ),
+    );
+
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    expect(find.text('Submit'), findsNothing);
+
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+
+    expect(tapped, isFalse);
   });
 }
